@@ -55,7 +55,7 @@ class MathIntegers extends AbstractBenchmark
      */
     public function before()
     {
-        $this->data = range(1, $this->iterations);
+        $this->data = $this->generateData();
     }
 
     /**
@@ -76,6 +76,26 @@ class MathIntegers extends AbstractBenchmark
     public function after()
     {
         $this->data = null;
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateData()
+    {
+        $data = [];
+        $stepOdd = 10;
+        $stepEven = 10;
+
+        for ($i = 1; $i <= $this->iterations; $i++) {
+            if (($i % 2) === 0) {
+                $data[$i] = $i + $stepEven;
+            } else {
+                $data[$i] = $i - $stepOdd;
+            }
+        }
+
+        return $data;
     }
 }
 

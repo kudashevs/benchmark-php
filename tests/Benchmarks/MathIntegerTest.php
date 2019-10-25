@@ -30,6 +30,14 @@ class MathIntegerTest extends TestCase
     /**
      * Corner cases.
      */
+    public function testGenerateDataDoesNotGenerateZero()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateData');
+        $data = $method->invoke($this->bench);
+
+        $this->assertCount($this->bench->getIterations(), $data);
+        $this->assertNotContains(0, $data);
+    }
 
     /**
      * Functionality.
@@ -51,6 +59,15 @@ class MathIntegerTest extends TestCase
         $data = $this->getPrivateVariableValue($this->bench, 'data');
 
         $this->assertEmpty($data);
+    }
+
+    public function testGenerateDataReturnsExpected()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateData');
+        $data = $method->invoke($this->bench);
+
+        $this->assertCount($this->bench->getIterations(), $data);
+        $this->assertInternalType('integer', $data[mt_rand(1, $this->bench->getIterations())]);
     }
 
     /**
