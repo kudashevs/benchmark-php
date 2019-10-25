@@ -218,7 +218,7 @@ class Benchmark
      */
     public function getHandleStatistics()
     {
-        list('completed' => $completed, 'skipped' => $skipped) = $this->getStatistics(['completed', 'skipped']);
+        list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
 
         return ($skipped > 0) ?
             [
