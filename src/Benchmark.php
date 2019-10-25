@@ -93,7 +93,7 @@ class Benchmark
 
         $this->beforeHandle(); // turn off cache, gc, etc.
 
-        // @var AbstractBenchmark
+        // @var AbstractBenchmark|string $benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
                 $skipped++;
