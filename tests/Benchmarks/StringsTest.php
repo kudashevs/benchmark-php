@@ -3,16 +3,16 @@
 namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Benchmarks\MathFloats;
+use BenchmarkPHP\Benchmarks\Strings;
 
-class MathFloatsTest extends TestCase
+class StringsTest extends TestCase
 {
-    /** @var MathFloats */
+    /** @var Strings */
     private $bench;
 
     protected function setUp()
     {
-        $this->bench = new MathFloats();
+        $this->bench = new Strings();
     }
 
     /**
@@ -59,7 +59,7 @@ class MathFloatsTest extends TestCase
         $data = $method->invoke($this->bench);
 
         $this->assertCount($this->bench->getIterations(), $data);
-        $this->assertInternalType('float', $data[mt_rand(1, $this->bench->getIterations())]);
+        $this->assertInternalType('string', $data[mt_rand(1, $this->bench->getIterations())]);
     }
 
     /**

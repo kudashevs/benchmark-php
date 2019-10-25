@@ -2,28 +2,38 @@
 
 namespace BenchmarkPHP\Benchmarks;
 
-class MathFloats extends AbstractBenchmark
+class Strings extends AbstractBenchmark
 {
     private $functions = [
-        'abs',
-        'acos',
-        'asin',
-        'atan',
-        'ceil',
-        'cos',
-        'exp',
-        'floor',
-        'is_float',
-        'is_finite',
-        'is_infinite',
-        'log',
-        'sin',
-        'sqrt',
-        'tan',
+        'addslashes',
+        'chunk_split',
+        'count_chars',
+        'crc32',
+        'html_entity_decode',
+        'htmlentities',
+        'htmlspecialchars',
+        'ltrim',
+        'md5',
+        'metaphone',
+        'rtrim',
+        'sha1',
+        'soundex',
+        'str_shuffle',
+        'str_split',
+        'str_word_count',
+        'strip_tags',
+        'stripslashes',
+        'strlen',
+        'strrev',
+        'strtolower',
+        'strtoupper',
+        'trim',
+        'ucfirst',
+        'ucwords',
     ];
 
     /**
-     * Create a new MathFloats instance.
+     * Create a new Strings instance.
      *
      * @return void
      */
@@ -59,7 +69,7 @@ class MathFloats extends AbstractBenchmark
      */
     public function before()
     {
-        $this->data = range(1.0, (float)$this->iterations);
+        $this->data = $this->generateData();
     }
 
     /**
@@ -87,15 +97,15 @@ class MathFloats extends AbstractBenchmark
      */
     protected function generateData()
     {
-        $stepOdd = 0.33333333333;
-        $stepEven = 0.42;
+        $originalString = "benchmark\'s PHP";
+        $reversedString = strrev($originalString);
         $data = [];
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {
-                $data[$i] = $i + $stepEven;
+                $data[$i] = sprintf($originalString . ' %d times', $i);
             } else {
-                $data[$i] = $i + $stepOdd;
+                $data[$i] = sprintf('%d times ' . $reversedString, $i);
             }
         }
 

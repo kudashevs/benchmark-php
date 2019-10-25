@@ -46,6 +46,7 @@ abstract class AbstractBenchmark
     /**
      * Benchmarks contract.
      */
+
     /**
      * Method will be executed before benchmark handle method.
      *
