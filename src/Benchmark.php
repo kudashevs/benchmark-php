@@ -62,7 +62,7 @@ class Benchmark
      */
     protected function initBenchmarks()
     {
-        $names = ['math_integers']; // 'math_floats', 'strings', 'arrays', 'objects'
+        $names = ['math_integers', 'math_floats']; // 'strings', 'arrays', 'objects'
         $benchmarks = [];
 
         foreach ($names as $name) {
