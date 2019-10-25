@@ -189,6 +189,28 @@ class Benchmark
     }
 
     /**
+     * @param array $keys
+     * @return array
+     */
+    public function getStatisticsForHumans(array $keys = [])
+    {
+        $result = $this->getStatistics($keys);
+
+        if (empty($result)) {
+            return $result;
+        }
+
+        $updated = [];
+
+        array_walk($result, function ($v, $k) use (&$updated) {
+            $newKey = ucfirst(str_replace('_', ' ', $k));
+            $updated[$newKey] = $v;
+        });
+
+        return $updated;
+    }
+
+    /**
      * @return array
      */
     public function getHandleStatistics()

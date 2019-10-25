@@ -124,6 +124,15 @@ class BenchmarkTest extends TestCase
         $this->assertArrayHasKey('stopped_at', $statistics);
     }
 
+    public function testGetStatisticsForHumans()
+    {
+        $statistics = $this->bench->getStatisticsForHumans(['started_at', 'stopped_at']);
+
+        $this->assertCount(2, $statistics);
+        $this->assertArrayHasKey('Started at', $statistics);
+        $this->assertArrayHasKey('Stopped at', $statistics);
+    }
+
     public function testGetHandleStatisticsReturnsExpectedOnEmptyBenchmarks()
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
