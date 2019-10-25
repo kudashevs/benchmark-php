@@ -1,4 +1,4 @@
-# Benchmark PHP
+# Benchmark PHP  [![Build Status](https://travis-ci.org/kudashevs/benchmark-php.svg?branch=master)](https://travis-ci.org/kudashevs/benchmark-php)
 
 This is an open-source benchmark application with a set of easy appendable benchmarks for PHP benchmarking.
 
