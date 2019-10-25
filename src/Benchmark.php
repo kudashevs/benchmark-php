@@ -57,8 +57,7 @@ class Benchmark
         $this->handleBenchmarks();
         echo $this->reporter->showSeparator();
         echo $this->reporter->showBlock($this->getHandleStatistics());
-        echo $this->reporter->showSeparator();
-        echo $this->reporter->showBlock($this->getStatistics(['started_at', 'stopped_at', 'total_time']));
+        echo $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
     }
 
     /**
@@ -97,7 +96,7 @@ class Benchmark
         // @var AbstractBenchmark|string $benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
-                $this->incSkipped();
+                $this->benchmarkSkipped([$name => 'skipped']);
 
                 continue;
             }
@@ -113,9 +112,7 @@ class Benchmark
 
             $benchmark->after();
 
-            $this->incCompleted();
-
-            echo $this->reporter->showBlock([$name => $diffTime]);
+            $this->benchmarkCompleted([$name => $diffTime]);
         }
 
         $this->afterHandle(); // clean, etc.
@@ -160,19 +157,25 @@ class Benchmark
     }
 
     /**
+     * @param array $information
      * @return void
      */
-    protected function incCompleted()
+    protected function benchmarkCompleted(array $information)
     {
         ++$this->statistics['completed'];
+
+        echo $this->reporter->showBlock($information);
     }
 
     /**
+     * @param array $information
      * @return void
      */
-    protected function incSkipped()
+    protected function benchmarkSkipped(array $information)
     {
         ++$this->statistics['skipped'];
+
+        echo $this->reporter->showBlock($information);
     }
 
     /**
