@@ -66,7 +66,41 @@ class BenchmarkTest extends TestCase
         $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStoppedAt());
     }
 
-    public function testHandleBenchmarksExecutesBeforeHandleAfterOnBenchmark()
+    public function testHandleBenchmarksReturnsExpectedOnEmptyBenchmarks()
+    {
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $result = $method->invoke($this->bench);
+
+        $this->assertContains('0', $result['done']);
+    }
+
+    public function testHandleBenchmarksReturnsExpectedOnCompletedBenchmarks()
+    {
+        $stub = $this->getMockBuilder(MathIntegers::class)
+            ->getMock();
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $result = $method->invoke($this->bench);
+
+        $this->assertContains('1', $result['done']);
+    }
+
+    public function testHandleBenchmarksRerturnExpectedOnSkippedBenchmark()
+    {
+        $skipped = ['test' => 'skipped'];
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $result = $method->invoke($this->bench);
+
+        $this->assertContains('0', $result['done']);
+        $this->assertContains('1', $result['skip']);
+    }
+
+    public function testHandleBenchmarksExecutesContractMethodsOnBenchmark()
     {
         $mock = $this->getMockBuilder(MathIntegers::class)
             ->getMock();

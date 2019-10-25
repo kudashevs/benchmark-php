@@ -25,9 +25,9 @@ class Benchmark
      * @var array
      */
     private $statistics = [
-        'total_time' => 0,
         'started_at' => 'Not handled',
         'stopped_at' => 'Not handled',
+        'total_time' => 0,
     ];
 
     /**
@@ -59,28 +59,23 @@ class Benchmark
 
     /**
      * @return array
-     * @throws \LogicException
      */
     protected function initBenchmarks()
     {
-        $names = ['math_integers']; // 'math_floats', 'strings', 'arrays'
+        $names = ['math_integers']; // 'math_floats', 'strings', 'arrays', 'objects'
         $benchmarks = [];
 
         foreach ($names as $name) {
             $class = '\\BenchmarkPHP\\Benchmarks\\' . $this->generateClassName($name);
 
-            if (class_exists($class) && is_subclass_of($class, AbstractBenchmark::class)) {
+            if (class_exists($class)) {
                 try {
                     $instance = new $class();
                 } catch (\Exception $e) {
-                    throw new \LogicException('Cannot instantiate benchmark ' . $class . ' with message ' . $e->getMessage() . '. Check Benchmarks folder.');
+                    $instance = 'skipped';
                 }
                 $benchmarks[$name] = $instance;
             }
-        }
-
-        if (empty($benchmarks)) { // should I throw?
-            throw new \LogicException('Cannot find any benchmarks classes. Check Benchmarks folder.');
         }
 
         return $benchmarks;
@@ -93,27 +88,46 @@ class Benchmark
      */
     protected function handleBenchmarks()
     {
+        $completed = 0;
+        $skipped = 0;
+
         $this->beforeHandle(); // turn off cache, gc, etc.
 
         // @var AbstractBenchmark
         foreach ($this->benchmarks as $name => $benchmark) {
+            if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
+                $skipped++;
+
+                continue;
+            }
+
             $benchmark->before();
 
             $startTime = microtime(true);
             $benchmark->handle();
             $stopTime = microtime(true);
 
-            $benchmark->after();
-
             $diffTime = $stopTime - $startTime;
             $this->statistics['total_time'] += $diffTime;
+
+            $benchmark->after();
+
+            $completed++;
 
             echo $this->reporter->showBlock([$name => $diffTime]);
         }
 
         $this->afterHandle(); // clean, etc.
 
-        return ['done' => $this->generateBenchmarkCount(count($this->benchmarks)) . ' test completed'];
+        return ($skipped > 0) ?
+            [
+                'done' => $this->generateBenchmarkCount($completed) . ' completed',
+                'skip' => $this->generateBenchmarkCount($skipped) . ' skipped',
+            ]
+            :
+            [
+                'done' => $this->generateBenchmarkCount($completed) . ' completed',
+            ];
     }
 
     /**
