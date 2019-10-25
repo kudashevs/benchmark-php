@@ -75,7 +75,7 @@ class MathIntegers extends AbstractBenchmark
      */
     public function after()
     {
-        unset($this->data);
+        $this->data = null;
     }
 }
 
