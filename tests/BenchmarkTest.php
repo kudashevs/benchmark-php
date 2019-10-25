@@ -116,6 +116,20 @@ class BenchmarkTest extends TestCase
         $this->assertEquals($expected, $method->invokeArgs($this->bench, ['math_integers']));
     }
 
+    public function testGenerateBenchmarkCountReturnsExpectedWhenOneResult()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateBenchmarkCount');
+
+        $this->assertEquals('1 test', $method->invokeArgs($this->bench, [1]));
+    }
+
+    public function testGenerateBenchmarkCountReturnsExpectedWhenThreeResult()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateBenchmarkCount');
+
+        $this->assertEquals('3 tests', $method->invokeArgs($this->bench, [3]));
+    }
+
     /**
      * Helpers.
      */

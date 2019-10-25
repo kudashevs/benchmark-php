@@ -113,7 +113,7 @@ class Benchmark
 
         $this->afterHandle(); // clean, etc.
 
-        return ['done' => count($this->benchmarks) . ' test completed'];
+        return ['done' => $this->generateBenchmarkCount(count($this->benchmarks)) . ' test completed'];
     }
 
     /**
@@ -152,6 +152,15 @@ class Benchmark
         }
 
         return $className;
+    }
+
+    /**
+     * @param int $count
+     * @return string
+     */
+    protected function generateBenchmarkCount($count)
+    {
+        return ($count > 1) ? $count . ' tests' : $count . ' test';
     }
 
     /**
