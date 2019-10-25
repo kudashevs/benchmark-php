@@ -25,8 +25,10 @@ class Benchmark
      * @var array
      */
     private $statistics = [
-        'started_at' => 'Not handled',
-        'stopped_at' => 'Not handled',
+        'started_at' => 'Not handled yet',
+        'stopped_at' => 'Not handled yet',
+        'completed' => 0,
+        'skipped' => 0,
         'total_time' => 0,
     ];
 
@@ -52,9 +54,11 @@ class Benchmark
         echo $this->reporter->showHeader($this->getBenchmarkVersion());
         echo $this->reporter->showBlock($this->getSystemInformation());
         echo $this->reporter->showSeparator();
-        echo $this->reporter->showBlock($this->handleBenchmarks());
+        $this->handleBenchmarks();
         echo $this->reporter->showSeparator();
-        echo $this->reporter->showBlock($this->statistics);
+        echo $this->reporter->showBlock($this->getHandleStatistics());
+        echo $this->reporter->showSeparator();
+        echo $this->reporter->showBlock($this->getStatistics(['started_at', 'stopped_at', 'total_time']));
     }
 
     /**
@@ -72,7 +76,7 @@ class Benchmark
                 try {
                     $instance = new $class();
                 } catch (\Exception $e) {
-                    $instance = 'skipped';
+                    $instance = 'failed';
                 }
                 $benchmarks[$name] = $instance;
             }
@@ -84,19 +88,16 @@ class Benchmark
     /**
      * Handle benchmarks collection and collect results.
      *
-     * @return array
+     * @return void
      */
     protected function handleBenchmarks()
     {
-        $completed = 0;
-        $skipped = 0;
-
         $this->beforeHandle(); // turn off cache, gc, etc.
 
         // @var AbstractBenchmark|string $benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
-                $skipped++;
+                $this->incSkipped();
 
                 continue;
             }
@@ -112,22 +113,12 @@ class Benchmark
 
             $benchmark->after();
 
-            $completed++;
+            $this->incCompleted();
 
             echo $this->reporter->showBlock([$name => $diffTime]);
         }
 
         $this->afterHandle(); // clean, etc.
-
-        return ($skipped > 0) ?
-            [
-                'done' => $this->generateBenchmarkCount($completed) . ' completed',
-                'skip' => $this->generateBenchmarkCount($skipped) . ' skipped',
-            ]
-            :
-            [
-                'done' => $this->generateBenchmarkCount($completed) . ' completed',
-            ];
     }
 
     /**
@@ -169,28 +160,59 @@ class Benchmark
     }
 
     /**
+     * @return void
+     */
+    protected function incCompleted()
+    {
+        ++$this->statistics['completed'];
+    }
+
+    /**
+     * @return void
+     */
+    protected function incSkipped()
+    {
+        ++$this->statistics['skipped'];
+    }
+
+    /**
+     * @param array $keys
+     * @return array
+     */
+    public function getStatistics(array $keys = [])
+    {
+        if (empty($keys)) {
+            return $this->statistics;
+        }
+
+        return array_intersect_key($this->statistics, array_flip($keys));
+    }
+
+    /**
+     * @return array
+     */
+    public function getHandleStatistics()
+    {
+        list('completed' => $completed, 'skipped' => $skipped) = $this->getStatistics(['completed', 'skipped']);
+
+        return ($skipped > 0) ?
+            [
+                'done' => $this->generateBenchmarkCount($completed) . ' completed',
+                'skip' => $this->generateBenchmarkCount($skipped) . ' skipped',
+            ]
+            :
+            [
+                'done' => $this->generateBenchmarkCount($completed) . ' completed',
+            ];
+    }
+
+    /**
      * @param int $count
      * @return string
      */
     protected function generateBenchmarkCount($count)
     {
         return ($count > 1) ? $count . ' tests' : $count . ' test';
-    }
-
-    /**
-     * @return array
-     */
-    public function getStartedAt()
-    {
-        return ['Started at' => $this->statistics['started_at']];
-    }
-
-    /**
-     * @return array
-     */
-    public function getStoppedAt()
-    {
-        return ['Stopped at' => $this->statistics['stopped_at']];
     }
 
     /**

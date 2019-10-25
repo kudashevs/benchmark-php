@@ -46,6 +46,23 @@ class BenchmarkTest extends TestCase
         $this->assertContains($platform, $information['Platform']);
     }
 
+    public function testInitBenchmarksReturnExpected()
+    {
+        $count = null;
+        // get declared classes only with Benchmarks namespace
+        foreach (get_declared_classes() as $class) {
+            if (is_subclass_of($class, AbstractBenchmark::class) && strpos($class, 'BenchmarkPHP\Benchmarks\\') !== false) {
+                ++$count;
+            }
+        }
+
+        $method = $this->getPrivateMethod($this->bench, 'initBenchmarks');
+
+        $benchmarks = $method->invoke($this->bench);
+        $this->assertInternalType('array', $benchmarks);
+        $this->assertCount($count, $benchmarks);
+    }
+
     public function testHandleBenchmarksExecutesBeforeHandle()
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
@@ -53,7 +70,7 @@ class BenchmarkTest extends TestCase
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
 
-        $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStartedAt());
+        $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStatistics(['started_at']));
     }
 
     public function testHandleBenchmarksExecutesAfterHandle()
@@ -63,41 +80,7 @@ class BenchmarkTest extends TestCase
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
 
-        $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStoppedAt());
-    }
-
-    public function testHandleBenchmarksReturnsExpectedOnEmptyBenchmarks()
-    {
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
-
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $result = $method->invoke($this->bench);
-
-        $this->assertContains('0', $result['done']);
-    }
-
-    public function testHandleBenchmarksReturnsExpectedOnCompletedBenchmarks()
-    {
-        $stub = $this->getMockBuilder(MathIntegers::class)
-            ->getMock();
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
-
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $result = $method->invoke($this->bench);
-
-        $this->assertContains('1', $result['done']);
-    }
-
-    public function testHandleBenchmarksRerturnExpectedOnSkippedBenchmark()
-    {
-        $skipped = ['test' => 'skipped'];
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
-
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $result = $method->invoke($this->bench);
-
-        $this->assertContains('0', $result['done']);
-        $this->assertContains('1', $result['skip']);
+        $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStatistics(['stopped_at']));
     }
 
     public function testHandleBenchmarksExecutesContractMethodsOnBenchmark()
@@ -117,21 +100,65 @@ class BenchmarkTest extends TestCase
         $method->invoke($this->bench);
     }
 
-    public function testInitBenchmarksReturnExpected()
+    public function testGetStatisticsReturnsAllStatisticsWhenEmptyKeys()
     {
-        $count = null;
-        // get declared classes only with Benchmarks namespace
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, AbstractBenchmark::class) && strpos($class, 'BenchmarkPHP\Benchmarks\\') !== false) {
-                ++$count;
-            }
-        }
+        $statistics = $this->bench->getStatistics();
 
-        $method = $this->getPrivateMethod($this->bench, 'initBenchmarks');
+        $this->assertInternalType('array', $statistics);
+        $this->assertArrayHasKey('total_time', $statistics);
+    }
 
-        $benchmarks = $method->invoke($this->bench);
-        $this->assertInternalType('array', $benchmarks);
-        $this->assertCount($count, $benchmarks);
+    public function testGetStatisticsReturnsEmptyArrayWhenKeyNotExists()
+    {
+        $statistics = $this->bench->getStatistics(['not_exists']);
+
+        $this->assertEmpty($statistics);
+    }
+
+    public function testGetStatisticsReturnsExpectedResultWhenTwoKeysExist()
+    {
+        $statistics = $this->bench->getStatistics(['started_at', 'stopped_at']);
+
+        $this->assertCount(2, $statistics);
+        $this->assertArrayHasKey('started_at', $statistics);
+        $this->assertArrayHasKey('stopped_at', $statistics);
+    }
+
+    public function testGetHandleStatisticsReturnsExpectedOnEmptyBenchmarks()
+    {
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $method->invoke($this->bench);
+        $handled = $this->bench->getHandleStatistics();
+
+        $this->assertContains('0', $handled['done']);
+    }
+
+    public function testGetHandleStatisticsReturnsExpectedOnCompletedBenchmarks()
+    {
+        $stub = $this->getMockBuilder(MathIntegers::class)
+            ->getMock();
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $method->invoke($this->bench);
+        $handled = $this->bench->getHandleStatistics();
+
+        $this->assertContains('1', $handled['done']);
+    }
+
+    public function testGetHandleStatisticsRerturnsExpectedOnSkippedBenchmark()
+    {
+        $skipped = ['test' => 'skipped'];
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $method->invoke($this->bench);
+        $handled = $this->bench->getHandleStatistics();
+
+        $this->assertContains('0', $handled['done']);
+        $this->assertContains('1', $handled['skip']);
     }
 
     public function testGenerateClassNameReturnExpectedWhenOneWord()
