@@ -15,15 +15,6 @@ abstract class AbstractBenchmark
     protected $data;
 
     /**
-     * Benchmarks contract.
-     */
-    abstract public function before();
-
-    abstract public function handle();
-
-    abstract public function after();
-
-    /**
      * AbstractBenchmark constructor, better to use it.
      *
      * @return void
@@ -51,4 +42,26 @@ abstract class AbstractBenchmark
     {
         return $this->iterations;
     }
+
+    /**
+     * Benchmarks contract.
+     */
+    /**
+     * Method will be executed before benchmark handle method.
+     *
+     * @return void
+     */
+    abstract public function before();
+
+    /**
+     * @return void
+     */
+    abstract public function handle();
+
+    /**
+     * Method will be executed after benchmark handle method.
+     *
+     * @return void
+     */
+    abstract public function after();
 }
