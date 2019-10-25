@@ -83,15 +83,15 @@ class MathIntegers extends AbstractBenchmark
      */
     protected function generateData()
     {
+        $evenAddition = 10;
+        $oddAddition = 10;
         $data = [];
-        $stepOdd = 10;
-        $stepEven = 10;
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {
-                $data[$i] = $i + $stepEven;
+                $data[$i] = $i + $evenAddition;
             } else {
-                $data[$i] = $i - $stepOdd;
+                $data[$i] = $i - $oddAddition;
             }
         }
 
