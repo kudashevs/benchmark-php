@@ -124,6 +124,25 @@ class BenchmarkTest extends TestCase
         $this->assertArrayHasKey('stopped_at', $statistics);
     }
 
+    public function testGetStatisticsReturnsExpectedResultOrder()
+    {
+        $orderCompletedFirst = [
+            'completed' => 0,
+            'skipped'   => 0,
+        ];
+
+        $this->setPrivateVariableValue($this->bench, 'statistics', $orderCompletedFirst);
+        $this->assertSame($orderCompletedFirst, $this->bench->getStatistics(['completed', 'skipped']));
+
+        $orderSkippedFirst = [
+            'skipped'   => 0,
+            'completed' => 0,
+        ];
+
+        $this->setPrivateVariableValue($this->bench, 'statistics', $orderSkippedFirst);
+        $this->assertSame($orderCompletedFirst, $this->bench->getStatistics(['completed', 'skipped']));
+    }
+    
     public function testGetStatisticsForHumans()
     {
         $statistics = $this->bench->getStatisticsForHumans(['started_at', 'stopped_at']);

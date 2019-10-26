@@ -188,7 +188,15 @@ class Benchmark
             return $this->statistics;
         }
 
-        return array_intersect_key($this->statistics, array_flip($keys));
+        $resultPreservedKeysOrder = [];
+
+        foreach (array_flip($keys) as $k => $v) {
+            if (array_key_exists($k, $this->statistics)) {
+                $resultPreservedKeysOrder[$k] = $this->statistics[$k];
+            }
+        }
+
+        return $resultPreservedKeysOrder;
     }
 
     /**
