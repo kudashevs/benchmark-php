@@ -16,6 +16,7 @@ class Objects extends AbstractBenchmark
         'BenchmarkPHP\Benchmarks\setProtected',
         'BenchmarkPHP\Benchmarks\getPrivate',
         'BenchmarkPHP\Benchmarks\setPrivate',
+        'BenchmarkPHP\Benchmarks\convertToArray',
     ];
 
     /**
@@ -172,4 +173,9 @@ function getPrivate(Dummy $object)
 function setPrivate(Dummy $object)
 {
     $object->setPrivate('updated data');
+}
+
+function convertToArray(Dummy $object)
+{
+    return (array)$object;
 }
