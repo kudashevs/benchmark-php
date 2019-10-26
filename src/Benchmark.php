@@ -205,10 +205,10 @@ class Benchmark
 
         $updated = [];
 
-        array_walk($result, function ($v, $k) use (&$updated) {
+        foreach ($result as $k => $v) {
             $newKey = ucfirst(str_replace('_', ' ', $k));
             $updated[$newKey] = $v;
-        });
+        }
 
         return $updated;
     }
