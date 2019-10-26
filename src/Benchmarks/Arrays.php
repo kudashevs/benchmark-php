@@ -29,6 +29,7 @@ class Arrays extends AbstractBenchmark
         'rsort',
         'shuffle',
         'sort',
+        'BenchmarkPHP\Benchmarks\convertToObject',
     ];
 
     /**
@@ -127,4 +128,9 @@ class Arrays extends AbstractBenchmark
 
         return $data;
     }
+}
+
+function convertToObject(array $arr)
+{
+    return (object)$arr;
 }
