@@ -98,11 +98,13 @@ class Arrays extends AbstractBenchmark
     {
         $assocArray = [
             'Assembly' => 'low-level programming language',
+            'SmallTalk' => 'high-level programming language',
+            'LISP' => 'high-level programming language',
+            'Cobol' => 'high-level programming language',
             'Pascal' => 'middle-level programming language',
             'C/C++' => 'middle-level programming language',
-            'SmallTalk' => 'high-level programming language',
-            'Rust' => 'high-level programming language',
             'Java' => 'high-level programming language',
+            'Rust' => 'high-level programming language',
             'C#' => 'high-level programming language',
             'Go' => 'high-level programming language',
             'JavaScript' => 'high-level programming language',
@@ -110,6 +112,7 @@ class Arrays extends AbstractBenchmark
             'Ruby' => 'high-level programming language',
             'PHP' => 'high-level programming language',
             'Perl' => 'high-level programming language',
+            'SQL' => 'high-level programming language',
         ];
         $indexArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42, 42];
         $data = [];
