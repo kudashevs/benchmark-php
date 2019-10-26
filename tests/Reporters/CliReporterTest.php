@@ -2,8 +2,8 @@
 
 namespace BenchmarkPHP\Tests\Reporters;
 
-use BenchmarkPHP\Tests\TestHelpers;
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Tests\TestHelpers;
 use BenchmarkPHP\Reporters\CliReporter;
 
 class CliReporterTest extends TestCase
@@ -29,6 +29,33 @@ class CliReporterTest extends TestCase
     /**
      * Functionality.
      */
+    public function testShowBlockReturnsExpectedWhenString()
+    {
+        $input = 'version';
+        $expected = $input . PHP_EOL;
+
+        $this->assertSame($expected, $this->reporter->showBlock($input));
+    }
+
+    public function testShowBlockReturnsExpectedWhenIndexedArray()
+    {
+        $input = ['first', 'second'];
+        $expected = 'first' . PHP_EOL . 'second' . PHP_EOL;
+
+        $this->assertSame($expected, $this->reporter->showBlock($input));
+    }
+
+    public function testShowBlockReturnsExpectedWhenAssociativeArray()
+    {
+        $input = [
+            'first' => 0.12345,
+            'second' => 'test',
+        ];
+        $expected = 'first: 0.12345' . PHP_EOL . 'second: test' . PHP_EOL;
+
+        $this->assertSame($expected, $this->reporter->showBlock($input));
+    }
+
     public function testShowHeaderReturnsExpected()
     {
         $data = [
@@ -38,6 +65,7 @@ class CliReporterTest extends TestCase
         $result = $this->reporter->showHeader($data);
         $this->assertContains(CliReporter::REPORT_ROW, $result);
         $this->assertContains(CliReporter::REPORT_COLUMN, $result);
+        $this->assertContains(CliReporter::REPORT_SPACE, $result);
         $this->assertContains($data['version'], $result);
     }
 
@@ -75,6 +103,13 @@ class CliReporterTest extends TestCase
         $this->assertEquals($expected, mb_strlen(trim($result)));
         $this->assertContains(CliReporter::REPORT_ROW, $result);
         $this->assertNotContains(CliReporter::REPORT_COLUMN, $result);
+    }
+
+    public function testFormatInputReturnsEmptyWhenWrongType()
+    {
+        $method = $this->getPrivateMethod($this->reporter, 'formatInput');
+
+        $this->assertEquals('' . PHP_EOL, $method->invokeArgs($this->reporter, [1]));
     }
 
     public function testMakeCenteredReturnsEmptyWhenWrongType()

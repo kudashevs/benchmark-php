@@ -10,50 +10,40 @@ class CliReporter implements Reporter
     const REPORT_SPACE = ' ';
 
     /**
-     * @param array $data
+     * @param string|array $data
      * @return string
      */
-    public function showHeader(array $data)
+    public function showHeader($data)
     {
         $result = '';
 
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
-        foreach ($data as $item) {
-            $result .= self::REPORT_COLUMN . $this->makeCentered($item) . self::REPORT_COLUMN . PHP_EOL;
-        }
+        $result .= $this->formatInput($data, true);
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
 
         return $result;
     }
 
     /**
-     * @param array $data
+     * @param string|array $data
      * @return string
      */
-    public function showFooter(array $data)
+    public function showFooter($data)
     {
         $result = '';
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
-        foreach ($data as $name => $item) {
-            $result .= $name . ': ' . $item . PHP_EOL;
-        }
+        $result .= $this->formatInput($data);
 
         return $result;
     }
 
     /**
-     * @param array $data
+     * @param string|array $data
      * @return string
      */
-    public function showBlock(array $data)
+    public function showBlock($data)
     {
-        $result = '';
-
-        foreach ($data as $name => $item) {
-            $result .= $name . ': ' . $item . PHP_EOL;
-        }
-
-        return $result;
+        return $this->formatInput($data);
     }
 
     /**
@@ -62,6 +52,48 @@ class CliReporter implements Reporter
     public function showSeparator()
     {
         return str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+    }
+
+    /**
+     * @param string|array $data
+     * @param bool $centered
+     * @return string
+     */
+    protected function formatInput($data, $centered = false)
+    {
+        if (!is_string($data) && !is_array($data)) {
+            return '' . PHP_EOL;
+        }
+
+        if (is_string($data)) {
+            return $this->wrapCentered($data, $centered);
+        }
+
+        $result = '';
+
+        if (key($data) === 0) {
+            foreach ($data as $item) {
+                $result .= $this->wrapCentered($item, $centered);
+            }
+        } else {
+            foreach ($data as $name => $item) {
+                $result .= $this->wrapCentered($name . ': ' . $item, $centered);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $input
+     * @param bool $centered
+     * @return string
+     */
+    protected function wrapCentered($input, $centered = false)
+    {
+        return (!$centered)
+            ? $input . PHP_EOL
+            : self::REPORT_COLUMN . $this->makeCentered($input) . self::REPORT_COLUMN . PHP_EOL;
     }
 
     /**

@@ -4,11 +4,26 @@ namespace BenchmarkPHP\Reporters;
 
 interface Reporter
 {
-    public function showHeader(array $data);
+    /**
+     * @param string|array $data
+     * @return string
+     */
+    public function showHeader($data);
 
-    public function showFooter(array $data);
+    /**
+     * @param string|array $data
+     * @return string
+     */
+    public function showFooter($data);
 
-    public function showBlock(array $data);
+    /**
+     * @param string|array $data
+     * @return string
+     */
+    public function showBlock($data);
 
+    /**
+     * @return string
+     */
     public function showSeparator();
 }
