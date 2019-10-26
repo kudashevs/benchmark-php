@@ -96,6 +96,7 @@ class Arrays extends AbstractBenchmark
      */
     protected function generateData()
     {
+        $data = [];
         $assocArray = [
             'Assembly' => 'low-level programming language',
             'SmallTalk' => 'high-level programming language',
@@ -115,7 +116,6 @@ class Arrays extends AbstractBenchmark
             'SQL' => 'high-level programming language',
         ];
         $indexArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42, 42];
-        $data = [];
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {

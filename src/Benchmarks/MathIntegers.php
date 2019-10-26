@@ -83,9 +83,9 @@ class MathIntegers extends AbstractBenchmark
      */
     protected function generateData()
     {
+        $data = [];
         $evenAddition = 10;
         $oddAddition = 10;
-        $data = [];
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {

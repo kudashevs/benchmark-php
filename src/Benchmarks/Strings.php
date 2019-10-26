@@ -98,9 +98,9 @@ class Strings extends AbstractBenchmark
      */
     protected function generateData()
     {
+        $data = [];
         $originalString = "benchmark\'s PHP";
         $reversedString = strrev($originalString);
-        $data = [];
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {

@@ -87,9 +87,9 @@ class MathFloats extends AbstractBenchmark
      */
     protected function generateData()
     {
+        $data = [];
         $evenAddition = 0.42;
         $oddAddition = 0.33333333333;
-        $data = [];
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {
