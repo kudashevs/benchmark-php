@@ -12,10 +12,10 @@ class MathIntegers extends AbstractBenchmark
         'is_int',
         'BenchmarkPHP\Benchmarks\inc',
         'BenchmarkPHP\Benchmarks\dec',
-        'BenchmarkPHP\Benchmarks\addition42',
-        'BenchmarkPHP\Benchmarks\subtraction42',
-        'BenchmarkPHP\Benchmarks\multiplication3',
-        'BenchmarkPHP\Benchmarks\division3',
+        'BenchmarkPHP\Benchmarks\addition',
+        'BenchmarkPHP\Benchmarks\subtraction',
+        'BenchmarkPHP\Benchmarks\multiplication',
+        'BenchmarkPHP\Benchmarks\division',
     ];
 
     /**
@@ -99,32 +99,32 @@ class MathIntegers extends AbstractBenchmark
     }
 }
 
-function inc($i)
+function inc($num)
 {
-    return ++$i;
+    return ++$num;
 }
 
-function dec($i)
+function dec($num)
 {
-    return --$i;
+    return --$num;
 }
 
-function addition42($i)
+function addition($num)
 {
-    return $i + 42;
+    return $num + 42;
 }
 
-function subtraction42($i)
+function subtraction($num)
 {
-    return $i - 42;
+    return $num - 42;
 }
 
-function multiplication3($i)
+function multiplication($num)
 {
-    return $i * 3;
+    return $num * 3;
 }
 
-function division3($i)
+function division($num)
 {
-    return $i / 3;
+    return $num / 3;
 }
