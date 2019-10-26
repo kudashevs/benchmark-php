@@ -12,6 +12,7 @@ class Strings extends AbstractBenchmark
         'html_entity_decode',
         'htmlentities',
         'htmlspecialchars',
+        'is_string',
         'ltrim',
         'md5',
         'metaphone',
