@@ -10,6 +10,8 @@ use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class BenchmarkTest extends TestCase
 {
+    use TestHelpers;
+
     /** @var Benchmark */
     private $bench;
 
@@ -49,7 +51,7 @@ class BenchmarkTest extends TestCase
     public function testInitBenchmarksReturnExpected()
     {
         $count = null;
-        // get declared classes only with Benchmarks namespace
+        // count declared classes only with specific namespace
         foreach (get_declared_classes() as $class) {
             if (is_subclass_of($class, AbstractBenchmark::class) && strpos($class, 'BenchmarkPHP\Benchmarks\\') !== false) {
                 ++$count;
@@ -100,7 +102,7 @@ class BenchmarkTest extends TestCase
         $method->invoke($this->bench);
     }
 
-    public function testGetStatisticsReturnsAllStatisticsWhenEmptyKeys()
+    public function testGetStatisticsReturnsFullStatisticsWhenEmptyKeys()
     {
         $statistics = $this->bench->getStatistics();
 
@@ -163,7 +165,7 @@ class BenchmarkTest extends TestCase
         $this->assertContains('0', $handled['done']);
     }
 
-    public function testGetHandleStatisticsReturnsExpectedOnCompletedBenchmarks()
+    public function testGetHandleStatisticsReturnsExpectedOnOneCompletedBenchmark()
     {
         $stub = $this->getMockBuilder(MathIntegers::class)
             ->getMock();
@@ -217,34 +219,5 @@ class BenchmarkTest extends TestCase
         $method = $this->getPrivateMethod($this->bench, 'generateBenchmarkCount');
 
         $this->assertEquals('3 tests', $method->invokeArgs($this->bench, [3]));
-    }
-
-    /**
-     * Helpers.
-     */
-    public function getPrivateMethod($obj, $methodName)
-    {
-        $reflection = new \ReflectionClass($obj);
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method;
-    }
-
-    public function setPrivateVariableValue($obj, $valueName, $newValue)
-    {
-        $reflection = new \ReflectionClass($obj);
-        $property = $reflection->getProperty($valueName);
-        $property->setAccessible(true);
-        $property->setValue($obj, $newValue);
-    }
-
-    public function getPrivateVariableValue($obj, $valueName)
-    {
-        $reflection = new \ReflectionClass($obj);
-        $property = $reflection->getProperty($valueName);
-        $property->setAccessible(true);
-
-        return $property->getValue($obj);
     }
 }

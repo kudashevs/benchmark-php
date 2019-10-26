@@ -2,11 +2,14 @@
 
 namespace BenchmarkPHP\Tests\Reporters;
 
+use BenchmarkPHP\Tests\TestHelpers;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Reporters\CliReporter;
 
 class CliReporterTest extends TestCase
 {
+    use TestHelpers;
+
     /** @var CliReporter */
     private $reporter;
 
@@ -107,17 +110,5 @@ class CliReporterTest extends TestCase
 
         $method = $this->getPrivateMethod($this->reporter, 'makeCentered');
         $this->assertEquals($expected, $method->invokeArgs($this->reporter, [$string]));
-    }
-
-    /**
-     * Helpers.
-     */
-    public function getPrivateMethod($obj, $methodName)
-    {
-        $reflection = new \ReflectionClass($obj);
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method;
     }
 }
