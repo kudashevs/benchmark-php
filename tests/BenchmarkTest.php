@@ -34,20 +34,6 @@ class BenchmarkTest extends TestCase
     /**
      * Functionality.
      */
-    public function testGetSystemInformationReturnsExpected() // refactor
-    {
-        $host = gethostname();
-        $version = PHP_VERSION;
-        $os = PHP_OS;
-        $platform = php_uname('m');
-
-        $information = $this->bench->getSystemInformation();
-        $this->assertContains($host, $information['Server']);
-        $this->assertContains($version, $information);
-        $this->assertContains($os, $information['Platform']);
-        $this->assertContains($platform, $information['Platform']);
-    }
-
     public function testInitBenchmarksReturnExpected()
     {
         $count = null;
@@ -211,13 +197,27 @@ class BenchmarkTest extends TestCase
     {
         $method = $this->getPrivateMethod($this->bench, 'generateBenchmarkCount');
 
-        $this->assertEquals('1 test', $method->invokeArgs($this->bench, [1]));
+        $this->assertEquals('1 benchmark', $method->invokeArgs($this->bench, [1]));
     }
 
     public function testGenerateBenchmarkCountReturnsExpectedWhenThreeResult()
     {
         $method = $this->getPrivateMethod($this->bench, 'generateBenchmarkCount');
 
-        $this->assertEquals('3 tests', $method->invokeArgs($this->bench, [3]));
+        $this->assertEquals('3 benchmarks', $method->invokeArgs($this->bench, [3]));
+    }
+
+    public function testGetSystemInformationReturnsExpected() // refactor
+    {
+        $host = gethostname();
+        $version = PHP_VERSION;
+        $os = PHP_OS;
+        $platform = php_uname('m');
+
+        $information = $this->bench->getSystemInformation();
+        $this->assertContains($host, $information['Server']);
+        $this->assertContains($version, $information);
+        $this->assertContains($os, $information['Platform']);
+        $this->assertContains($platform, $information['Platform']);
     }
 }

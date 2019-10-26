@@ -245,7 +245,7 @@ class Benchmark
      */
     protected function generateBenchmarkCount($count)
     {
-        return ($count > 1) ? $count . ' tests' : $count . ' test';
+        return ($count > 1) ? $count . ' benchmarks' : $count . ' benchmark';
     }
 
     /**
