@@ -25,7 +25,7 @@ class MathFloats extends AbstractBenchmark
     /**
      * Create a new MathFloats instance.
      *
-     * @return void
+     * @param array $options
      */
     public function __construct(array $options = [])
     {

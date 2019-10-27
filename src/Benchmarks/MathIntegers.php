@@ -21,7 +21,7 @@ class MathIntegers extends AbstractBenchmark
     /**
      * Create a new MathIntegers instance.
      *
-     * @return void
+     * @param array $options
      */
     public function __construct(array $options = [])
     {

@@ -31,7 +31,7 @@ abstract class AbstractBenchmark
     /**
      * AbstractBenchmark constructor, better to use it.
      *
-     * @return void
+     * @param array $options
      */
     public function __construct(array $options = [])
     {
@@ -39,6 +39,7 @@ abstract class AbstractBenchmark
     }
 
     /**
+     * @param array $options
      * @throws \LogicException
      * @return void
      */

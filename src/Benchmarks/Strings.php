@@ -36,7 +36,7 @@ class Strings extends AbstractBenchmark
     /**
      * Create a new Strings instance.
      *
-     * @return void
+     * @param array $options
      */
     public function __construct(array $options = [])
     {

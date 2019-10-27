@@ -35,7 +35,7 @@ class Arrays extends AbstractBenchmark
     /**
      * Create a new Arrays instance.
      *
-     * @return void
+     * @param array $options
      */
     public function __construct(array $options = [])
     {

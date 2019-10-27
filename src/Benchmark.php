@@ -44,7 +44,6 @@ class Benchmark
      * Create a new Benchmark instance.
      *
      * @param Reporter $reporter
-     * @return void
      */
     public function __construct(Reporter $reporter)
     {
