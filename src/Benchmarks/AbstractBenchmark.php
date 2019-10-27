@@ -21,14 +21,14 @@ abstract class AbstractBenchmark
      */
     public function __construct()
     {
-        $this->init();
+        $this->initBenchmark();
     }
 
     /**
      * @throws \LogicException
      * @return void
      */
-    protected function init()
+    protected function initBenchmark()
     {
         if ($this->iterations < 1) {
             throw new \LogicException('Number of iterations cannot be less than 1.');
