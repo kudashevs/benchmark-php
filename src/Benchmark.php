@@ -12,6 +12,11 @@ class Benchmark
     const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
+     * @var Reporter
+     */
+    private $reporter;
+
+    /**
      * @var array
      */
     private $options = [
@@ -23,11 +28,6 @@ class Benchmark
      * @var array
      */
     private $benchmarks = [];
-
-    /**
-     * @var Reporter
-     */
-    private $reporter;
 
     /**
      * @var array
