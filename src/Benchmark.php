@@ -318,22 +318,6 @@ class Benchmark
     }
 
     /**
-     * @param string $name
-     * @param mixed $value
-     * @return bool
-     */
-    protected function setOption($name, $value)
-    {
-        if (!array_key_exists($name, $this->options)) {
-            return false;
-        }
-
-        $this->options[$name] = $value;
-
-        return true;
-    }
-
-    /**
      * @return string
      */
     public function getBenchmarkFullName()
