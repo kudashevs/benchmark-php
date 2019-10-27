@@ -59,13 +59,13 @@ class Benchmark
      */
     public function run()
     {
-        echo $this->reporter->showHeader($this->getBenchmarkFullName());
-        echo $this->reporter->showBlock($this->getSystemInformation());
-        echo $this->reporter->showSeparator();
+        $this->reporter->showHeader($this->getBenchmarkFullName());
+        $this->reporter->showBlock($this->getSystemInformation());
+        $this->reporter->showSeparator();
         $this->handleBenchmarks();
-        echo $this->reporter->showSeparator();
-        echo $this->reporter->showBlock($this->getHandleStatistics());
-        echo $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
+        $this->reporter->showSeparator();
+        $this->reporter->showBlock($this->getHandleStatistics());
+        $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
     }
 
     /**
@@ -85,7 +85,7 @@ class Benchmark
         foreach ($arguments as $argument) {
             switch ($argument) {
                 case '--version':
-                    echo $this->reporter->showBlock($this->getBenchmarkFullName());
+                    $this->reporter->showBlock($this->getBenchmarkFullName());
                     $this->terminateWithCode();
 
                     break;
@@ -96,7 +96,7 @@ class Benchmark
                     break;
 
                 default:
-                    echo $this->reporter->showBlock($this->getBenchmarkFullName() . PHP_EOL);
+                    $this->reporter->showBlock($this->getBenchmarkFullName() . PHP_EOL);
                     $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
 
                     break;
@@ -210,7 +210,7 @@ class Benchmark
     {
         ++$this->statistics['completed'];
 
-        echo $this->reporter->showBlock($information);
+        $this->reporter->showBlock($information);
     }
 
     /**
@@ -221,7 +221,7 @@ class Benchmark
     {
         ++$this->statistics['skipped'];
 
-        echo $this->reporter->showBlock($information);
+        $this->reporter->showBlock($information);
     }
 
     /**

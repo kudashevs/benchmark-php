@@ -34,7 +34,9 @@ class CliReporterTest extends TestCase
         $input = 'version';
         $expected = $input . PHP_EOL;
 
-        $this->assertSame($expected, $this->reporter->showBlock($input));
+        $this->reporter->showBlock($input);
+
+        $this->expectOutputString($expected);
     }
 
     public function testShowBlockReturnsExpectedWhenIndexedArray()
@@ -42,7 +44,9 @@ class CliReporterTest extends TestCase
         $input = ['first', 'second'];
         $expected = 'first' . PHP_EOL . 'second' . PHP_EOL;
 
-        $this->assertSame($expected, $this->reporter->showBlock($input));
+        $this->reporter->showBlock($input);
+
+        $this->expectOutputString($expected);
     }
 
     public function testShowBlockReturnsExpectedWhenAssociativeArray()
@@ -53,7 +57,9 @@ class CliReporterTest extends TestCase
         ];
         $expected = 'first: 0.12345' . PHP_EOL . 'second: test' . PHP_EOL;
 
-        $this->assertSame($expected, $this->reporter->showBlock($input));
+        $this->reporter->showBlock($input);
+
+        $this->expectOutputString($expected);
     }
 
     public function testShowHeaderReturnsExpected()
@@ -62,11 +68,12 @@ class CliReporterTest extends TestCase
             'version' => '1.0.0',
         ];
 
-        $result = $this->reporter->showHeader($data);
-        $this->assertContains(CliReporter::REPORT_ROW, $result);
-        $this->assertContains(CliReporter::REPORT_COLUMN, $result);
-        $this->assertContains(CliReporter::REPORT_SPACE, $result);
-        $this->assertContains($data['version'], $result);
+        $this->reporter->showHeader($data);
+
+        $this->expectOutputRegex('/' . $data['version'] . '/');
+        $this->assertContains(CliReporter::REPORT_ROW, $this->getActualOutput());
+        $this->assertContains(CliReporter::REPORT_COLUMN, $this->getActualOutput());
+        $this->assertContains(CliReporter::REPORT_SPACE, $this->getActualOutput());
     }
 
     public function testShowFooterReturnsExpected()
@@ -76,10 +83,11 @@ class CliReporterTest extends TestCase
         ];
         $expected = 'stat: 0.12345';
 
-        $result = $this->reporter->showFooter($data);
-        $this->assertContains($expected, $result);
-        $this->assertContains(CliReporter::REPORT_ROW, $result);
-        $this->assertNotContains(CliReporter::REPORT_COLUMN, $result);
+        $this->reporter->showFooter($data);
+
+        $this->expectOutputRegex('/' . $expected . '/');
+        $this->assertContains(CliReporter::REPORT_ROW, $this->getActualOutput());
+        $this->assertNotContains(CliReporter::REPORT_COLUMN, $this->getActualOutput());
     }
 
     public function testShowBlockReturnsExpected()
@@ -87,22 +95,23 @@ class CliReporterTest extends TestCase
         $data = [
             'stat' => 0.12345,
         ];
-        $expected = 'stat: 0.12345';
+        $expected = 'stat: 0.12345' . PHP_EOL;
 
-        $result = $this->reporter->showBlock($data);
-        $this->assertContains($expected, $result);
-        $this->assertNotContains(CliReporter::REPORT_ROW, $result);
-        $this->assertNotContains(CliReporter::REPORT_COLUMN, $result);
+        $this->reporter->showBlock($data);
+
+        $this->expectOutputString($expected);
+        $this->assertNotContains(CliReporter::REPORT_ROW, $this->getActualOutput());
+        $this->assertNotContains(CliReporter::REPORT_COLUMN, $this->getActualOutput());
     }
 
     public function testShowSeparatorReturnsExpected()
     {
         $expected = CliReporter::REPORT_WIDTH;
 
-        $result = $this->reporter->showSeparator();
-        $this->assertEquals($expected, mb_strlen(trim($result)));
-        $this->assertContains(CliReporter::REPORT_ROW, $result);
-        $this->assertNotContains(CliReporter::REPORT_COLUMN, $result);
+        $this->reporter->showSeparator();
+
+        $this->expectOutputRegex('/' . CliReporter::REPORT_ROW . '/');
+        $this->assertEquals($expected, mb_strlen(trim($this->getActualOutput())));
     }
 
     public function testFormatInputReturnsEmptyWhenWrongType()

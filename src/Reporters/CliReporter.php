@@ -11,7 +11,7 @@ class CliReporter implements Reporter
 
     /**
      * @param string|array $data
-     * @return string
+     * @return void
      */
     public function showHeader($data)
     {
@@ -21,12 +21,12 @@ class CliReporter implements Reporter
         $result .= $this->formatInput($data, true);
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
 
-        return $result;
+        echo $result;
     }
 
     /**
      * @param string|array $data
-     * @return string
+     * @return void
      */
     public function showFooter($data)
     {
@@ -34,24 +34,24 @@ class CliReporter implements Reporter
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
         $result .= $this->formatInput($data);
 
-        return $result;
+        echo $result;
     }
 
     /**
      * @param string|array $data
-     * @return string
+     * @return void
      */
     public function showBlock($data)
     {
-        return $this->formatInput($data);
+        echo $this->formatInput($data);
     }
 
     /**
-     * @return string
+     * @return void
      */
     public function showSeparator()
     {
-        return str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+        echo str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
     }
 
     /**
