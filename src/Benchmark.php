@@ -248,11 +248,21 @@ class Benchmark
     }
 
     /**
-     * @return array
+     * @param int $code
+     * @return void
      */
-    protected function getBenchmarkVersion()
+    protected function terminateWithCode($code = 0)
     {
-        return ['Benchmark PHP ' . self::VERSION];
+        exit($code);
+    }
+
+    /**
+     * @param string $message
+     * @return void
+     */
+    protected function terminateWithMessage($message = '')
+    {
+        exit($message);
     }
 
     /**
