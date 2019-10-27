@@ -14,6 +14,13 @@ class Benchmark
     /**
      * @var array
      */
+    private $options = [
+        'verbose' => false,
+    ];
+
+    /**
+     * @var array
+     */
     private $benchmarks = [];
 
     /**
@@ -236,6 +243,31 @@ class Benchmark
             : [
                 'done' => $this->generateBenchmarkCount($completed) . ' completed',
             ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return bool
+     */
+    protected function setOption($name, $value)
+    {
+        if (!array_key_exists($name, $this->options)) {
+            return false;
+        }
+
+        $this->options[$name] = $value;
+
+        return true;
     }
 
     /**

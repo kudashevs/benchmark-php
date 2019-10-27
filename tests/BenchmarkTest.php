@@ -34,6 +34,29 @@ class BenchmarkTest extends TestCase
     /**
      * Functionality.
      */
+    public function testSetOptionBehavesExpectedWhenOptionExists()
+    {
+        $expected = 'updated';
+
+        $method = $this->getPrivateMethod($this->bench, 'setOption');
+        $result = $method->invokeArgs($this->bench, ['verbose', $expected]);
+
+        $this->assertTrue($result);
+        $options = $this->bench->getOptions();
+        $this->assertContains($expected, $options);
+    }
+
+    public function testSetOptionDoesntAffectOptionsIfOptionNotExists()
+    {
+        $expected = $this->bench->getOptions();
+
+        $method = $this->getPrivateMethod($this->bench, 'setOption');
+        $method->invokeArgs($this->bench, ['not_exists', 0]);
+
+        $options = $this->bench->getOptions();
+        $this->assertEquals($expected, $options);
+    }
+
     public function testInitBenchmarksReturnExpected()
     {
         $count = null;
