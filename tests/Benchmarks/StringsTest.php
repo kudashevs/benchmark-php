@@ -2,8 +2,8 @@
 
 namespace BenchmarkPHP\Tests\Benchmarks;
 
-use BenchmarkPHP\Tests\TestHelpers;
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Tests\TestHelpers;
 use BenchmarkPHP\Benchmarks\Strings;
 
 class StringsTest extends TestCase

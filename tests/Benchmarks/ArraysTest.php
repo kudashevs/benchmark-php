@@ -2,9 +2,9 @@
 
 namespace BenchmarkPHP\Tests\Benchmarks;
 
-use BenchmarkPHP\Tests\TestHelpers;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Benchmarks\Arrays;
+use BenchmarkPHP\Tests\TestHelpers;
 
 class ArraysTest extends TestCase
 {
@@ -64,5 +64,4 @@ class ArraysTest extends TestCase
         $this->assertCount($this->bench->getIterations(), $data);
         $this->assertInternalType('array', $data[mt_rand(1, $this->bench->getIterations())]);
     }
-
 }

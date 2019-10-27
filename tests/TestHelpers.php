@@ -7,8 +7,8 @@ trait TestHelpers
     /**
      * @param object $obj
      * @param string $methodName
-     * @return \ReflectionMethod
      * @throws \ReflectionException
+     * @return \ReflectionMethod
      */
     public function getPrivateMethod($obj, $methodName)
     {
@@ -23,8 +23,8 @@ trait TestHelpers
      * @param object $obj
      * @param string $valueName
      * @param mixed $newValue
-     * @return void
      * @throws \ReflectionException
+     * @return void
      */
     public function setPrivateVariableValue($obj, $valueName, $newValue)
     {
@@ -37,8 +37,8 @@ trait TestHelpers
     /**
      * @param object $obj
      * @param string $valueName
-     * @return mixed
      * @throws \ReflectionException
+     * @return mixed
      */
     public function getPrivateVariableValue($obj, $valueName)
     {
