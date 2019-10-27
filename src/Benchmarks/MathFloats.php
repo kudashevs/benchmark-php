@@ -59,7 +59,7 @@ class MathFloats extends AbstractBenchmark
      */
     public function before()
     {
-        $this->data = range(1.0, (float)$this->iterations);
+        $this->data = $this->generateTestData();
     }
 
     /**
@@ -85,7 +85,7 @@ class MathFloats extends AbstractBenchmark
     /**
      * @return array
      */
-    protected function generateData()
+    protected function generateTestData()
     {
         $data = [];
         $evenAddition = 0.42;

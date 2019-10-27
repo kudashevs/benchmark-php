@@ -55,7 +55,7 @@ class MathIntegers extends AbstractBenchmark
      */
     public function before()
     {
-        $this->data = $this->generateData();
+        $this->data = $this->generateTestData();
     }
 
     /**
@@ -81,7 +81,7 @@ class MathIntegers extends AbstractBenchmark
     /**
      * @return array
      */
-    protected function generateData()
+    protected function generateTestData()
     {
         $data = [];
         $evenAddition = 10;

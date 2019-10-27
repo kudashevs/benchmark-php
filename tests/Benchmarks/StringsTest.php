@@ -56,9 +56,9 @@ class StringsTest extends TestCase
         $this->assertEmpty($data);
     }
 
-    public function testGenerateDataReturnsExpected()
+    public function testGenerateTestDataReturnsExpected()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateData');
+        $method = $this->getPrivateMethod($this->bench, 'generateTestData');
         $data = $method->invoke($this->bench);
 
         $this->assertCount($this->bench->getIterations(), $data);

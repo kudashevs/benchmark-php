@@ -56,7 +56,7 @@ class Objects extends AbstractBenchmark
      */
     public function before()
     {
-        $this->data = $this->generateData();
+        $this->data = $this->generateTestData();
     }
 
     /**
@@ -82,7 +82,7 @@ class Objects extends AbstractBenchmark
     /**
      * @return array
      */
-    protected function generateData()
+    protected function generateTestData()
     {
         $obj = new Dummy();
         $data = [];

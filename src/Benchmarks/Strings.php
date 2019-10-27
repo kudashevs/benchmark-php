@@ -70,7 +70,7 @@ class Strings extends AbstractBenchmark
      */
     public function before()
     {
-        $this->data = $this->generateData();
+        $this->data = $this->generateTestData();
     }
 
     /**
@@ -96,7 +96,7 @@ class Strings extends AbstractBenchmark
     /**
      * @return array
      */
-    protected function generateData()
+    protected function generateTestData()
     {
         $data = [];
         $originalString = "benchmark\'s PHP";
