@@ -211,18 +211,18 @@ class BenchmarkTest extends TestCase
         $this->assertArrayHasKey('Stopped at', $statistics);
     }
 
-    public function testGetHandleStatisticsReturnsExpectedOnEmptyBenchmarks()
+    public function testGetBenchmarksSummaryReturnsExpectedOnEmptyBenchmarks()
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
-        $handled = $this->bench->getHandleStatistics();
+        $handled = $this->bench->getBenchmarksSummary();
 
         $this->assertContains('0', $handled['done']);
     }
 
-    public function testGetHandleStatisticsReturnsExpectedOnOneCompletedBenchmark()
+    public function testGetBenchmarksSummaryReturnsExpectedOnOneCompletedBenchmark()
     {
         $stub = $this->getMockBuilder(Integers::class)
             ->disableOriginalConstructor()
@@ -234,19 +234,19 @@ class BenchmarkTest extends TestCase
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
-        $handled = $this->bench->getHandleStatistics();
+        $handled = $this->bench->getBenchmarksSummary();
 
         $this->assertContains('1', $handled['done']);
     }
 
-    public function testGetHandleStatisticsRerturnsExpectedOnSkippedBenchmark()
+    public function testGetBenchmarksSummaryRerturnsExpectedOnSkippedBenchmark()
     {
         $skipped = ['test' => 'skipped'];
         $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
-        $handled = $this->bench->getHandleStatistics();
+        $handled = $this->bench->getBenchmarksSummary();
 
         $this->assertContains('0', $handled['done']);
         $this->assertContains('1', $handled['skip']);

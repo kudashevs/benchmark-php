@@ -64,7 +64,7 @@ class Benchmark
         $this->reporter->showSeparator();
         $this->handleBenchmarks();
         $this->reporter->showSeparator();
-        $this->reporter->showBlock($this->getHandleStatistics());
+        $this->reporter->showBlock($this->getBenchmarksSummary());
         $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
     }
 
@@ -295,7 +295,7 @@ class Benchmark
     /**
      * @return array
      */
-    public function getHandleStatistics()
+    public function getBenchmarksSummary()
     {
         list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
 
