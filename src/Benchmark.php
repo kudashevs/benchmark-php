@@ -228,13 +228,12 @@ class Benchmark
     {
         list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
 
-        return ($skipped > 0) ?
-            [
+        return ($skipped > 0)
+            ? [
                 'done' => $this->generateBenchmarkCount($completed) . ' completed',
                 'skip' => $this->generateBenchmarkCount($skipped) . ' skipped',
             ]
-            :
-            [
+            : [
                 'done' => $this->generateBenchmarkCount($completed) . ' completed',
             ];
     }
