@@ -78,11 +78,22 @@ class Strings extends AbstractBenchmark
      */
     public function handle()
     {
+        $startTime = microtime(true);
+
         foreach ($this->functions as $function) {
             foreach ($this->data as $i) {
                 $function($i);
             }
         }
+
+        $stopTime = microtime(true);
+        $diffTime = $stopTime - $startTime;
+
+        $this->statistics = [
+            'start_time' => $startTime,
+            'stop_time' => $stopTime,
+            'diff_time' => $diffTime,
+        ];
     }
 
     /**
@@ -91,6 +102,14 @@ class Strings extends AbstractBenchmark
     public function after()
     {
         $this->data = null;
+    }
+
+    /**
+     * @return array
+     */
+    public function result()
+    {
+        return $this->statistics;
     }
 
     /**

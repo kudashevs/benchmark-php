@@ -20,6 +20,15 @@ abstract class AbstractBenchmark
     protected $data;
 
     /**
+     * @var array
+     */
+    protected $statistics = [
+        'start_time' => 'Not handled yet',
+        'stop_time' => 'Not handled yet',
+        'diff_time' => 'Not handled yet',
+    ];
+
+    /**
      * AbstractBenchmark constructor, better to use it.
      *
      * @return void
@@ -78,4 +87,11 @@ abstract class AbstractBenchmark
      * @return void
      */
     abstract public function after();
+
+    /**
+     * Method returns benchmark statistics.
+     *
+     * @return array
+     */
+    abstract public function result();
 }

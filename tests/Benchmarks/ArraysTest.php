@@ -56,6 +56,17 @@ class ArraysTest extends TestCase
         $this->assertEmpty($data);
     }
 
+    public function testResultReturnExpected()
+    {
+        $this->bench->before();
+        $this->bench->handle();
+        $this->bench->after();
+
+        $result = $this->bench->result();
+        $this->assertNotContains('Not handled yet', $result);
+        $this->assertContainsOnly('float', $result);
+    }
+
     public function testGenerateTestDataReturnsExpected()
     {
         $method = $this->getPrivateMethod($this->bench, 'generateTestData');
