@@ -15,7 +15,7 @@ class StringsTest extends TestCase
 
     protected function setUp()
     {
-        $this->bench = new Strings();
+        $this->bench = new Strings(['testing' => true]);
     }
 
     /**

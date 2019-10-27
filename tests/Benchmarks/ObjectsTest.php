@@ -15,7 +15,7 @@ class ObjectsTest extends TestCase
 
     protected function setUp()
     {
-        $this->bench = new Objects();
+        $this->bench = new Objects(['testing' => true]);
     }
 
     /**

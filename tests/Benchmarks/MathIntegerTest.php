@@ -15,7 +15,7 @@ class MathIntegerTest extends TestCase
 
     protected function setUp()
     {
-        $this->bench = new MathIntegers();
+        $this->bench = new MathIntegers(['testing' => true]);
     }
 
     /**

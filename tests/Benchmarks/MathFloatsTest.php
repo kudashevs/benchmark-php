@@ -15,7 +15,7 @@ class MathFloatsTest extends TestCase
 
     protected function setUp()
     {
-        $this->bench = new MathFloats();
+        $this->bench = new MathFloats(['testing' => true]);
     }
 
     /**

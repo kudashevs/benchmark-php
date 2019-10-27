@@ -15,7 +15,7 @@ class ArraysTest extends TestCase
 
     protected function setUp()
     {
-        $this->bench = new Arrays();
+        $this->bench = new Arrays(['testing' => true]);
     }
 
     /**

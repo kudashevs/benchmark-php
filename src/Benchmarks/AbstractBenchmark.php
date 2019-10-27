@@ -26,19 +26,24 @@ abstract class AbstractBenchmark
      */
     public function __construct(array $options = [])
     {
-        $this->initBenchmark();
-        $this->options = $options;
+        $this->initBenchmark($options);
     }
 
     /**
      * @throws \LogicException
      * @return void
      */
-    protected function initBenchmark()
+    protected function initBenchmark(array $options)
     {
         if ($this->iterations < 1) {
             throw new \LogicException('Number of iterations cannot be less than 1.');
         }
+
+        if (isset($options['testing']) && $options['testing'] === true) {
+            $this->iterations = 1;
+        }
+
+        $this->options = $options;
     }
 
     /**
