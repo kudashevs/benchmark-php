@@ -5,7 +5,7 @@ namespace BenchmarkPHP\Tests;
 use BenchmarkPHP\Benchmark;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Reporters\Reporter;
-use BenchmarkPHP\Benchmarks\MathIntegers;
+use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class BenchmarkTest extends TestCase
@@ -125,7 +125,7 @@ class BenchmarkTest extends TestCase
 
     public function testHandleBenchmarksExecutesContractMethodsOnBenchmark()
     {
-        $mock = $this->getMockBuilder(MathIntegers::class)
+        $mock = $this->getMockBuilder(Integers::class)
             ->getMock();
         $mock->expects($this->once())
             ->method('before');
@@ -145,7 +145,7 @@ class BenchmarkTest extends TestCase
 
     public function testBenchmarkCompletedUpdateTotalTime()
     {
-        $stub = $this->getMockBuilder(MathIntegers::class)
+        $stub = $this->getMockBuilder(Integers::class)
             ->disableOriginalConstructor()
             ->getMock();
         $stub->expects($this->once())
@@ -224,7 +224,7 @@ class BenchmarkTest extends TestCase
 
     public function testGetHandleStatisticsReturnsExpectedOnOneCompletedBenchmark()
     {
-        $stub = $this->getMockBuilder(MathIntegers::class)
+        $stub = $this->getMockBuilder(Integers::class)
             ->disableOriginalConstructor()
             ->getMock();
         $stub->expects($this->any())

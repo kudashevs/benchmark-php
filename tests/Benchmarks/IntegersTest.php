@@ -4,18 +4,18 @@ namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Tests\TestHelpers;
-use BenchmarkPHP\Benchmarks\MathIntegers;
+use BenchmarkPHP\Benchmarks\Integers;
 
-class MathIntegerTest extends TestCase
+class IntegersTest extends TestCase
 {
     use TestHelpers;
 
-    /** @var MathIntegers */
+    /** @var Integers */
     private $bench;
 
     protected function setUp()
     {
-        $this->bench = new MathIntegers(['testing' => true]);
+        $this->bench = new Integers(['testing' => true]);
     }
 
     /**

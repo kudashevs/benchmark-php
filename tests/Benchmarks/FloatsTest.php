@@ -3,19 +3,19 @@
 namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Benchmarks\Floats;
 use BenchmarkPHP\Tests\TestHelpers;
-use BenchmarkPHP\Benchmarks\MathFloats;
 
-class MathFloatsTest extends TestCase
+class FloatsTest extends TestCase
 {
     use TestHelpers;
 
-    /** @var MathFloats */
+    /** @var Floats */
     private $bench;
 
     protected function setUp()
     {
-        $this->bench = new MathFloats(['testing' => true]);
+        $this->bench = new Floats(['testing' => true]);
     }
 
     /**

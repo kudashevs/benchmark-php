@@ -2,24 +2,28 @@
 
 namespace BenchmarkPHP\Benchmarks;
 
-class MathIntegers extends AbstractBenchmark
+class Floats extends AbstractBenchmark
 {
     private $functions = [
         'abs',
-        'decbin',
-        'dechex',
-        'decoct',
-        'is_int',
-        'BenchmarkPHP\Benchmarks\inc',
-        'BenchmarkPHP\Benchmarks\dec',
-        'BenchmarkPHP\Benchmarks\addition',
-        'BenchmarkPHP\Benchmarks\subtraction',
-        'BenchmarkPHP\Benchmarks\multiplication',
-        'BenchmarkPHP\Benchmarks\division',
+        'acos',
+        'asin',
+        'atan',
+        'ceil',
+        'cos',
+        'exp',
+        'floor',
+        'is_float',
+        'is_finite',
+        'is_infinite',
+        'log',
+        'sin',
+        'sqrt',
+        'tan',
     ];
 
     /**
-     * Create a new MathIntegers instance.
+     * Create a new Floats instance.
      *
      * @param array $options
      */
@@ -103,54 +107,17 @@ class MathIntegers extends AbstractBenchmark
     protected function generateTestData()
     {
         $data = [];
-        $evenAddition = 10;
-        $oddAddition = 10;
+        $evenAddition = 0.42;
+        $oddAddition = 0.33333333333;
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {
                 $data[$i] = $i + $evenAddition;
             } else {
-                $data[$i] = $i - $oddAddition;
+                $data[$i] = $i + $oddAddition;
             }
         }
 
         return $data;
     }
-
-    protected function handleOptions()
-    {
-        if (empty($this->options)) {
-            return;
-        }
-    }
-}
-
-function inc($num)
-{
-    return ++$num;
-}
-
-function dec($num)
-{
-    return --$num;
-}
-
-function addition($num)
-{
-    return $num + 42;
-}
-
-function subtraction($num)
-{
-    return $num - 42;
-}
-
-function multiplication($num)
-{
-    return $num * 3;
-}
-
-function division($num)
-{
-    return $num / 3;
 }

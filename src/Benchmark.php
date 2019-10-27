@@ -116,7 +116,7 @@ class Benchmark
      */
     protected function initBenchmarks()
     {
-        $names = ['math_integers', 'math_floats', 'strings', 'arrays', 'objects']; // 'filesystem', 'network'
+        $names = ['integers', 'floats', 'strings', 'arrays', 'objects']; // 'filesystem', 'db', 'network'
         $benchmarks = [];
 
         foreach ($names as $name) {
