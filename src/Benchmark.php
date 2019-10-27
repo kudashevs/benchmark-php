@@ -147,23 +147,18 @@ class Benchmark
         // @var AbstractBenchmark|string $benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
-                $this->benchmarkSkipped([$name => 'skipped']);
+                $this->benchmarkSkipped($name);
 
                 continue;
             }
 
             $benchmark->before();
 
-            $startTime = microtime(true);
             $benchmark->handle();
-            $stopTime = microtime(true);
-
-            $diffTime = $stopTime - $startTime;
-            $this->statistics['total_time'] += $diffTime;
 
             $benchmark->after();
 
-            $this->benchmarkCompleted([$name => $diffTime]);
+            $this->benchmarkCompleted($name, $benchmark->result());
         }
 
         $this->afterHandle(); // clean, etc.
@@ -208,25 +203,50 @@ class Benchmark
     }
 
     /**
+     * @param string $name
+     * @return void
+     */
+    protected function benchmarkSkipped($name)
+    {
+        ++$this->statistics['skipped'];
+
+        $message = [
+            $name => 'skipped',
+        ];
+
+        $this->reporter->showBlock($message);
+    }
+
+    /**
+     * @param string $name
      * @param array $information
      * @return void
      */
-    protected function benchmarkCompleted(array $information)
+    protected function benchmarkCompleted($name, array $information = [])
     {
         ++$this->statistics['completed'];
 
-        $this->reporter->showBlock($information);
+        if ($this->hasCorrectExecutionTime($information)) {
+            $this->statistics['total_time'] += $information['exec_time'];
+            $executionTime = $information['exec_time'];
+        } else {
+            $executionTime = 'time is malformed';
+        }
+
+        $message = [
+            $name => $executionTime,
+        ];
+
+        $this->reporter->showBlock($message);
     }
 
     /**
      * @param array $information
-     * @return void
+     * @return bool
      */
-    protected function benchmarkSkipped(array $information)
+    protected function hasCorrectExecutionTime(array $information)
     {
-        ++$this->statistics['skipped'];
-
-        $this->reporter->showBlock($information);
+        return isset($information['exec_time']) && is_numeric($information['exec_time']);
     }
 
     /**

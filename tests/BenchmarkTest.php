@@ -156,11 +156,30 @@ class BenchmarkTest extends TestCase
             ->method('handle');
         $mock->expects($this->once())
             ->method('after');
+        $mock->expects($this->once())
+            ->method('result')
+            ->willReturn([]);
 
         $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $mock]);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
+    }
+
+    public function testBenchmarkCompletedUpdateTotalTime()
+    {
+        $stub = $this->getMockBuilder(MathIntegers::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $stub->expects($this->once())
+            ->method('result')
+            ->willReturn(['exec_time' => 42]);
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
+
+        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
+        $method->invoke($this->bench);
+
+        $this->assertContains('42', $this->bench->getStatistics(['total_time']));
     }
 
     public function testGetStatisticsReturnsFullStatisticsWhenEmptyKeys()
@@ -229,7 +248,11 @@ class BenchmarkTest extends TestCase
     public function testGetHandleStatisticsReturnsExpectedOnOneCompletedBenchmark()
     {
         $stub = $this->getMockBuilder(MathIntegers::class)
+            ->disableOriginalConstructor()
             ->getMock();
+        $stub->expects($this->any())
+            ->method('result')
+            ->willReturn([]);
         $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
