@@ -91,7 +91,7 @@ class Arrays extends AbstractBenchmark
         $this->statistics = [
             'start_time' => $startTime,
             'stop_time' => $stopTime,
-            'diff_time' => $diffTime,
+            'exec_time' => $diffTime,
         ];
     }
 

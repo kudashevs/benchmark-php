@@ -25,7 +25,7 @@ abstract class AbstractBenchmark
     protected $statistics = [
         'start_time' => 'Not handled yet',
         'stop_time' => 'Not handled yet',
-        'diff_time' => 'Not handled yet',
+        'exec_time' => 'Not handled yet',
     ];
 
     /**
