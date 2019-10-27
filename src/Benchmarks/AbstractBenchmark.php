@@ -48,19 +48,21 @@ abstract class AbstractBenchmark
      */
 
     /**
-     * Method will be executed before benchmark handle method.
+     * Method is executed before benchmark handle method.
      *
      * @return void
      */
     abstract public function before();
 
     /**
+     * Method does the main benchmarking work.
+     *
      * @return void
      */
     abstract public function handle();
 
     /**
-     * Method will be executed after benchmark handle method.
+     * Method is executed after benchmark handle method.
      *
      * @return void
      */
