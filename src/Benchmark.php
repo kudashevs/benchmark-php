@@ -16,6 +16,7 @@ class Benchmark
      */
     private $options = [
         'verbose' => false,
+        'debug' => false,
     ];
 
     /**
@@ -92,6 +93,11 @@ class Benchmark
 
                 case '--verbose':
                     $options['verbose'] = true;
+
+                    break;
+
+                case '--debug':
+                    $options['debug'] = true;
 
                     break;
 

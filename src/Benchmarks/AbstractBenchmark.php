@@ -10,6 +10,11 @@ abstract class AbstractBenchmark
     protected $iterations = 100000;
 
     /**
+     * @var array
+     */
+    protected $options = [];
+
+    /**
      * @var mixed
      */
     protected $data;
@@ -19,9 +24,10 @@ abstract class AbstractBenchmark
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(array $options = [])
     {
         $this->initBenchmark();
+        $this->options = $options;
     }
 
     /**

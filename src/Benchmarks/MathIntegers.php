@@ -23,9 +23,9 @@ class MathIntegers extends AbstractBenchmark
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(array $options = [])
     {
-        parent::__construct();
+        parent::__construct($options);
 
         $this->functions = $this->initFunctions($this->functions);
     }
@@ -96,6 +96,13 @@ class MathIntegers extends AbstractBenchmark
         }
 
         return $data;
+    }
+
+    protected function handleOptions()
+    {
+        if (empty($this->options)) {
+            return;
+        }
     }
 }
 
