@@ -48,6 +48,7 @@ class Benchmark
     public function __construct(Reporter $reporter)
     {
         $this->reporter = $reporter;
+        $this->options = $this->initOptions($_SERVER['argv']);
         $this->benchmarks = $this->initBenchmarks();
     }
 
@@ -65,6 +66,44 @@ class Benchmark
         echo $this->reporter->showSeparator();
         echo $this->reporter->showBlock($this->getHandleStatistics());
         echo $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
+    }
+
+    /**
+     * @param array $arguments
+     * @return array
+     */
+    protected function initOptions(array $arguments)
+    {
+        array_shift($arguments);
+
+        if (empty($arguments)) {
+            return $this->options;
+        }
+
+        $options = [];
+
+        foreach ($arguments as $argument) {
+            switch ($argument) {
+                case '--version':
+                    echo $this->reporter->showBlock($this->getBenchmarkFullName());
+                    $this->terminateWithCode();
+
+                    break;
+
+                case '--verbose':
+                    $options['verbose'] = true;
+
+                    break;
+
+                default:
+                    echo $this->reporter->showBlock($this->getBenchmarkFullName() . PHP_EOL);
+                    $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
+
+                    break;
+            }
+        }
+
+        return $options;
     }
 
     /**
@@ -252,7 +291,6 @@ class Benchmark
     {
         return $this->options;
     }
-
 
     /**
      * @param string $name

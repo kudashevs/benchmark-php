@@ -17,6 +17,9 @@ class BenchmarkTest extends TestCase
 
     protected function setUp()
     {
+        $_SERVER['argc'] = 1;
+        $_SERVER['argv'] = [array_shift($_SERVER['argv'])];
+
         /** @var Reporter|\PHPUnit_Framework_MockObject_MockObject $reporter */
         $reporter = $this->getMockBuilder(Reporter::class)
             ->getMock();
@@ -34,6 +37,55 @@ class BenchmarkTest extends TestCase
     /**
      * Functionality.
      */
+    public function testInitOptionsReturnsExpectedWhenOnlyOneArgument()
+    {
+        $arguments = [array_shift($_SERVER['argv'])];
+
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $method = $this->getPrivateMethod($partialMock, 'initOptions');
+        $result = $method->invokeArgs($partialMock, [$arguments]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('verbose', $result);
+    }
+
+    public function testInitOptionsReturnsExpectedWhenArgumentsContainOption()
+    {
+        $arguments = array_merge($_SERVER['argv'], ['--verbose']);
+
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $method = $this->getPrivateMethod($partialMock, 'initOptions');
+        $result = $method->invokeArgs($partialMock, [$arguments]);
+
+        $this->assertContains('verbose', $result);
+    }
+
+    public function testInitOptionsReturnsExpectedWhenArgumentsContainVersion()
+    {
+        $arguments = array_merge($_SERVER['argv'], ['--version']);
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithCode'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithCode')
+            ->willReturn(true);
+
+        $method = $this->getPrivateMethod($partialMock, 'initOptions');
+        $method->invokeArgs($partialMock, [$arguments]);
+    }
+
     public function testSetOptionBehavesExpectedWhenOptionExists()
     {
         $expected = 'updated';
