@@ -51,7 +51,7 @@ class Benchmark
      */
     public function run()
     {
-        echo $this->reporter->showHeader($this->getBenchmarkVersion());
+        echo $this->reporter->showHeader($this->getBenchmarkFullName());
         echo $this->reporter->showBlock($this->getSystemInformation());
         echo $this->reporter->showSeparator();
         $this->handleBenchmarks();
@@ -236,6 +236,22 @@ class Benchmark
             : [
                 'done' => $this->generateBenchmarkCount($completed) . ' completed',
             ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getBenchmarkFullName()
+    {
+        return 'Benchmark PHP ' . $this->getBenchmarkVersion();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBenchmarkVersion()
+    {
+        return self::VERSION;
     }
 
     /**
