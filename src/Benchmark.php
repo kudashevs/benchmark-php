@@ -20,8 +20,8 @@ class Benchmark
      * @var array
      */
     private $options = [
-        'verbose' => false,
         'debug' => false,
+        'verbose' => false,
     ];
 
     /**
@@ -84,9 +84,14 @@ class Benchmark
 
         foreach ($arguments as $argument) {
             switch ($argument) {
-                case '--version':
-                    $this->reporter->showBlock($this->getBenchmarkFullName());
-                    $this->terminateWithCode();
+                case '--debug':
+                    $options['debug'] = true;
+
+                    break;
+
+                case '--help':
+                    $this->reporter->showBlock($this->getBenchmarkHelp());
+                    $this->terminateWithCode(0);
 
                     break;
 
@@ -95,8 +100,9 @@ class Benchmark
 
                     break;
 
-                case '--debug':
-                    $options['debug'] = true;
+                case '--version':
+                    $this->reporter->showBlock($this->getBenchmarkFullName());
+                    $this->terminateWithCode(0);
 
                     break;
 
@@ -250,6 +256,14 @@ class Benchmark
     }
 
     /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
      * @param array $keys
      * @return array
      */
@@ -309,12 +323,19 @@ class Benchmark
             ];
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
+    public function getBenchmarkHelp()
     {
-        return $this->options;
+        $message = '';
+        $message .= $this->getBenchmarkFullName() . str_repeat(PHP_EOL, 2);
+        $message .= <<<EOT
+Available Options:
+
+  --debug           Prints miscellaneous information during execution.
+  --help            Prints usage information and exits.
+  --version         Prints the version and exits.
+EOT;
+
+        return $message;
     }
 
     /**
