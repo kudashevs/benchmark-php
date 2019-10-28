@@ -209,6 +209,14 @@ class Benchmark
     }
 
     /**
+     * @return bool
+     */
+    protected function isDebugMode()
+    {
+        return isset($this->options['debug']) && $this->options['debug'] === true;
+    }
+
+    /**
      * @param string $name
      * @return void
      */
