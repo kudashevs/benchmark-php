@@ -252,7 +252,7 @@ class BenchmarkTest extends TestCase
         $this->assertContains('1', $handled['done']);
     }
 
-    public function testGetBenchmarksSummaryRerturnsExpectedOnSkippedBenchmark()
+    public function testGetBenchmarksSummaryReturnsExpectedOnSkippedBenchmark()
     {
         $skipped = ['test' => 'skipped'];
         $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
