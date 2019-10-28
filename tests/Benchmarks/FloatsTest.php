@@ -4,11 +4,11 @@ namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Benchmarks\Floats;
-use BenchmarkPHP\Tests\TestHelpers;
+use BenchmarkPHP\Tests\TestHelpersTrait;
 
 class FloatsTest extends TestCase
 {
-    use TestHelpers;
+    use TestHelpersTrait;
 
     /** @var Floats */
     private $bench;

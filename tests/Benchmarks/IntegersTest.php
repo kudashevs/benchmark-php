@@ -3,12 +3,12 @@
 namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Tests\TestHelpers;
 use BenchmarkPHP\Benchmarks\Integers;
+use BenchmarkPHP\Tests\TestHelpersTrait;
 
 class IntegersTest extends TestCase
 {
-    use TestHelpers;
+    use TestHelpersTrait;
 
     /** @var Integers */
     private $bench;

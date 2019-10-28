@@ -3,12 +3,12 @@
 namespace BenchmarkPHP\Tests\Reporters;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Tests\TestHelpers;
 use BenchmarkPHP\Reporters\CliReporter;
+use BenchmarkPHP\Tests\TestHelpersTrait;
 
 class CliReporterTest extends TestCase
 {
-    use TestHelpers;
+    use TestHelpersTrait;
 
     /** @var CliReporter */
     private $reporter;

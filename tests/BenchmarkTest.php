@@ -10,7 +10,7 @@ use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class BenchmarkTest extends TestCase
 {
-    use TestHelpers;
+    use TestHelpersTrait;
 
     /** @var Benchmark */
     private $bench;

@@ -3,12 +3,12 @@
 namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Tests\TestHelpers;
 use BenchmarkPHP\Benchmarks\Objects;
+use BenchmarkPHP\Tests\TestHelpersTrait;
 
 class ObjectsTest extends TestCase
 {
-    use TestHelpers;
+    use TestHelpersTrait;
 
     /** @var Objects */
     private $bench;

@@ -4,11 +4,11 @@ namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Benchmarks\Arrays;
-use BenchmarkPHP\Tests\TestHelpers;
+use BenchmarkPHP\Tests\TestHelpersTrait;
 
 class ArraysTest extends TestCase
 {
-    use TestHelpers;
+    use TestHelpersTrait;
 
     /** @var Arrays */
     private $bench;

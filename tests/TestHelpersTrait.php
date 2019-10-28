@@ -2,7 +2,7 @@
 
 namespace BenchmarkPHP\Tests;
 
-trait TestHelpers
+trait TestHelpersTrait
 {
     /**
      * @param object $obj
