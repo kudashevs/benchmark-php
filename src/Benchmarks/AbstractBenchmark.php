@@ -65,6 +65,22 @@ abstract class AbstractBenchmark
     }
 
     /**
+     * @return bool
+     */
+    protected function isDebugMode()
+    {
+        return isset($this->options['debug']) && $this->options['debug'] === true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isVerboseMode()
+    {
+        return isset($this->options['verbose']) && $this->options['verbose'] === true;
+    }
+
+    /**
      * Benchmarks contract.
      */
 
