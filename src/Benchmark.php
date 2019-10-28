@@ -59,7 +59,7 @@ class Benchmark
      */
     public function run()
     {
-        $this->reporter->showHeader($this->getBenchmarkFullName());
+        $this->reporter->showHeader($this->getFullTitle());
 
         $this->reporter->showBlock($this->getSystemInformation());
         $this->reporter->showSeparator();
@@ -100,7 +100,7 @@ class Benchmark
                     break;
 
                 case '--help':
-                    $this->reporter->showBlock($this->getBenchmarkHelp());
+                    $this->reporter->showBlock($this->getHelp());
                     $this->terminateWithCode(0);
 
                     break;
@@ -111,13 +111,13 @@ class Benchmark
                     break;
 
                 case '--version':
-                    $this->reporter->showBlock($this->getBenchmarkFullName());
+                    $this->reporter->showBlock($this->getFullTitle());
                     $this->terminateWithCode(0);
 
                     break;
 
                 default:
-                    $this->reporter->showBlock($this->getBenchmarkFullName() . PHP_EOL);
+                    $this->reporter->showBlock($this->getFullTitle() . PHP_EOL);
                     $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
 
                     break;
@@ -362,18 +362,46 @@ class Benchmark
 
         return ($skipped > 0)
             ? [
-                'done' => $this->generateBenchmarkCount($completed) . ' completed',
-                'skip' => $this->generateBenchmarkCount($skipped) . ' skipped',
+                'done' => $this->generatePluralizedCount($completed) . ' completed',
+                'skip' => $this->generatePluralizedCount($skipped) . ' skipped',
             ]
             : [
-                'done' => $this->generateBenchmarkCount($completed) . ' completed',
+                'done' => $this->generatePluralizedCount($completed) . ' completed',
             ];
     }
 
-    public function getBenchmarkHelp()
+    /**
+     * @param int $count
+     * @return string
+     */
+    protected function generatePluralizedCount($count)
+    {
+        return ($count > 1) ? $count . ' benchmarks' : $count . ' benchmark';
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullTitle()
+    {
+        return 'Benchmark PHP ' . $this->getVersion();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getVersion()
+    {
+        return self::VERSION;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp()
     {
         $message = '';
-        $message .= $this->getBenchmarkFullName() . str_repeat(PHP_EOL, 2);
+        $message .= $this->getFullTitle() . str_repeat(PHP_EOL, 2);
         $message .= <<<EOT
 Available Options:
 
@@ -383,31 +411,6 @@ Available Options:
 EOT;
 
         return $message;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBenchmarkFullName()
-    {
-        return 'Benchmark PHP ' . $this->getBenchmarkVersion();
-    }
-
-    /**
-     * @return string
-     */
-    protected function getBenchmarkVersion()
-    {
-        return self::VERSION;
-    }
-
-    /**
-     * @param int $count
-     * @return string
-     */
-    protected function generateBenchmarkCount($count)
-    {
-        return ($count > 1) ? $count . ' benchmarks' : $count . ' benchmark';
     }
 
     /**
