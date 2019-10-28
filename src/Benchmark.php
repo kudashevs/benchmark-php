@@ -60,12 +60,22 @@ class Benchmark
     public function run()
     {
         $this->reporter->showHeader($this->getBenchmarkFullName());
+
         $this->reporter->showBlock($this->getSystemInformation());
         $this->reporter->showSeparator();
+
         $this->handleBenchmarks();
-        $this->reporter->showSeparator();
-        $this->reporter->showBlock($this->getBenchmarksSummary());
-        $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
+
+        if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
+            $this->reporter->showSeparator();
+            $this->reporter->showBlock($this->getBenchmarksSummary());
+        }
+
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
+            $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
+        } else {
+            $this->reporter->showFooter($this->getStatisticsForHumans(['total_time']));
+        }
     }
 
     /**
@@ -273,6 +283,14 @@ class Benchmark
     protected function isVerboseMode()
     {
         return isset($this->options['verbose']) && $this->options['verbose'] === true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasSkippedBenchmarks()
+    {
+        return isset($this->statistics['skipped']) && ($this->statistics['skipped'] > 0);
     }
 
     /**
