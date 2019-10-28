@@ -103,6 +103,19 @@ class BenchmarkTest extends TestCase
         $this->assertCount($count, $benchmarks);
     }
 
+    public function testInitBenchmarksPassesOptionsToBenchmark()
+    {
+        $options = ['verbose' => 'updated'];
+
+        $this->setPrivateVariableValue($this->bench, 'options', $options);
+        $method = $this->getPrivateMethod($this->bench, 'initBenchmarks');
+        $result = $method->invoke($this->bench);
+
+        $instance = current($result);
+        $this->assertInstanceOf(AbstractBenchmark::class, $instance);
+        $this->assertEquals($options, $instance->getOptions());
+    }
+
     public function testHandleBenchmarksExecutesBeforeHandle()
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);

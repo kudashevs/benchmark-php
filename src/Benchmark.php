@@ -140,7 +140,7 @@ class Benchmark
 
             if (class_exists($class)) {
                 try {
-                    $instance = new $class();
+                    $instance = new $class($this->options);
                 } catch (\Exception $e) {
                     $instance = 'failed';
                 }
