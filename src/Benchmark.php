@@ -153,7 +153,11 @@ class Benchmark
         // @var AbstractBenchmark|string $benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
-                $this->benchmarkSkipped($name);
+                $information = [
+                    'type' => gettype($benchmark),
+                    'class' => is_object($benchmark) ? get_class($benchmark) : 'not an object',
+                ];
+                $this->benchmarkSkipped((string)$name, $information);
 
                 continue;
             }
@@ -218,15 +222,20 @@ class Benchmark
 
     /**
      * @param string $name
+     * @param array $information
      * @return void
      */
-    protected function benchmarkSkipped($name)
+    protected function benchmarkSkipped($name, array $information = [])
     {
         ++$this->statistics['skipped'];
 
         $message = [
             $name => 'skipped',
         ];
+
+        if ($this->isDebugMode()) {
+            $message = array_merge($message, $information);
+        }
 
         $this->reporter->showBlock($message);
     }
@@ -250,6 +259,10 @@ class Benchmark
         $message = [
             $name => $executionTime,
         ];
+
+        if ($this->isDebugMode()) {
+            $message = array_merge([$name => 'completed'], $information);
+        }
 
         $this->reporter->showBlock($message);
     }
