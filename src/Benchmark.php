@@ -67,7 +67,6 @@ class Benchmark
         $this->handleBenchmarks();
 
         if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
-            $this->reporter->showSeparator();
             $this->reporter->showBlock($this->getBenchmarksSummary());
         }
 
@@ -262,11 +261,15 @@ class Benchmark
             $name => $executionTime,
         ];
 
-        if ($this->isDebugMode()) {
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
             $message = array_merge([$name => 'completed'], $information);
         }
 
         $this->reporter->showBlock($message);
+
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
+            $this->reporter->showSeparator();
+        }
     }
 
     /**
