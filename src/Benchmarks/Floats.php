@@ -6,7 +6,10 @@ class Floats extends AbstractBenchmark
 {
     use HandlesFunctionsTrait;
 
-    private $functions = [
+    /**
+     * @var array
+     */
+    const INIT_FUNCTIONS = [
         'abs',
         'acos',
         'asin',
@@ -25,6 +28,11 @@ class Floats extends AbstractBenchmark
     ];
 
     /**
+     * @var array
+     */
+    private $functions = [];
+
+    /**
      * Create a new Floats instance.
      *
      * @param array $options
@@ -33,7 +41,7 @@ class Floats extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions($this->functions);
+        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
     }
 
     /**

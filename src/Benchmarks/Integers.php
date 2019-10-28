@@ -6,7 +6,10 @@ class Integers extends AbstractBenchmark
 {
     use HandlesFunctionsTrait;
 
-    private $functions = [
+    /**
+     * @var array
+     */
+    const INIT_FUNCTIONS = [
         'abs',
         'decbin',
         'dechex',
@@ -21,6 +24,11 @@ class Integers extends AbstractBenchmark
     ];
 
     /**
+     * @var array
+     */
+    private $functions = [];
+
+    /**
      * Create a new Integers instance.
      *
      * @param array $options
@@ -29,7 +37,7 @@ class Integers extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions($this->functions);
+        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
     }
 
     /**

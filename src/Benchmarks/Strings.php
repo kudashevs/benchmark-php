@@ -6,7 +6,10 @@ class Strings extends AbstractBenchmark
 {
     use HandlesFunctionsTrait;
 
-    private $functions = [
+    /**
+     * @var array
+     */
+    const INIT_FUNCTIONS = [
         'addslashes',
         'chunk_split',
         'count_chars',
@@ -36,6 +39,11 @@ class Strings extends AbstractBenchmark
     ];
 
     /**
+     * @var array
+     */
+    private $functions = [];
+
+    /**
      * Create a new Strings instance.
      *
      * @param array $options
@@ -44,7 +52,7 @@ class Strings extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions($this->functions);
+        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
     }
 
     /**

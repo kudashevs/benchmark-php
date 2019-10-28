@@ -6,7 +6,10 @@ class Arrays extends AbstractBenchmark
 {
     use HandlesFunctionsTrait;
 
-    private $functions = [
+    /**
+     * @var array
+     */
+    const INIT_FUNCTIONS = [
         'array_change_key_case',
         'array_count_values',
         'array_filter',
@@ -35,6 +38,11 @@ class Arrays extends AbstractBenchmark
     ];
 
     /**
+     * @var array
+     */
+    private $functions = [];
+
+    /**
      * Create a new Arrays instance.
      *
      * @param array $options
@@ -43,7 +51,7 @@ class Arrays extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions($this->functions);
+        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
     }
 
     /**

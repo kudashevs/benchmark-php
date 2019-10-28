@@ -6,7 +6,10 @@ class Objects extends AbstractBenchmark
 {
     use HandlesFunctionsTrait;
 
-    private $functions = [
+    /**
+     * @var array
+     */
+    const INIT_FUNCTIONS = [
         'get_class_methods',
         'get_class',
         'get_object_vars',
@@ -22,6 +25,11 @@ class Objects extends AbstractBenchmark
     ];
 
     /**
+     * @var array
+     */
+    private $functions = [];
+
+    /**
      * Create a new Objects instance.
      *
      * @param array $options
@@ -30,7 +38,7 @@ class Objects extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions($this->functions);
+        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
     }
 
     /**
