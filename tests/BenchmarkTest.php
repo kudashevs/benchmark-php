@@ -270,6 +270,24 @@ class BenchmarkTest extends TestCase
         $this->assertFalse($method->invoke($this->bench));
     }
 
+    public function testIsVerboseModeReturnExpectedWhenTrue()
+    {
+        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
+
+        $method = $this->getPrivateMethod($this->bench, 'isVerboseMode');
+
+        $this->assertTrue($method->invoke($this->bench));
+    }
+
+    public function testIsVerboseModeReturnExpectedWhenFalse()
+    {
+        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => false]);
+
+        $method = $this->getPrivateMethod($this->bench, 'isVerboseMode');
+
+        $this->assertFalse($method->invoke($this->bench));
+    }
+
     public function testGenerateClassNameReturnExpectedWhenOneWord()
     {
         $expected = 'Strings';

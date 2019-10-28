@@ -213,14 +213,6 @@ class Benchmark
     }
 
     /**
-     * @return bool
-     */
-    protected function isDebugMode()
-    {
-        return isset($this->options['debug']) && $this->options['debug'] === true;
-    }
-
-    /**
      * @param string $name
      * @param array $information
      * @return void
@@ -265,6 +257,22 @@ class Benchmark
         }
 
         $this->reporter->showBlock($message);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDebugMode()
+    {
+        return isset($this->options['debug']) && $this->options['debug'] === true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isVerboseMode()
+    {
+        return isset($this->options['verbose']) && $this->options['verbose'] === true;
     }
 
     /**
