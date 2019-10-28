@@ -2,10 +2,10 @@
 
 namespace BenchmarkPHP\Tests\Benchmarks;
 
-use BenchmarkPHP\Benchmarks\AbstractBenchmark;
+use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Tests\TestHelpersTrait;
-use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class AbstractBenchmarkTest extends TestCase
 {
@@ -16,11 +16,7 @@ class AbstractBenchmarkTest extends TestCase
 
     protected function setUp()
     {
-        $this->bench = new Integers();
-
-        if (!$this->bench instanceof AbstractBenchmark) {
-            throw new \LogicException(get_class($this->bench) . ' doesn\'t extend AbstractBenchmark. Check setUp() method.');
-        }
+        $this->bench = $this->getMockForAbstractClass(AbstractBenchmark::class);
     }
 
     // Exceptions.
