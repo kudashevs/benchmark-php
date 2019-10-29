@@ -385,7 +385,7 @@ class Benchmark
      */
     protected function generatePluralizedBenchmarkCount($count)
     {
-        return ($count > 1) ? $count . ' benchmarks' : $count . ' benchmark';
+        return ($count === 1) ? $count . ' benchmark' : $count . ' benchmarks';
     }
 
     /**
