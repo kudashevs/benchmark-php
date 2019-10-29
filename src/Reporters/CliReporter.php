@@ -112,6 +112,10 @@ class CliReporter implements Reporter
             $string = self::REPORT_COLUMN . $this->makeCentered($string) . self::REPORT_COLUMN;
         }
 
+        if ($style === 'list') {
+            $string = ' - ' . $string;
+        }
+
         return $string . PHP_EOL;
     }
 
