@@ -35,6 +35,6 @@ class HandlesFunctionsTraitTest extends TestCase
         $result = $method->invoke($this->bench);
         $this->assertNotEmpty($result);
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('executed', $result);
+        $this->assertArrayHasKey('execute', $result);
     }
 }

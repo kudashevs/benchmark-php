@@ -87,8 +87,9 @@ trait HandlesFunctionsTrait
         $skipped = count(self::INIT_FUNCTIONS) - $executed;
 
         $summary = [
-            'executed' => $this->generatePluralizedCount($executed),
+            'execute' => $this->generatePluralizedCount($executed),
             'skipped' => $this->generatePluralizedCount($skipped),
+            'iterate' => $this->generatePluralizedCount($this->iterations, 'time'),
         ];
 
         return $summary;
