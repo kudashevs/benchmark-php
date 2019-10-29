@@ -88,17 +88,11 @@ class BenchmarkTest extends TestCase
 
     public function testInitBenchmarksReturnExpected()
     {
-        $count = null;
-        // count declared classes only with specific namespace
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, AbstractBenchmark::class) && strpos($class, 'BenchmarkPHP\Benchmarks\\') !== false) {
-                ++$count;
-            }
-        }
+        $count = $this->countAbstractBenchmarkClasses();
 
         $method = $this->getPrivateMethod($this->bench, 'initBenchmarks');
-
         $benchmarks = $method->invoke($this->bench);
+
         $this->assertInternalType('array', $benchmarks);
         $this->assertCount($count, $benchmarks);
     }
@@ -114,6 +108,18 @@ class BenchmarkTest extends TestCase
         $instance = current($result);
         $this->assertInstanceOf(AbstractBenchmark::class, $instance);
         $this->assertEquals($options, $instance->getOptions());
+    }
+
+    public function testListBenchmarksReturnsExpected()
+    {
+        $count = $this->countAbstractBenchmarkClasses();
+
+        $method = $this->getPrivateMethod($this->bench, 'listBenchmarks');
+        $benchmarks = $method->invoke($this->bench);
+
+        $this->assertNotEmpty($benchmarks);
+        $this->assertContainsOnly('string', $benchmarks);
+        $this->assertCount($count, $benchmarks);
     }
 
     public function testHandleBenchmarksExecutesBeforeHandle()
@@ -352,5 +358,24 @@ class BenchmarkTest extends TestCase
         $this->assertContains($version, $information);
         $this->assertContains($os, $information['Platform']);
         $this->assertContains($platform, $information['Platform']);
+    }
+
+    /**
+     * @return int|null
+     */
+    private function countAbstractBenchmarkClasses()
+    {
+        $count = null;
+        // count declared classes only with specific namespace
+        foreach (get_declared_classes() as $class) {
+            if (is_subclass_of($class, AbstractBenchmark::class) && strpos(
+                $class,
+                'BenchmarkPHP\Benchmarks\\'
+            ) !== false) {
+                ++$count;
+            }
+        }
+
+        return $count;
     }
 }

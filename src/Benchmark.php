@@ -110,6 +110,13 @@ class Benchmark
 
         foreach ($arguments as $argument) {
             switch ($argument) {
+                case '--list':
+                    $this->reporter->showBlock($this->getFullTitle() . PHP_EOL);
+                    $this->reporter->showBlock($this->listBenchmarks(), 'list');
+                    $this->terminateWithCode(0);
+
+                    break;
+
                 case '--debug':
                     $options['debug'] = true;
 
@@ -160,6 +167,24 @@ class Benchmark
                     $instance = 'failed';
                 }
                 $benchmarks[$name] = $instance;
+            }
+        }
+
+        return $benchmarks;
+    }
+
+    /**
+     * @return array
+     */
+    protected function listBenchmarks()
+    {
+        $benchmarks = [];
+
+        foreach (self::BENCHMARKS as $name) {
+            $class = '\\BenchmarkPHP\\Benchmarks\\' . ucfirst($name);
+
+            if (class_exists($class)) {
+                $benchmarks[] = $name;
             }
         }
 
@@ -406,11 +431,14 @@ class Benchmark
         $message = '';
         $message .= $this->getFullTitle() . str_repeat(PHP_EOL, 2);
         $message .= <<<EOT
+Usage:
+  benchmark [options]
+  
 Available Options:
-
-  --debug           Prints miscellaneous information during execution.
-  --help            Prints usage information and exits.
-  --version         Prints the version and exits.
+  --list            Prints list of available benchmarks
+  --debug           Prints miscellaneous information during execution
+  --help            Prints usage information and exits
+  --version         Prints the version and exits
 EOT;
 
         return $message;
