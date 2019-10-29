@@ -283,7 +283,7 @@ class BenchmarkTest extends TestCase
         $this->assertFalse($method->invoke($this->bench));
     }
 
-    public function testIsDebugModeReturnExpectedWhenTrue()
+    public function testIsDebugModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
 
@@ -292,7 +292,7 @@ class BenchmarkTest extends TestCase
         $this->assertTrue($method->invoke($this->bench));
     }
 
-    public function testIsDebugModeReturnExpectedWhenFalse()
+    public function testIsDebugModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false]);
 
@@ -301,7 +301,7 @@ class BenchmarkTest extends TestCase
         $this->assertFalse($method->invoke($this->bench));
     }
 
-    public function testIsVerboseModeReturnExpectedWhenTrue()
+    public function testIsVerboseModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
@@ -310,7 +310,7 @@ class BenchmarkTest extends TestCase
         $this->assertTrue($method->invoke($this->bench));
     }
 
-    public function testIsVerboseModeReturnExpectedWhenFalse()
+    public function testIsVerboseModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => false]);
 
@@ -319,7 +319,7 @@ class BenchmarkTest extends TestCase
         $this->assertFalse($method->invoke($this->bench));
     }
 
-    public function testGenerateClassNameReturnExpectedWhenOneWord()
+    public function testGenerateClassNameReturnsExpectedWhenOneWord()
     {
         $expected = 'Strings';
         $method = $this->getPrivateMethod($this->bench, 'generateClassName');
@@ -327,7 +327,7 @@ class BenchmarkTest extends TestCase
         $this->assertEquals($expected, $method->invokeArgs($this->bench, ['strings']));
     }
 
-    public function testGenerateClassNameReturnExpectedWhenMultiWords()
+    public function testGenerateClassNameReturnsExpectedWhenMultiWords()
     {
         $expected = 'MathIntegers';
         $method = $this->getPrivateMethod($this->bench, 'generateClassName');
