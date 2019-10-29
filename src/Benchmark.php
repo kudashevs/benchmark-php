@@ -163,10 +163,11 @@ class Benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
                 $information = [
+                    'name' => (string)$name,
                     'type' => gettype($benchmark),
                     'class' => is_object($benchmark) ? get_class($benchmark) : 'not an object',
                 ];
-                $this->benchmarkSkipped((string)$name, $information);
+                $this->benchmarkSkipped($information);
 
                 continue;
             }
@@ -222,13 +223,19 @@ class Benchmark
     }
 
     /**
-     * @param string $name
      * @param array $information
      * @return void
      */
-    protected function benchmarkSkipped($name, array $information = [])
+    protected function benchmarkSkipped(array $information)
     {
         ++$this->statistics['skipped'];
+
+        if (isset($information['name'])) {
+            $name = $information['name'];
+            unset($information['name']);
+        } else {
+            $name = 'malformed name';
+        }
 
         $message = [
             $name => 'skipped',
