@@ -186,7 +186,11 @@ class Benchmark
 
             $benchmark->after();
 
-            $this->benchmarkCompleted($name, $benchmark->result());
+            $data = array_merge([
+                $name => 'completed',
+            ], $benchmark->result());
+
+            $this->benchmarkCompleted($data);
         }
 
         $this->afterHandle(); // clean, etc.
@@ -242,27 +246,22 @@ class Benchmark
     }
 
     /**
-     * @param string $name
-     * @param array $information
+     * @param array $message
      * @return void
      */
-    protected function benchmarkCompleted($name, array $information = [])
+    protected function benchmarkCompleted(array $message)
     {
         ++$this->statistics['completed'];
 
-        if ($this->hasCorrectExecutionTime($information)) {
-            $this->statistics['total_time'] += $information['exec_time'];
-            $executionTime = $information['exec_time'];
+        if ($this->hasCorrectExecutionTime($message)) {
+            $this->statistics['total_time'] += $message['exec_time'];
         } else {
-            $executionTime = 'time is malformed';
+            $message['exec_time'] = 'malformed time';
         }
 
-        $message = [
-            $name => $executionTime,
-        ];
-
-        if ($this->isVerboseMode() || $this->isDebugMode()) {
-            $message = array_merge([$name => 'completed'], $information);
+        if ($this->isSilentMode()) {
+            $name = ($n = array_search('completed', $message, true)) ? $n : 'malformed name';
+            $message = [$name => $message['exec_time']];
         }
 
         $this->reporter->showBlock($message);
