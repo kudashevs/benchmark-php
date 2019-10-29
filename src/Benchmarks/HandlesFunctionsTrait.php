@@ -7,14 +7,6 @@ trait HandlesFunctionsTrait
     /**
      * @return void
      */
-    public function before()
-    {
-        $this->data = $this->generateTestData();
-    }
-
-    /**
-     * @return void
-     */
     public function handle()
     {
         $startTime = microtime(true);
@@ -33,6 +25,14 @@ trait HandlesFunctionsTrait
             'stop_time' => $stopTime,
             'exec_time' => $diffTime,
         ];
+    }
+
+    /**
+     * @return void
+     */
+    public function before()
+    {
+        $this->data = $this->generateTestData();
     }
 
     /**
