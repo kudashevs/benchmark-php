@@ -18,7 +18,7 @@ class CliReporter implements Reporter
         $result = '';
 
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
-        $result .= $this->formatInput($data, true);
+        $result .= $this->formatInput($data, 'center');
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
 
         echo $result;
@@ -56,28 +56,38 @@ class CliReporter implements Reporter
 
     /**
      * @param string|array $data
-     * @param bool $centered
+     * @param string $style
      * @return string
      */
-    protected function formatInput($data, $centered = false)
+    protected function formatInput($data, $style = '')
     {
         if (!is_string($data) && !is_array($data)) {
             return '' . PHP_EOL;
         }
 
-        if (is_string($data)) {
-            return $this->wrapCentered($data, $centered);
+        if (is_array($data)) {
+            return $this->formatArray($data, $style);
         }
 
+        return $this->formatString($data, $style);
+    }
+
+    /**
+     * @param array $array
+     * @param string $style
+     * @return string
+     */
+    protected function formatArray(array $array, $style = '')
+    {
         $result = '';
 
-        if (key($data) === 0) {
-            foreach ($data as $item) {
-                $result .= $this->wrapCentered($item, $centered);
+        if (key($array) === 0) {
+            foreach ($array as $item) {
+                $result .= $this->formatString($item, $style);
             }
         } else {
-            foreach ($data as $name => $item) {
-                $result .= $this->wrapCentered($name . ': ' . $item, $centered);
+            foreach ($array as $name => $item) {
+                $result .= $this->formatString($name . ': ' . $item, $style);
             }
         }
 
@@ -85,15 +95,30 @@ class CliReporter implements Reporter
     }
 
     /**
-     * @param string $input
-     * @param bool $centered
+     * @param string $string
+     * @param string $style
      * @return string
      */
-    protected function wrapCentered($input, $centered = false)
+    protected function formatString($string, $style = '')
     {
-        return (!$centered)
-            ? $input . PHP_EOL
-            : self::REPORT_COLUMN . $this->makeCentered($input) . self::REPORT_COLUMN . PHP_EOL;
+        if (!is_string($string)) {
+            return '' . PHP_EOL;
+        }
+
+        if ($style === 'center' || $style === 'centered') {
+            $string = self::REPORT_COLUMN . $this->makeCentered($string) . self::REPORT_COLUMN;
+        }
+
+        return $string . PHP_EOL;
+    }
+
+    /**
+     * @param string $input
+     * @return string
+     */
+    protected function wrapCentered($input)
+    {
+        return self::REPORT_COLUMN . $this->makeCentered($input) . self::REPORT_COLUMN;
     }
 
     /**
