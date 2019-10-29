@@ -111,7 +111,7 @@ class Benchmark
         foreach ($arguments as $argument) {
             switch ($argument) {
                 case '--list':
-                    $this->reporter->showBlock($this->getFullTitle() . PHP_EOL);
+                    $this->reporter->showBlock($this->getVersionString());
                     $this->reporter->showBlock($this->listBenchmarks(), 'list');
                     $this->terminateWithCode(0);
 
@@ -134,13 +134,13 @@ class Benchmark
                     break;
 
                 case '--version':
-                    $this->reporter->showBlock($this->getFullTitle());
+                    $this->reporter->showBlock($this->getVersionString());
                     $this->terminateWithCode(0);
 
                     break;
 
                 default:
-                    $this->reporter->showBlock($this->getFullTitle() . PHP_EOL);
+                    $this->reporter->showBlock($this->getVersionString());
                     $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
 
                     break;
@@ -421,6 +421,14 @@ class Benchmark
     protected function getVersion()
     {
         return self::VERSION;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getVersionString()
+    {
+        return $this->getFullTitle() . PHP_EOL;
     }
 
     /**
