@@ -112,6 +112,7 @@ class Benchmark
             switch ($argument) {
                 case '--list':
                     $this->reporter->showBlock($this->getVersionString());
+                    $this->reporter->showBlock($this->getListBenchmarksHeader());
                     $this->reporter->showBlock($this->listBenchmarks(), 'list');
                     $this->terminateWithCode(0);
 
@@ -189,6 +190,14 @@ class Benchmark
         }
 
         return $benchmarks;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getListBenchmarksHeader()
+    {
+        return ['Available ' . $this->generatePluralizedBenchmarkCount(count($this->listBenchmarks()))];
     }
 
     /**
