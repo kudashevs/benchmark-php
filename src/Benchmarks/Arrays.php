@@ -9,7 +9,7 @@ class Arrays extends AbstractBenchmark
     /**
      * @var array
      */
-    const INIT_FUNCTIONS = [
+    const FUNCTIONS = [
         'array_change_key_case',
         'array_count_values',
         'array_filter',
@@ -51,7 +51,7 @@ class Arrays extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
+        $this->functions = $this->initFunctions(self::FUNCTIONS);
     }
 
     /**

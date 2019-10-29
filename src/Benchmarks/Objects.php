@@ -9,7 +9,7 @@ class Objects extends AbstractBenchmark
     /**
      * @var array
      */
-    const INIT_FUNCTIONS = [
+    const FUNCTIONS = [
         'get_class_methods',
         'get_class',
         'get_object_vars',
@@ -38,7 +38,7 @@ class Objects extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
+        $this->functions = $this->initFunctions(self::FUNCTIONS);
     }
 
     /**
@@ -137,7 +137,7 @@ function setPrivate(Dummy $object)
     $object->setPrivate('updated data');
 }
 
-function convertToArray(Dummy $object)
+function castObjectToArray(Dummy $object)
 {
     return (array)$object;
 }

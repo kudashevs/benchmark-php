@@ -85,7 +85,7 @@ trait HandlesFunctionsTrait
 
         if ($this->isVerboseMode() || $this->isDebugMode()) {
             $executed = count($this->functions);
-            $skipped = count(self::INIT_FUNCTIONS) - $executed;
+            $skipped = count(self::FUNCTIONS) - $executed;
 
             $summary = [
                 'execute' => $this->generatePluralizedCount($executed),
@@ -113,7 +113,7 @@ trait HandlesFunctionsTrait
             $list['executed functions'] = PHP_EOL . implode(PHP_EOL, $this->functions);
         }
 
-        if (!empty($diff = array_diff(self::INIT_FUNCTIONS, $this->functions))) {
+        if (!empty($diff = array_diff(self::FUNCTIONS, $this->functions))) {
             $list['skipped functions'] = PHP_EOL . implode(PHP_EOL, $diff);
         }
 

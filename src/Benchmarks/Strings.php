@@ -9,7 +9,7 @@ class Strings extends AbstractBenchmark
     /**
      * @var array
      */
-    const INIT_FUNCTIONS = [
+    const FUNCTIONS = [
         'addslashes',
         'chunk_split',
         'count_chars',
@@ -52,7 +52,7 @@ class Strings extends AbstractBenchmark
     {
         parent::__construct($options);
 
-        $this->functions = $this->initFunctions(self::INIT_FUNCTIONS);
+        $this->functions = $this->initFunctions(self::FUNCTIONS);
     }
 
     /**
