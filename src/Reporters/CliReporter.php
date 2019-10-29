@@ -11,9 +11,10 @@ class CliReporter implements Reporter
 
     /**
      * @param string|array $data
+     * @param string $style
      * @return void
      */
-    public function showHeader($data)
+    public function showHeader($data, $style = '')
     {
         $result = '';
 
@@ -26,9 +27,10 @@ class CliReporter implements Reporter
 
     /**
      * @param string|array $data
+     * @param string $style
      * @return void
      */
-    public function showFooter($data)
+    public function showFooter($data, $style = '')
     {
         $result = '';
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
@@ -39,11 +41,12 @@ class CliReporter implements Reporter
 
     /**
      * @param string|array $data
+     * @param string $style
      * @return void
      */
-    public function showBlock($data)
+    public function showBlock($data, $style = '')
     {
-        echo $this->formatInput($data);
+        echo $this->formatInput($data, $style);
     }
 
     /**
