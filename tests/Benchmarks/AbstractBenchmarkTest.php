@@ -58,4 +58,25 @@ class AbstractBenchmarkTest extends TestCase
 
         $this->assertFalse($method->invoke($this->bench));
     }
+
+    public function testGeneratePluralizedCountReturnsExpectedWhenOneResult()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+
+        $this->assertEquals('1 function', $method->invokeArgs($this->bench, [1]));
+    }
+
+    public function testGeneratePluralizedCountReturnsExpectedWhenThreeResult()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+
+        $this->assertEquals('3 functions', $method->invokeArgs($this->bench, [3]));
+    }
+
+    public function testGeneratePluralizedCountReturnsExpectedWhenFourResultAndTextWithExtraS()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+
+        $this->assertEquals('4 tests', $method->invokeArgs($this->bench, [4, 'tests']));
+    }
 }
