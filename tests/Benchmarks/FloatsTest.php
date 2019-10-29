@@ -56,7 +56,7 @@ class FloatsTest extends TestCase
         $this->assertEmpty($data);
     }
 
-    public function testResultReturnExpected()
+    public function testResultReturnsExpected()
     {
         $this->bench->before();
         $this->bench->handle();

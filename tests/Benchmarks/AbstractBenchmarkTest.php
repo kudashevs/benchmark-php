@@ -23,7 +23,7 @@ class AbstractBenchmarkTest extends TestCase
     // Corner cases.
 
     // Functionality.
-    public function testIsDebugModeReturnExpectedWhenTrue()
+    public function testIsDebugModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
 
@@ -32,7 +32,7 @@ class AbstractBenchmarkTest extends TestCase
         $this->assertTrue($method->invoke($this->bench));
     }
 
-    public function testIsDebugModeReturnExpectedWhenFalse()
+    public function testIsDebugModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false]);
 
@@ -41,7 +41,7 @@ class AbstractBenchmarkTest extends TestCase
         $this->assertFalse($method->invoke($this->bench));
     }
 
-    public function testIsVerboseModeReturnExpectedWhenTrue()
+    public function testIsVerboseModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
@@ -50,7 +50,7 @@ class AbstractBenchmarkTest extends TestCase
         $this->assertTrue($method->invoke($this->bench));
     }
 
-    public function testIsVerboseModeReturnExpectedWhenFalse()
+    public function testIsVerboseModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => false]);
 
