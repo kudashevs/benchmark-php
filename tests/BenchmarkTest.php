@@ -265,6 +265,24 @@ class BenchmarkTest extends TestCase
         $this->assertContains('1', $handled['skip']);
     }
 
+    public function testIsSilentModeReturnsExpectedWhenTrue()
+    {
+        $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false, 'verbose' => false]);
+
+        $method = $this->getPrivateMethod($this->bench, 'isSilentMode');
+
+        $this->assertTrue($method->invoke($this->bench));
+    }
+
+    public function testIsSilentModeReturnsExpectedWhenFalse()
+    {
+        $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true, 'verbose' => false]);
+
+        $method = $this->getPrivateMethod($this->bench, 'isSilentMode');
+
+        $this->assertFalse($method->invoke($this->bench));
+    }
+
     public function testIsDebugModeReturnExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);

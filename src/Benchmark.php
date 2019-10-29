@@ -275,6 +275,14 @@ class Benchmark
     /**
      * @return bool
      */
+    protected function isSilentMode()
+    {
+        return !$this->isDebugMode() && !$this->isVerboseMode();
+    }
+
+    /**
+     * @return bool
+     */
     protected function isDebugMode()
     {
         return isset($this->options['debug']) && $this->options['debug'] === true;
