@@ -3,7 +3,6 @@
 namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
@@ -11,7 +10,7 @@ class AbstractBenchmarkTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Integers $bench Must implement AbstractBenchmark */
+    /** @var AbstractBenchmark */
     protected $bench;
 
     protected function setUp()
