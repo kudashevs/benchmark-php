@@ -135,7 +135,7 @@ class Benchmark
         $benchmarks = [];
 
         foreach ($names as $name) {
-            $class = '\\BenchmarkPHP\\Benchmarks\\' . $this->generateClassName($name);
+            $class = '\\BenchmarkPHP\\Benchmarks\\' . ucfirst($name);
 
             if (class_exists($class)) {
                 try {
@@ -210,28 +210,6 @@ class Benchmark
     protected function afterHandle()
     {
         $this->statistics['stopped_at'] = date(self::DATE_FORMAT);
-    }
-
-    /**
-     * Generate class name from a benchmark key.
-     *
-     * @param string $name
-     * @return string
-     */
-    private function generateClassName($name)
-    {
-        $words = explode('_', $name);
-
-        if (empty($words)) {
-            return '';
-        }
-
-        $className = '';
-        foreach ($words as $word) {
-            $className .= ucfirst($word);
-        }
-
-        return $className;
     }
 
     /**

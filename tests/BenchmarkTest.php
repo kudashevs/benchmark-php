@@ -319,22 +319,6 @@ class BenchmarkTest extends TestCase
         $this->assertFalse($method->invoke($this->bench));
     }
 
-    public function testGenerateClassNameReturnsExpectedWhenOneWord()
-    {
-        $expected = 'Strings';
-        $method = $this->getPrivateMethod($this->bench, 'generateClassName');
-
-        $this->assertEquals($expected, $method->invokeArgs($this->bench, ['strings']));
-    }
-
-    public function testGenerateClassNameReturnsExpectedWhenMultiWords()
-    {
-        $expected = 'MathIntegers';
-        $method = $this->getPrivateMethod($this->bench, 'generateClassName');
-
-        $this->assertEquals($expected, $method->invokeArgs($this->bench, ['math_integers']));
-    }
-
     public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenZeroResult()
     {
         $method = $this->getPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount');
