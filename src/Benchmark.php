@@ -370,10 +370,10 @@ class Benchmark
     {
         list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
 
-        $summary = ['done' => $this->generatePluralizedCount($completed) . ' completed'];
+        $summary = ['done' => $this->generatePluralizedBenchmarkCount($completed) . ' completed'];
 
         if ($this->hasSkippedBenchmarks()) {
-            $summary = array_merge($summary, ['skip' => $this->generatePluralizedCount($skipped) . ' skipped']);
+            $summary = array_merge($summary, ['skip' => $this->generatePluralizedBenchmarkCount($skipped) . ' skipped']);
         }
 
         return $summary;
@@ -383,7 +383,7 @@ class Benchmark
      * @param int $count
      * @return string
      */
-    protected function generatePluralizedCount($count)
+    protected function generatePluralizedBenchmarkCount($count)
     {
         return ($count > 1) ? $count . ' benchmarks' : $count . ' benchmark';
     }

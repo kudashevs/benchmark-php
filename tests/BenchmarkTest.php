@@ -335,16 +335,16 @@ class BenchmarkTest extends TestCase
         $this->assertEquals($expected, $method->invokeArgs($this->bench, ['math_integers']));
     }
 
-    public function testGeneratePluralizedCountReturnsExpectedWhenOneResult()
+    public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenOneResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount');
 
         $this->assertEquals('1 benchmark', $method->invokeArgs($this->bench, [1]));
     }
 
-    public function testGeneratePluralizedCountReturnsExpectedWhenThreeResult()
+    public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenThreeResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount');
 
         $this->assertEquals('3 benchmarks', $method->invokeArgs($this->bench, [3]));
     }
