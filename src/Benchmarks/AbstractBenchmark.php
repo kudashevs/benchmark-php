@@ -65,6 +65,14 @@ abstract class AbstractBenchmark
     }
 
     /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
      * @return bool
      */
     protected function isDebugMode()
