@@ -7,9 +7,26 @@ use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class Benchmark
 {
+    /**
+     * @var string
+     */
     const VERSION = '1.0.0-beta';
 
+    /**
+     * @var string
+     */
     const DATE_FORMAT = 'Y-m-d H:i:s';
+
+    /**
+     * @var array
+     */
+    const BENCHMARKS = [ // 'filesystem', 'db', 'network'
+        'integers',
+        'floats',
+        'strings',
+        'arrays',
+        'objects',
+    ];
 
     /**
      * @var Reporter
@@ -131,10 +148,9 @@ class Benchmark
      */
     protected function initBenchmarks()
     {
-        $names = ['integers', 'floats', 'strings', 'arrays', 'objects']; // 'filesystem', 'db', 'network'
         $benchmarks = [];
 
-        foreach ($names as $name) {
+        foreach (self::BENCHMARKS as $name) {
             $class = '\\BenchmarkPHP\\Benchmarks\\' . ucfirst($name);
 
             if (class_exists($class)) {
