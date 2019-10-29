@@ -48,7 +48,14 @@ trait HandlesFunctionsTrait
      */
     public function result()
     {
-        return $this->statistics;
+        $initKeys = ['exec_time'];
+        $result = array_intersect_key($this->statistics, array_flip($initKeys));
+
+        if ($this->isVerboseMode()) {
+            $result = array_merge($this->getFunctionsSummary(), $result);
+        }
+
+        return $result;
     }
 
     /**
@@ -69,5 +76,21 @@ trait HandlesFunctionsTrait
         }
 
         return $functions;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getFunctionsSummary()
+    {
+        $executed = count($this->functions);
+        $skipped = count(self::INIT_FUNCTIONS) - $executed;
+
+        $summary = [
+            'executed' => $this->generatePluralizedCount($executed),
+            'skipped' => $this->generatePluralizedCount($skipped),
+        ];
+
+        return $summary;
     }
 }
