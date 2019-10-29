@@ -51,9 +51,7 @@ trait HandlesFunctionsTrait
         $initKeys = ['exec_time'];
         $result = array_intersect_key($this->statistics, array_flip($initKeys));
 
-        if ($this->isVerboseMode()) {
-            $result = array_merge($this->getFunctionsSummary(), $result);
-        }
+        $result = array_merge($this->getFunctionsSummary(), $result);
 
         return $result;
     }
@@ -83,15 +81,42 @@ trait HandlesFunctionsTrait
      */
     protected function getFunctionsSummary()
     {
-        $executed = count($this->functions);
-        $skipped = count(self::INIT_FUNCTIONS) - $executed;
+        $summary = [];
 
-        $summary = [
-            'execute' => $this->generatePluralizedCount($executed),
-            'skipped' => $this->generatePluralizedCount($skipped),
-            'iterate' => $this->generatePluralizedCount($this->iterations, 'time'),
-        ];
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
+            $executed = count($this->functions);
+            $skipped = count(self::INIT_FUNCTIONS) - $executed;
+
+            $summary = [
+                'execute' => $this->generatePluralizedCount($executed),
+                'skipped' => $this->generatePluralizedCount($skipped),
+                'iterate' => $this->generatePluralizedCount($this->iterations, 'time'),
+            ];
+        }
+
+        if ($this->isDebugMode()) {
+            $summary = array_merge($summary, $this->getFunctionsList());
+            $summary = array_merge($summary, $this->statistics);
+        }
 
         return $summary;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getFunctionsList()
+    {
+        $list = [];
+
+        if (!empty($this->functions)) {
+            $list['executed functions'] = PHP_EOL . implode(PHP_EOL, $this->functions);
+        }
+
+        if (!empty($diff = array_diff(self::INIT_FUNCTIONS, $this->functions))) {
+            $list['skipped functions'] = PHP_EOL . implode(PHP_EOL, $diff);
+        }
+
+        return $list;
     }
 }
