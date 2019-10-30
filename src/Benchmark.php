@@ -96,11 +96,7 @@ class Benchmark
             $this->reporter->showBlock($this->getBenchmarksSummary());
         }
 
-        if ($this->isVerboseMode() || $this->isDebugMode()) {
-            $this->reporter->showFooter($this->getStatisticsForHumans(['started_at', 'stopped_at', 'total_time']));
-        } else {
-            $this->reporter->showFooter($this->getStatisticsForHumans(['total_time']));
-        }
+        $this->reporter->showFooter($this->getStatisticsForHumans(['total_time']));
     }
 
     /**
@@ -463,6 +459,10 @@ class Benchmark
      */
     public function getStatisticsForHumans(array $keys = [])
     {
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
+            $keys = array_merge(['started_at', 'stopped_at'], $keys);
+        }
+
         $result = $this->getStatistics($keys);
 
         if (empty($result)) {
