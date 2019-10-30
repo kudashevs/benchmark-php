@@ -21,7 +21,7 @@ class FloatsTest extends TestCase
     /**
      * Exceptions.
      */
-    public function testConstructorThrowExceptionWhenEmptyFunctions()
+    public function testConstructorThrowsExceptionWhenEmptyFunctions()
     {
         $this->expectException(\LogicException::class);
 
