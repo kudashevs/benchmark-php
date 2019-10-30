@@ -29,6 +29,14 @@ class Benchmark
     ];
 
     /**
+     * @var array
+     */
+    const REQUIRED_ARGUMENTS = [
+        '-b',
+        '--benchmarks',
+    ];
+
+    /**
      * @var Reporter
      */
     private $reporter;
@@ -65,7 +73,8 @@ class Benchmark
     public function __construct(Reporter $reporter)
     {
         $this->reporter = $reporter;
-        $this->options = $this->initOptions($_SERVER['argv']);
+        $arguments = $this->initArguments($_SERVER['argv']);
+        $this->options = $this->parseArguments($arguments);
         $this->benchmarks = $this->initBenchmarks();
     }
 
@@ -98,17 +107,67 @@ class Benchmark
      * @param array $arguments
      * @return array
      */
-    protected function initOptions(array $arguments)
+    protected function initArguments(array $arguments)
     {
         array_shift($arguments);
 
+        $result = [];
+
+        if (empty($arguments)) {
+            return $result;
+        }
+
+        foreach (self::REQUIRED_ARGUMENTS as $required) {
+            $key = array_search($required, $arguments, true);
+
+            if ($key !== false && $this->hasRequiredArgumentValue($arguments, $key)) {
+                $name = $arguments[$key];
+                $value = $arguments[$key + 1];
+                $result[$name] = $value;
+                unset($arguments[$key], $arguments[$key + 1]);
+            }
+        }
+
+        $result = array_merge($result, array_map(function ($v) {
+            $v = false;
+        }, array_flip($arguments)));
+
+        return $result;
+    }
+
+    /**
+     * @param array $arguments
+     * @param int $key
+     * @return bool
+     */
+    protected function hasRequiredArgumentValue(array $arguments, $key)
+    {
+        if (!isset($arguments[$key + 1])) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received an empty value.' . PHP_EOL);
+        }
+
+        if (strpos($arguments[$key + 1], '-') === 0) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received a wrong value ' . $arguments[$key + 1] . '.' . PHP_EOL);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $arguments
+     * @return array Return array of options
+     */
+    protected function parseArguments(array $arguments)
+    {
         if (empty($arguments)) {
             return $this->options;
         }
 
         $options = [];
 
-        foreach ($arguments as $argument) {
+        foreach ($arguments as $argument => $value) {
             switch ($argument) {
                 case '--list':
                     $this->reporter->showBlock($this->getVersionString());

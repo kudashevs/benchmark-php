@@ -29,6 +29,68 @@ class BenchmarkTest extends TestCase
     /**
      * Exceptions.
      */
+    public function testInitArgumentsThrowsExceptionWhenRequiredArgumentValueIsMissed()
+    {
+        $arguments = array_merge($_SERVER['argv'], ['-b']);
+        $required = ['-b'];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->will($this->throwException(new \InvalidArgumentException('Passed value is empty.')));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Passed value is empty.');
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
+        $method->invokeArgs($partialMock, [$arguments, $required]);
+    }
+
+    public function testInitArgumentsThrowsExceptionWhenRequiredArgumentValueLooksLikeAnotherOption()
+    {
+        $arguments = array_merge($_SERVER['argv'], ['-b', '-c']);
+        $required = ['-b'];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->will($this->throwException(new \InvalidArgumentException('Passed value looks like option.')));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Passed value looks like option.');
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
+        $method->invokeArgs($partialMock, [$arguments, $required]);
+    }
+
+    public function testInitArgumentsThrowsExceptionWhenOneOfRequiredArgumentValueLooksLikeAnotherOption()
+    {
+        $arguments = array_merge($_SERVER['argv'], ['-c', 'path', '--benchmarks', '--debug']);
+        $required = ['-c', '--benchmarks'];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->will($this->throwException(new \InvalidArgumentException('One of passed values looks like option.')));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('One of passed values looks like option.');
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
+        $method->invokeArgs($partialMock, [$arguments, $required]);
+    }
 
     /**
      * Corner cases.
@@ -37,7 +99,7 @@ class BenchmarkTest extends TestCase
     /**
      * Functionality.
      */
-    public function testInitOptionsReturnsExpectedWhenOnlyOneArgument()
+    public function testInitArgumentsReturnsEmptyArrayWhenOneArgument()
     {
         $arguments = [array_shift($_SERVER['argv'])];
 
@@ -46,31 +108,67 @@ class BenchmarkTest extends TestCase
             ->setMethods(null)
             ->getMock();
 
-        $method = $this->getPrivateMethod($partialMock, 'initOptions');
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
         $result = $method->invokeArgs($partialMock, [$arguments]);
 
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('verbose', $result);
+        $this->assertEmpty($result);
     }
 
-    public function testInitOptionsReturnsExpectedWhenArgumentsContainOption()
+    public function testInitArgumentsReturnsExpectedWhenMixedArguments()
     {
-        $arguments = array_merge($_SERVER['argv'], ['--verbose']);
+        $arguments = array_merge([array_shift($_SERVER['argv'])], ['-b', 'test', '-x', '--debug']);
+        $expected = [
+            '-b' => 'test',
+            '-x' => false,
+            '--debug' => false,
+        ];
 
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
-        $method = $this->getPrivateMethod($partialMock, 'initOptions');
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
+        $result = $method->invokeArgs($partialMock, [$arguments]);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testParseArgumentsReturnsDefaultOptionsWhenEmptyArray()
+    {
+        $arguments = [];
+
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
+        $result = $method->invokeArgs($partialMock, [$arguments]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('verbose', $result);
+    }
+
+    public function testParseArgumentsReturnsExpectedWhenArgumentIsAnOption()
+    {
+        $arguments = ['--verbose' => false];
+
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
         $result = $method->invokeArgs($partialMock, [$arguments]);
 
         $this->assertContains('verbose', $result);
     }
 
-    public function testInitOptionsReturnsExpectedWhenArgumentsContainVersion()
+    public function testParseArgumentsReturnsExpectedWhenArgumentIsACommand()
     {
-        $arguments = array_merge($_SERVER['argv'], ['--version']);
+        $arguments = ['--version' => false];
 
         $reporter = $this->getMockBuilder(Reporter::class)
             ->getMock();
@@ -82,7 +180,7 @@ class BenchmarkTest extends TestCase
             ->method('terminateWithCode')
             ->willReturn(true);
 
-        $method = $this->getPrivateMethod($partialMock, 'initOptions');
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
         $method->invokeArgs($partialMock, [$arguments]);
     }
 
@@ -97,7 +195,7 @@ class BenchmarkTest extends TestCase
         $this->assertCount($count, $benchmarks);
     }
 
-    public function testInitBenchmarksPassesOptionsToBenchmark()
+    public function testInitBenchmarksPassesOptionsToBenchmarkInstance()
     {
         $options = ['verbose' => 'updated'];
 
