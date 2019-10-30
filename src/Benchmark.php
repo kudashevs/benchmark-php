@@ -92,10 +92,7 @@ class Benchmark
 
         $this->handleBenchmarks();
 
-        if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
-            $this->reporter->showBlock($this->getBenchmarksSummary());
-        }
-
+        $this->reporter->showBlock($this->getBenchmarksSummary());
         $this->reporter->showFooter($this->getSummary(['total_time']));
     }
 
@@ -497,7 +494,7 @@ class Benchmark
 
         $summary = ['done' => $this->generatePluralizedBenchmarkCount($completed) . ' completed'];
 
-        if ($this->hasSkippedBenchmarks()) {
+        if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
             $summary = array_merge($summary, ['skip' => $this->generatePluralizedBenchmarkCount($skipped) . ' skipped']);
         }
 
