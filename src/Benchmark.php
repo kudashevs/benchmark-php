@@ -169,25 +169,12 @@ class Benchmark
 
         foreach ($arguments as $argument => $value) {
             switch ($argument) {
-                case '--list':
-                    $this->reporter->showBlock($this->getVersionString());
-                    $this->reporter->showBlock($this->getListBenchmarksHeader());
-                    $this->reporter->showBlock($this->listBenchmarks(), 'list');
-                    $this->terminateWithCode(0);
-
-                    break;
-
                 case '--debug':
                     $options['debug'] = true;
 
                     break;
 
-                case '--help':
-                    $this->reporter->showBlock($this->getHelp());
-                    $this->terminateWithCode(0);
-
-                    break;
-
+                case '-v':
                 case '--verbose':
                     $options['verbose'] = true;
 
@@ -196,6 +183,28 @@ class Benchmark
                 case '--version':
                     $this->reporter->showBlock($this->getVersionString());
                     $this->terminateWithCode(0);
+
+                    break;
+
+                case '-l':
+                case '--list':
+                    $this->reporter->showBlock($this->getVersionString());
+                    $this->reporter->showBlock($this->getListBenchmarksHeader());
+                    $this->reporter->showBlock($this->listBenchmarks(), 'list');
+                    $this->terminateWithCode(0);
+
+                    break;
+
+                case '-h':
+                case '--help':
+                    $this->reporter->showBlock($this->getHelp());
+                    $this->terminateWithCode(0);
+
+                    break;
+
+                case '-b':
+                case '--benchmarks':
+                    $options['benchmarks'] = $this->parseRequiredArgumentValue($argument, $value);
 
                     break;
 
@@ -211,13 +220,33 @@ class Benchmark
     }
 
     /**
+     * @param string $argument
+     * @param string $data
+     * @return array
+     */
+    protected function parseRequiredArgumentValue($argument, $data)
+    {
+        if (empty($data) || !is_string($data)) {
+            return [];
+        }
+
+        if (strpos($data, '-') !== false) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' received a wrong value ' . $data . '.' . PHP_EOL);
+        }
+
+        return explode(',', $data);
+    }
+
+    /**
      * @return array
      */
     protected function initBenchmarks()
     {
+        $initialized = !empty($this->options['benchmarks']) ? $this->options['benchmarks'] : self::BENCHMARKS;
         $benchmarks = [];
 
-        foreach (self::BENCHMARKS as $name) {
+        foreach ($initialized as $name) {
             $class = '\\BenchmarkPHP\\Benchmarks\\' . ucfirst($name);
 
             if (class_exists($class)) {
@@ -509,12 +538,14 @@ class Benchmark
         $message .= <<<EOT
 Usage:
   benchmark [options]
-  
+
 Available Options:
-  --list            Prints list of available benchmarks
-  --debug           Prints miscellaneous information during execution
-  --help            Prints usage information and exits
-  --version         Prints the version and exits
+  -b, --benchmarks <list>   Executes benchmarks from a comma separated list
+  -l, --list                Prints the list of available benchmarks
+  -h, --help                Prints this usage information and exits
+  --version                 Prints the version and exits
+  -v, --verbose             Prints verbose information during execution
+  --debug                   Prints detailed information during execution
 EOT;
 
         return $message;

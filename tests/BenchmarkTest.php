@@ -184,6 +184,31 @@ class BenchmarkTest extends TestCase
         $method->invokeArgs($partialMock, [$arguments]);
     }
 
+    public function testParseRequiredArgumentValueReturnsEmptyArrayWhenEmptyValue()
+    {
+        $argument = '-t';
+        $value = '';
+
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentValue');
+        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertEmpty($result);
+    }
+
+    public function testParseRequiredArgumentValueReturnsExpectedWhenThreeBenchmarksInValue()
+    {
+        $argument = '-t';
+        $value = 'integers,floats,test';
+
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentValue');
+        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertCount(3, $result);
+        $this->assertContains('test', $result);
+    }
+
     public function testInitBenchmarksReturnExpected()
     {
         $count = $this->countAbstractBenchmarkClasses();
