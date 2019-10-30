@@ -11,7 +11,7 @@ class HandlesFunctionsTraitTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Integers $bench Must use HandlesFunctionsTrait */
+    /** @var Integers $bench The class must use HandlesFunctionsTrait */
     protected $bench;
 
     protected function setUp()
@@ -23,11 +23,17 @@ class HandlesFunctionsTraitTest extends TestCase
         }
     }
 
-    // Exceptions.
+    /**
+     * Exceptions.
+     */
 
-    // Corner cases.
+    /**
+     * Corner cases.
+     */
 
-    // Functionality.
+    /**
+     * Functionality.
+     */
     public function testGetFunctionsSummaryReturnExpected()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
