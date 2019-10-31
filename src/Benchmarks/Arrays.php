@@ -34,7 +34,10 @@ class Arrays extends AbstractBenchmark
         'rsort',
         'shuffle',
         'sort',
-        'BenchmarkPHP\Benchmarks\convertToObject',
+        'BenchmarkPHP\Benchmarks\Arrays\castToBool',
+        'BenchmarkPHP\Benchmarks\Arrays\castToInteger',
+        'BenchmarkPHP\Benchmarks\Arrays\castToFloat',
+        'BenchmarkPHP\Benchmarks\Arrays\castToObject',
     ];
 
     /**
@@ -92,7 +95,24 @@ class Arrays extends AbstractBenchmark
     }
 }
 
-function convertToObject(array $arr)
+namespace BenchmarkPHP\Benchmarks\Arrays;
+
+function castToBool($array)
 {
-    return (object)$arr;
+    return (bool)$array;
+}
+
+function castToInteger($array)
+{
+    return (int)$array;
+}
+
+function castToFloat($array)
+{
+    return (float)$array;
+}
+
+function castToObject($array)
+{
+    return (object)$array;
 }
