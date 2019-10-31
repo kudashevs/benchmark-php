@@ -15,13 +15,13 @@ class Objects extends AbstractBenchmark
         'get_object_vars',
         'get_object_vars',
         'is_object',
-        'BenchmarkPHP\Benchmarks\getPublic',
-        'BenchmarkPHP\Benchmarks\setPublic',
-        'BenchmarkPHP\Benchmarks\getProtected',
-        'BenchmarkPHP\Benchmarks\setProtected',
-        'BenchmarkPHP\Benchmarks\getPrivate',
-        'BenchmarkPHP\Benchmarks\setPrivate',
-        'BenchmarkPHP\Benchmarks\convertToArray',
+        'BenchmarkPHP\Benchmarks\Objects\getPublic',
+        'BenchmarkPHP\Benchmarks\Objects\setPublic',
+        'BenchmarkPHP\Benchmarks\Objects\getProtected',
+        'BenchmarkPHP\Benchmarks\Objects\setProtected',
+        'BenchmarkPHP\Benchmarks\Objects\getPrivate',
+        'BenchmarkPHP\Benchmarks\Objects\setPrivate',
+        'BenchmarkPHP\Benchmarks\Objects\castToArray',
     ];
 
     /**
@@ -107,6 +107,10 @@ class Dummy
     }
 }
 
+namespace BenchmarkPHP\Benchmarks\Objects;
+
+use BenchmarkPHP\Benchmarks\Dummy;
+
 function getPublic(Dummy $object)
 {
     return $object->public;
@@ -137,7 +141,7 @@ function setPrivate(Dummy $object)
     $object->setPrivate('updated data');
 }
 
-function castObjectToArray(Dummy $object)
+function castToArray(Dummy $object)
 {
     return (array)$object;
 }
