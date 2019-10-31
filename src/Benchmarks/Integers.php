@@ -21,6 +21,11 @@ class Integers extends AbstractBenchmark
         'BenchmarkPHP\Benchmarks\subtraction',
         'BenchmarkPHP\Benchmarks\multiplication',
         'BenchmarkPHP\Benchmarks\division',
+        'BenchmarkPHP\Benchmarks\castToBool',
+        'BenchmarkPHP\Benchmarks\castToFloat',
+        'BenchmarkPHP\Benchmarks\castToString',
+        'BenchmarkPHP\Benchmarks\castToArray',
+        'BenchmarkPHP\Benchmarks\castToObject',
     ];
 
     /**
@@ -89,4 +94,29 @@ function multiplication($num)
 function division($num)
 {
     return $num / 3;
+}
+
+function castToBool($num)
+{
+    return (bool)$num;
+}
+
+function castToFloat($num)
+{
+    return (float)$num;
+}
+
+function castToString($num)
+{
+    return (string)$num;
+}
+
+function castToArray($num)
+{
+    return (array)$num;
+}
+
+function castToObject($num)
+{
+    return (object)$num;
 }
