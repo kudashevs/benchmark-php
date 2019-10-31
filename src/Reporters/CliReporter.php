@@ -8,6 +8,7 @@ class CliReporter implements Reporter
     const REPORT_ROW = '-';
     const REPORT_COLUMN = '|';
     const REPORT_SPACE = ' ';
+    const LIST_BULLET = ' - ';
 
     /**
      * @param string|array $data
@@ -113,7 +114,11 @@ class CliReporter implements Reporter
         }
 
         if ($style === 'list') {
-            $string = ' - ' . $string;
+            if (preg_match('/^(?:(?:e|exclude):)(.+)/Su', $string, $match)) {
+                $string = $match[1];
+            } else {
+                $string = self::LIST_BULLET . $string;
+            }
         }
 
         return $string . PHP_EOL;

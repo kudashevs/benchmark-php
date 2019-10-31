@@ -121,6 +121,27 @@ class CliReporterTest extends TestCase
         $this->assertEquals('' . PHP_EOL, $method->invokeArgs($this->reporter, [1]));
     }
 
+    public function testFormatInputReturnsExpectedWhenListStyledInput()
+    {
+        $input = ['first', 'second'];
+
+        $method = $this->getPrivateMethod($this->reporter, 'formatInput');
+        $result = $method->invokeArgs($this->reporter, [$input, 'list']);
+
+        $this->assertStringStartsWith(CliReporter::LIST_BULLET, $result);
+    }
+
+    public function testFormatInputReturnsExpectedWhenListStyledInputContainsExclusion()
+    {
+        $input = ['exclude:header', 'first', 'second'];
+        $expected = 'header';
+
+        $method = $this->getPrivateMethod($this->reporter, 'formatInput');
+        $result = $method->invokeArgs($this->reporter, [$input, 'list']);
+
+        $this->assertStringStartsWith($expected, $result);
+    }
+
     public function testMakeCenteredReturnsEmptyWhenWrongType()
     {
         $method = $this->getPrivateMethod($this->reporter, 'makeCentered');
