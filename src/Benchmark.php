@@ -407,6 +407,22 @@ class Benchmark
     /**
      * @return bool
      */
+    protected function hasBenchmarks()
+    {
+        return isset($this->benchmarks) && count($this->benchmarks) > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasCompletedBenchmarks()
+    {
+        return isset($this->statistics['completed']) && ($this->statistics['completed'] > 0);
+    }
+
+    /**
+     * @return bool
+     */
     protected function hasSkippedBenchmarks()
     {
         return isset($this->statistics['skipped']) && ($this->statistics['skipped'] > 0);
@@ -490,6 +506,14 @@ class Benchmark
      */
     public function getBenchmarksSummary()
     {
+        if (!$this->hasBenchmarks()) {
+            return ['skip' => 'no benchmarks were found'];
+        }
+
+        if ($this->isSilentMode()) {
+            return [];
+        }
+
         list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
 
         $summary = ['done' => $this->generatePluralizedBenchmarkCount($completed) . ' completed'];

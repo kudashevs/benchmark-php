@@ -353,18 +353,18 @@ class BenchmarkTest extends TestCase
         $this->assertArrayHasKey('Stopped at', $statistics);
     }
 
-    public function testGetBenchmarksSummaryReturnsExpectedOnEmptyBenchmarks()
+    public function testGetBenchmarksSummaryReturnsExpectedWhenEmptyBenchmarks()
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
-        $handled = $this->bench->getBenchmarksSummary();
+        $result = $this->bench->getBenchmarksSummary();
 
-        $this->assertContains('0', $handled['done']);
+        $this->assertArrayHasKey('skip', $result);
     }
 
-    public function testGetBenchmarksSummaryReturnsExpectedOnOneCompletedBenchmark()
+    public function testGetBenchmarksSummaryReturnsExpectedWhenOneCompletedBenchmark()
     {
         $stub = $this->getMockBuilder(Integers::class)
             ->disableOriginalConstructor()
@@ -373,25 +373,27 @@ class BenchmarkTest extends TestCase
             ->method('result')
             ->willReturn([]);
         $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
+        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
-        $handled = $this->bench->getBenchmarksSummary();
+        $result = $this->bench->getBenchmarksSummary();
 
-        $this->assertContains('1', $handled['done']);
+        $this->assertContains('1', $result['done']);
     }
 
-    public function testGetBenchmarksSummaryReturnsExpectedOnSkippedBenchmark()
+    public function testGetBenchmarksSummaryReturnsExpectedWhenSkippedBenchmark()
     {
         $skipped = ['test' => 'skipped'];
         $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
+        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
         $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
         $method->invoke($this->bench);
-        $handled = $this->bench->getBenchmarksSummary();
+        $result = $this->bench->getBenchmarksSummary();
 
-        $this->assertContains('0', $handled['done']);
-        $this->assertContains('1', $handled['skip']);
+        $this->assertContains('0', $result['done']);
+        $this->assertContains('1', $result['skip']);
     }
 
     public function testIsSilentModeReturnsExpectedWhenTrue()
