@@ -110,13 +110,24 @@ trait HandlesFunctionsTrait
         $list = [];
 
         if (!empty($this->functions)) {
-            $list['executed functions'] = PHP_EOL . implode(PHP_EOL, $this->functions);
+            $list['executed functions'] = PHP_EOL . implode(PHP_EOL, $this->cleanFunctionsNames($this->functions));
         }
 
         if (!empty($diff = array_diff(self::FUNCTIONS, $this->functions))) {
-            $list['skipped functions'] = PHP_EOL . implode(PHP_EOL, $diff);
+            $list['skipped functions'] = PHP_EOL . implode(PHP_EOL, $this->cleanFunctionsNames($diff));
         }
 
         return $list;
+    }
+
+    /**
+     * @param array $functions
+     * @return array
+     */
+    protected function cleanFunctionsNames(array $functions)
+    {
+        return array_map(function ($v) {
+            return str_replace('BenchmarkPHP\\Benchmarks\\', '', $v);
+        }, $functions);
     }
 }
