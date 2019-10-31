@@ -15,17 +15,17 @@ class Integers extends AbstractBenchmark
         'dechex',
         'decoct',
         'is_int',
-        'BenchmarkPHP\Benchmarks\inc',
-        'BenchmarkPHP\Benchmarks\dec',
-        'BenchmarkPHP\Benchmarks\addition',
-        'BenchmarkPHP\Benchmarks\subtraction',
-        'BenchmarkPHP\Benchmarks\multiplication',
-        'BenchmarkPHP\Benchmarks\division',
-        'BenchmarkPHP\Benchmarks\castToBool',
-        'BenchmarkPHP\Benchmarks\castToFloat',
-        'BenchmarkPHP\Benchmarks\castToString',
-        'BenchmarkPHP\Benchmarks\castToArray',
-        'BenchmarkPHP\Benchmarks\castToObject',
+        'BenchmarkPHP\Benchmarks\Integers\inc',
+        'BenchmarkPHP\Benchmarks\Integers\dec',
+        'BenchmarkPHP\Benchmarks\Integers\addition',
+        'BenchmarkPHP\Benchmarks\Integers\subtraction',
+        'BenchmarkPHP\Benchmarks\Integers\multiplication',
+        'BenchmarkPHP\Benchmarks\Integers\division',
+        'BenchmarkPHP\Benchmarks\Integers\castToBool',
+        'BenchmarkPHP\Benchmarks\Integers\castToFloat',
+        'BenchmarkPHP\Benchmarks\Integers\castToString',
+        'BenchmarkPHP\Benchmarks\Integers\castToArray',
+        'BenchmarkPHP\Benchmarks\Integers\castToObject',
     ];
 
     /**
@@ -65,6 +65,8 @@ class Integers extends AbstractBenchmark
         return $data;
     }
 }
+
+namespace BenchmarkPHP\Benchmarks\Integers;
 
 function inc($num)
 {
