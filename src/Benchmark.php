@@ -182,8 +182,7 @@ class Benchmark
                 case '-l':
                 case '--list':
                     $this->reporter->showBlock($this->getVersionString());
-                    $this->reporter->showBlock($this->getListBenchmarksHeader());
-                    $this->reporter->showBlock($this->listBenchmarks(), 'list');
+                    $this->reporter->showBlock($this->listBenchmarks('header'), 'list');
                     $this->terminateWithCode(0);
 
                     break;
@@ -256,9 +255,10 @@ class Benchmark
     }
 
     /**
+     * @param string $style
      * @return array
      */
-    protected function listBenchmarks()
+    protected function listBenchmarks($style = '')
     {
         $benchmarks = [];
 
@@ -270,15 +270,11 @@ class Benchmark
             }
         }
 
-        return $benchmarks;
-    }
+        if ($style === 'header') {
+            $benchmarks = array_merge(['exclude:Available ' . $this->generatePluralizedBenchmarkCount(count($benchmarks))], $benchmarks);
+        }
 
-    /**
-     * @return array
-     */
-    protected function getListBenchmarksHeader()
-    {
-        return ['Available ' . $this->generatePluralizedBenchmarkCount(count($this->listBenchmarks()))];
+        return $benchmarks;
     }
 
     /**
