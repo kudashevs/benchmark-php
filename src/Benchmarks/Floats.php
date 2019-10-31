@@ -25,6 +25,12 @@ class Floats extends AbstractBenchmark
         'sin',
         'sqrt',
         'tan',
+        'BenchmarkPHP\Benchmarks\Floats\inc',
+        'BenchmarkPHP\Benchmarks\Floats\dec',
+        'BenchmarkPHP\Benchmarks\Floats\addition',
+        'BenchmarkPHP\Benchmarks\Floats\subtraction',
+        'BenchmarkPHP\Benchmarks\Floats\multiplication',
+        'BenchmarkPHP\Benchmarks\Floats\division',
     ];
 
     /**
@@ -63,4 +69,36 @@ class Floats extends AbstractBenchmark
 
         return $data;
     }
+}
+
+namespace BenchmarkPHP\Benchmarks\Floats;
+
+function inc($num)
+{
+    return ++$num;
+}
+
+function dec($num)
+{
+    return --$num;
+}
+
+function addition($num)
+{
+    return $num + 42.24;
+}
+
+function subtraction($num)
+{
+    return $num - 42.24;
+}
+
+function multiplication($num)
+{
+    return $num * M_PI;
+}
+
+function division($num)
+{
+    return $num / M_PI;
 }

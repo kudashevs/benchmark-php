@@ -33,6 +33,14 @@ class FloatsTest extends TestCase
     /**
      * Corner cases.
      */
+    public function testGenerateTestDataDoesNotGenerateZero()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateTestData');
+        $data = $method->invoke($this->bench);
+
+        $this->assertCount($this->bench->getIterations(), $data);
+        $this->assertNotContains(0, $data);
+    }
 
     /**
      * Functionality.
