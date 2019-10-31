@@ -31,6 +31,11 @@ class Floats extends AbstractBenchmark
         'BenchmarkPHP\Benchmarks\Floats\subtraction',
         'BenchmarkPHP\Benchmarks\Floats\multiplication',
         'BenchmarkPHP\Benchmarks\Floats\division',
+        'BenchmarkPHP\Benchmarks\Floats\castToBool',
+        'BenchmarkPHP\Benchmarks\Floats\castToInteger',
+        'BenchmarkPHP\Benchmarks\Floats\castToString',
+        'BenchmarkPHP\Benchmarks\Floats\castToArray',
+        'BenchmarkPHP\Benchmarks\Floats\castToObject',
     ];
 
     /**
@@ -101,4 +106,29 @@ function multiplication($num)
 function division($num)
 {
     return $num / M_PI;
+}
+
+function castToBool($num)
+{
+    return (bool)$num;
+}
+
+function castToInteger($num)
+{
+    return (int)$num;
+}
+
+function castToString($num)
+{
+    return (string)$num;
+}
+
+function castToArray($num)
+{
+    return (array)$num;
+}
+
+function castToObject($num)
+{
+    return (object)$num;
 }
