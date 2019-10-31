@@ -36,6 +36,11 @@ class Strings extends AbstractBenchmark
         'trim',
         'ucfirst',
         'ucwords',
+        'BenchmarkPHP\Benchmarks\Strings\castToBool',
+        'BenchmarkPHP\Benchmarks\Strings\castToInteger',
+        'BenchmarkPHP\Benchmarks\Strings\castToFloat',
+        'BenchmarkPHP\Benchmarks\Strings\castToArray',
+        'BenchmarkPHP\Benchmarks\Strings\castToObject',
     ];
 
     /**
@@ -74,4 +79,31 @@ class Strings extends AbstractBenchmark
 
         return $data;
     }
+}
+
+namespace BenchmarkPHP\Benchmarks\Strings;
+
+function castToBool($string)
+{
+    return (bool)$string;
+}
+
+function castToInteger($string)
+{
+    return (int)$string;
+}
+
+function castToFloat($string)
+{
+    return (float)$string;
+}
+
+function castToArray($string)
+{
+    return (array)$string;
+}
+
+function castToObject($string)
+{
+    return (object)$string;
 }
