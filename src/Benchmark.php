@@ -136,12 +136,12 @@ class Benchmark
     {
         if ($value === false) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' received an empty value.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty value is passed.' . PHP_EOL);
         }
 
         if (strpos($value, '-') === 0) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' received a wrong value ' . (string)$value . '.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Wrong value ' . (string)$value . ' is passed.' . PHP_EOL);
         }
     }
 
