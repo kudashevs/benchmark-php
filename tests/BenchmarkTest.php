@@ -359,9 +359,9 @@ class BenchmarkTest extends TestCase
         $this->assertArrayHasKey('total_time', $statistics);
     }
 
-    public function testGetStatisticsReturnsEmptyArrayWhenKeyNotExists()
+    public function testGetStatisticsReturnsEmptyArrayWhenKeyDoesNotExist()
     {
-        $statistics = $this->bench->getStatistics(['not_exists']);
+        $statistics = $this->bench->getStatistics(['not_exist']);
 
         $this->assertEmpty($statistics);
     }
