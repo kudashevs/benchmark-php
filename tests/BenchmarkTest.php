@@ -73,6 +73,46 @@ class BenchmarkTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testIsIndexedSequentialArrayReturnsTrueWhenSequentialIndexedArrayWithZeroBase()
+    {
+        $array = [0 => 'first', 'second', 'third'];
+
+        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
+        $result = $method->invokeArgs($this->bench, [$array, 0]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsIndexedSequentialArrayReturnsTrueWhenSequentialIndexedArrayWithOneBase()
+    {
+        $array = [1 => 'first', 'second', 'third'];
+
+        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
+        $result = $method->invokeArgs($this->bench, [$array, 1]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsIndexedSequentialArrayReturnsFalseWhenNonSequentialIndexedArray()
+    {
+        $array = [1 => 'first', 2 => 'second', 0 => 'third'];
+
+        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
+        $result = $method->invokeArgs($this->bench, [$array]);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsIndexedSequentialArrayReturnsTrueWhenAssociativeArray()
+    {
+        $array = ['first', 'second', 'third' => 'third'];
+
+        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
+        $result = $method->invokeArgs($this->bench, [$array]);
+
+        $this->assertFalse($result);
+    }
+
     public function testParseArgumentsReturnsDefaultOptionsWhenEmptyArray()
     {
         $arguments = [];
@@ -127,36 +167,6 @@ class BenchmarkTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertCount(3, $result);
         $this->assertContains('test', $result);
-    }
-
-    public function testIsAssociativeArrayReturnFalseWhenIndexedArray()
-    {
-        $indexedArray = ['first', 'second'];
-
-        $method = $this->getPrivateMethod($this->bench, 'isAssociativeArray');
-        $result = $method->invokeArgs($this->bench, [$indexedArray]);
-
-        $this->assertFalse($result);
-    }
-
-    public function testIsAssociativeArrayReturnTrueWhenAssociativeArray()
-    {
-        $indexedArray = ['first' => 1, 'second' => 2];
-
-        $method = $this->getPrivateMethod($this->bench, 'isAssociativeArray');
-        $result = $method->invokeArgs($this->bench, [$indexedArray]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsAssociativeArrayReturnTrueWhenMixedArray()
-    {
-        $mixedArray = ['first', 'second', 'third' => 'third'];
-
-        $method = $this->getPrivateMethod($this->bench, 'isAssociativeArray');
-        $result = $method->invokeArgs($this->bench, [$mixedArray]);
-
-        $this->assertTrue($result);
     }
 
     public function testInitBenchmarksReturnExpected()

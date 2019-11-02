@@ -135,9 +135,9 @@ class Benchmark
      */
     protected function hasRequiredArgumentValue(array $arguments, $key)
     {
-        if ($this->isAssociativeArray($arguments)) {
+        if (!$this->isIndexedSequentialArray($arguments)) {
             $this->reporter->showBlock($this->getVersion());
-            $this->terminateWithMessage('Method got a non-indexed array what is really wrong. Check ' . __METHOD__ . ' method call.');
+            $this->terminateWithMessage('Method got a non-indexed array or non-sequential indexed array. Check ' . __METHOD__ . ' method call.');
         }
 
         if (!isset($arguments[$key + 1])) {
@@ -155,13 +155,16 @@ class Benchmark
 
     /**
      * @param array $array
+     * @param int $base
      * @return bool
      */
-    protected function isAssociativeArray(array $array)
+    protected function isIndexedSequentialArray(array $array, $base = 0)
     {
-        return (bool)array_filter(array_keys($array), function ($v) {
-            return !is_int($v);
-        });
+        if (empty($array)) {
+            return false;
+        }
+
+        return array_keys($array) === range($base, count($array) + $base - 1);
     }
 
     /**
