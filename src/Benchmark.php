@@ -110,72 +110,39 @@ class Benchmark
             return $result;
         }
 
-        $arguments = $this->checkArguments($arguments);
+        while ($argument = current($arguments)) {
+            $next = next($arguments);
 
-        foreach (self::REQUIRED_ARGUMENTS as $required) {
-            $key = array_search($required, $arguments, true);
+            if (in_array($argument, self::REQUIRED_ARGUMENTS, true)) {
+                $this->checkRequiredArgumentHasValue($argument, $next);
+                $result[$argument] = $next;
+                next($arguments);
 
-            if ($key !== false && $this->hasRequiredArgumentValue($arguments, $key)) {
-                $name = $arguments[$key];
-                $value = $arguments[$key + 1];
-                $result[$name] = $value;
-                unset($arguments[$key], $arguments[$key + 1]);
+                continue;
             }
-        }
 
-        $result = array_merge($result, array_map(function ($v) {
-            $v = false;
-        }, array_flip($arguments)));
+            $result[$argument] = false;
+        }
 
         return $result;
     }
 
     /**
-     * @param array $arguments
-     * @return array
+     * @param string $argument
+     * @param mixed $value
+     * @return void
      */
-    protected function checkArguments(array $arguments)
+    protected function checkRequiredArgumentHasValue($argument, $value)
     {
-        if (!$this->isIndexedSequentialArray($arguments)) {
-            $this->reporter->showBlock($this->getVersion());
-            $this->terminateWithMessage('Method got a non-indexed array or non-sequential indexed array. Check ' . __METHOD__ . ' method call.');
-        }
-
-        return $arguments;
-    }
-
-    /**
-     * @param array $array
-     * @param int $base
-     * @return bool
-     */
-    protected function isIndexedSequentialArray(array $array, $base = 0)
-    {
-        if (empty($array)) {
-            return false;
-        }
-
-        return array_keys($array) === range($base, count($array) + $base - 1);
-    }
-
-    /**
-     * @param array $arguments
-     * @param int $key
-     * @return bool
-     */
-    protected function hasRequiredArgumentValue(array $arguments, $key)
-    {
-        if (!isset($arguments[$key + 1])) {
+        if ($value === false) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received an empty value.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' received an empty value.' . PHP_EOL);
         }
 
-        if (strpos($arguments[$key + 1], '-') === 0) {
+        if (strpos($value, '-') === 0) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received a wrong value ' . $arguments[$key + 1] . '.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' received a wrong value ' . (string)$value . '.' . PHP_EOL);
         }
-
-        return true;
     }
 
     /**

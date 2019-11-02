@@ -73,46 +73,6 @@ class BenchmarkTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testIsIndexedSequentialArrayReturnsTrueWhenSequentialIndexedArrayWithZeroBase()
-    {
-        $array = [0 => 'first', 'second', 'third'];
-
-        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
-        $result = $method->invokeArgs($this->bench, [$array, 0]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsIndexedSequentialArrayReturnsTrueWhenSequentialIndexedArrayWithOneBase()
-    {
-        $array = [1 => 'first', 'second', 'third'];
-
-        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
-        $result = $method->invokeArgs($this->bench, [$array, 1]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsIndexedSequentialArrayReturnsFalseWhenNonSequentialIndexedArray()
-    {
-        $array = [1 => 'first', 2 => 'second', 0 => 'third'];
-
-        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
-        $result = $method->invokeArgs($this->bench, [$array]);
-
-        $this->assertFalse($result);
-    }
-
-    public function testIsIndexedSequentialArrayReturnsTrueWhenAssociativeArray()
-    {
-        $array = ['first', 'second', 'third' => 'third'];
-
-        $method = $this->getPrivateMethod($this->bench, 'isIndexedSequentialArray');
-        $result = $method->invokeArgs($this->bench, [$array]);
-
-        $this->assertFalse($result);
-    }
-
     public function testParseArgumentsReturnsDefaultOptionsWhenEmptyArray()
     {
         $arguments = [];
@@ -448,27 +408,6 @@ class BenchmarkTest extends TestCase
     /**
      * Test exits benchmark.
      */
-    public function testInitArgumentsExecutesTerminateMethodWhenAssociativeArray()
-    {
-        $arguments = array_merge($_SERVER['argv'], ['first' => '-c', 'second' => '-b']);
-
-        $reporter = $this->getMockBuilder(Reporter::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithMessage'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains('non-indexed'))
-            ->will($this->throwException(new \InvalidArgumentException('Passed array is associative one.')));
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Passed ');
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        $method->invokeArgs($partialMock, [$arguments]);
-    }
-
     public function testInitArgumentsExecutesTerminateMethodWhenRequiredArgumentValueIsMissed()
     {
         $arguments = array_merge($_SERVER['argv'], ['-b']);
