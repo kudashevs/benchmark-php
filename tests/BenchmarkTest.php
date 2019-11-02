@@ -45,7 +45,7 @@ class BenchmarkTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Passed ');
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
         $method->invokeArgs($partialMock, [$arguments]);
     }
 
