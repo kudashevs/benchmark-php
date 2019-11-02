@@ -110,6 +110,8 @@ class Benchmark
             return $result;
         }
 
+        $arguments = $this->checkArguments($arguments);
+
         foreach (self::REQUIRED_ARGUMENTS as $required) {
             $key = array_search($required, $arguments, true);
 
@@ -130,27 +132,16 @@ class Benchmark
 
     /**
      * @param array $arguments
-     * @param int $key
-     * @return bool
+     * @return array
      */
-    protected function hasRequiredArgumentValue(array $arguments, $key)
+    protected function checkArguments(array $arguments)
     {
         if (!$this->isIndexedSequentialArray($arguments)) {
             $this->reporter->showBlock($this->getVersion());
             $this->terminateWithMessage('Method got a non-indexed array or non-sequential indexed array. Check ' . __METHOD__ . ' method call.');
         }
 
-        if (!isset($arguments[$key + 1])) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received an empty value.' . PHP_EOL);
-        }
-
-        if (strpos($arguments[$key + 1], '-') === 0) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received a wrong value ' . $arguments[$key + 1] . '.' . PHP_EOL);
-        }
-
-        return true;
+        return $arguments;
     }
 
     /**
@@ -165,6 +156,26 @@ class Benchmark
         }
 
         return array_keys($array) === range($base, count($array) + $base - 1);
+    }
+
+    /**
+     * @param array $arguments
+     * @param int $key
+     * @return bool
+     */
+    protected function hasRequiredArgumentValue(array $arguments, $key)
+    {
+        if (!isset($arguments[$key + 1])) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received an empty value.' . PHP_EOL);
+        }
+
+        if (strpos($arguments[$key + 1], '-') === 0) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $arguments[$key] . ' received a wrong value ' . $arguments[$key + 1] . '.' . PHP_EOL);
+        }
+
+        return true;
     }
 
     /**
