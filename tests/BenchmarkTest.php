@@ -104,24 +104,6 @@ class BenchmarkTest extends TestCase
         $this->assertContains('verbose', $result);
     }
 
-    public function testParseArgumentsReturnsExpectedWhenArgumentIsACommand()
-    {
-        $arguments = ['--version' => false];
-
-        $reporter = $this->getMockBuilder(Reporter::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithCode'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithCode')
-            ->willReturn(true);
-
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-        $method->invokeArgs($partialMock, [$arguments]);
-    }
-
     public function testParseRequiredArgumentValueReturnsEmptyArrayWhenEmptyValue()
     {
         $argument = '-t';
@@ -541,6 +523,44 @@ class BenchmarkTest extends TestCase
         $this->expectExceptionMessage('One of passed values looks like option.');
         $method = $this->getPrivateMethod($partialMock, 'initArguments');
         $method->invokeArgs($partialMock, [$arguments, $required]);
+    }
+
+    public function testParseArgumentsExecutesTerminateMethodWhenOptionDoesNotExist()
+    {
+        $arguments = ['--not_exist' => false];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->with($this->stringContains('unknown'))
+            ->willReturn(true);
+
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
+        $method->invokeArgs($partialMock, [$arguments]);
+    }
+
+    public function testParseArgumentsExecutesTerminateMethodWhenOptionExists()
+    {
+        $arguments = ['--version' => false];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithCode'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithCode')
+            ->with($this->equalTo(0))
+            ->willReturn(true);
+
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
+        $method->invokeArgs($partialMock, [$arguments]);
     }
 
     /**
