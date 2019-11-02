@@ -408,11 +408,17 @@ class BenchmarkTest extends TestCase
     /**
      * Test exits benchmark.
      */
-    public function testInitArgumentsExecutesTerminateMethodWhenRequiredArgumentValueIsMissed()
-    {
-        $arguments = array_merge($_SERVER['argv'], ['-b']);
-        $required = ['-b'];
 
+    /**
+     * @dataProvider provideInitArgumentsData
+     * @param array $arguments
+     * @param array $required
+     * @param string $verify
+     * @param string $message
+     * @throws \ReflectionException
+     */
+    public function testInitArgumentsExecutesTerminateMethod($arguments, $required, $verify, $message)
+    {
         $reporter = $this->getMockBuilder(Reporter::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
@@ -421,57 +427,38 @@ class BenchmarkTest extends TestCase
             ->getMock();
         $partialMock->expects($this->once())
             ->method('terminateWithMessage')
-            ->with($this->stringContains('empty'))
-            ->will($this->throwException(new \InvalidArgumentException('Passed value is empty.')));
+            ->with($this->stringContains($verify))
+            ->will($this->throwException(new \InvalidArgumentException($message)));
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Passed value is empty.');
+        $this->expectExceptionMessage($message);
         $method = $this->getPrivateMethod($partialMock, 'initArguments');
         $method->invokeArgs($partialMock, [$arguments, $required]);
     }
 
-    public function testInitArgumentsExecutesTerminateMethodWhenRequiredArgumentValueLooksLikeAnotherOption()
+    public function provideInitArgumentsData()
     {
-        $arguments = array_merge($_SERVER['argv'], ['-b', '-c']);
-        $required = ['-b'];
+        return [
+            'When required option value is missed' => [
+                array_merge($_SERVER['argv'], ['-b']),
+                ['-b'],
+                'empty',
+                'Passed value is empty.',
+            ],
+            'When required option value looks like another option' => [
+                array_merge($_SERVER['argv'], ['-b', '-c']),
+                ['-b'],
+                'wrong',
+                'Passed value looks like option.',
+            ],
+            'When one of required option values looks like another option' => [
+                array_merge($_SERVER['argv'], ['-c', 'path', '--benchmarks', '--debug']),
+                ['-c', '--benchmarks'],
+                'wrong',
+                'One of passed values looks like option.',
+            ],
 
-        $reporter = $this->getMockBuilder(Reporter::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithMessage'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains('wrong'))
-            ->will($this->throwException(new \InvalidArgumentException('Passed value looks like option.')));
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Passed value looks like option.');
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        $method->invokeArgs($partialMock, [$arguments, $required]);
-    }
-
-    public function testInitArgumentsExecutesTerminateMethodWhenOneOfRequiredArgumentValueLooksLikeAnotherOption()
-    {
-        $arguments = array_merge($_SERVER['argv'], ['-c', 'path', '--benchmarks', '--debug']);
-        $required = ['-c', '--benchmarks'];
-
-        $reporter = $this->getMockBuilder(Reporter::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithMessage'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains('wrong'))
-            ->will($this->throwException(new \InvalidArgumentException('One of passed values looks like option.')));
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('One of passed values looks like option.');
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        $method->invokeArgs($partialMock, [$arguments, $required]);
+        ];
     }
 
     public function testParseArgumentsExecutesTerminateMethodWhenOptionDoesNotExist()
