@@ -135,6 +135,11 @@ class Benchmark
      */
     protected function hasRequiredArgumentValue(array $arguments, $key)
     {
+        if ($this->isAssociativeArray($arguments)) {
+            $this->reporter->showBlock($this->getVersion());
+            $this->terminateWithMessage('Method got a non-indexed array what is really wrong. Check ' . __METHOD__ . ' method call.');
+        }
+
         if (!isset($arguments[$key + 1])) {
             $this->reporter->showBlock($this->getVersionString());
             $this->terminateWithMessage('Option ' . $arguments[$key] . ' received an empty value.' . PHP_EOL);
@@ -146,6 +151,17 @@ class Benchmark
         }
 
         return true;
+    }
+
+    /**
+     * @param array $array
+     * @return bool
+     */
+    protected function isAssociativeArray(array $array)
+    {
+        return (bool)array_filter(array_keys($array), function ($v) {
+            return !is_int($v);
+        });
     }
 
     /**

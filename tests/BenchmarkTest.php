@@ -29,6 +29,26 @@ class BenchmarkTest extends TestCase
     /**
      * Exceptions.
      */
+    public function testInitArgumentsThrowsExceptionWhenAssociativeArray()
+    {
+        $arguments = ['first' => '-c', 'second' => '-b'];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->will($this->throwException(new \InvalidArgumentException('Passed array is associative one.')));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Passed ');
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
+        $method->invokeArgs($partialMock, [$arguments]);
+    }
+
     public function testInitArgumentsThrowsExceptionWhenRequiredArgumentValueIsMissed()
     {
         $arguments = array_merge($_SERVER['argv'], ['-b']);
@@ -207,6 +227,36 @@ class BenchmarkTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertCount(3, $result);
         $this->assertContains('test', $result);
+    }
+
+    public function testIsAssociativeArrayReturnFalseWhenIndexedArray()
+    {
+        $indexedArray = ['first', 'second'];
+
+        $method = $this->getPrivateMethod($this->bench, 'isAssociativeArray');
+        $result = $method->invokeArgs($this->bench, [$indexedArray]);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsAssociativeArrayReturnTrueWhenAssociativeArray()
+    {
+        $indexedArray = ['first' => 1, 'second' => 2];
+
+        $method = $this->getPrivateMethod($this->bench, 'isAssociativeArray');
+        $result = $method->invokeArgs($this->bench, [$indexedArray]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsAssociativeArrayReturnTrueWhenMixedArray()
+    {
+        $mixedArray = ['first', 'second', 'third' => 'third'];
+
+        $method = $this->getPrivateMethod($this->bench, 'isAssociativeArray');
+        $result = $method->invokeArgs($this->bench, [$mixedArray]);
+
+        $this->assertTrue($result);
     }
 
     public function testInitBenchmarksReturnExpected()
