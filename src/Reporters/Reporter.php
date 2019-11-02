@@ -7,26 +7,26 @@ interface Reporter
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return string|void
      */
     public function showHeader($data, $style = '');
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return string|void
      */
     public function showFooter($data, $style = '');
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return string|void
      */
     public function showBlock($data, $style = '');
 
     /**
-     * @return string
+     * @return string|void
      */
     public function showSeparator();
 }
