@@ -34,6 +34,8 @@ class Benchmark
     const REQUIRES_VALUE = [
         '-b',
         '--benchmarks',
+        '-i',
+        '--iterations',
     ];
 
     /**
@@ -193,6 +195,12 @@ class Benchmark
 
                     break;
 
+                case '-i':
+                case '--iterations':
+                    $options['iterations'] = $this->parseRequiredArgumentForIterations($argument, $value);
+
+                    break;
+
                 default:
                     $this->reporter->showBlock($this->getVersionString());
                     $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
@@ -229,6 +237,31 @@ class Benchmark
         }
 
         return $benchmarks;
+    }
+
+    /**
+     * @param string $argument
+     * @param string $value
+     * @return int
+     */
+    protected function parseRequiredArgumentForIterations($argument, $value)
+    {
+        $minIterations = 1;
+        $maxIterations = 100000000;
+
+        if (empty($value) || !is_numeric($value)) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty or wrong value ' . $this->generatePrintable($value) . 'is passed.' . PHP_EOL);
+        }
+
+        $iterations = (int)$value;
+
+        if ($iterations < $minIterations || $iterations > $maxIterations) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Empty or wrong value ' . $this->generatePrintable($value) . 'is passed.' . PHP_EOL);
+        }
+
+        return $iterations;
     }
 
     /**
@@ -588,8 +621,9 @@ Usage:
   benchmark [options]
 
 Available Options:
-  -b, --benchmarks <list>   Executes benchmarks from a comma separated list
   -l, --list                Prints the list of available benchmarks
+  -b, --benchmarks <list>   Executes benchmarks from a comma separated list
+  -i, --iterations <num>    Executes benchmarks with fixed number of iterations
   -h, --help                Prints this usage information and exits
   --version                 Prints the version and exits
   -v, --verbose             Prints verbose information during execution

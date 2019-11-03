@@ -106,7 +106,7 @@ class BenchmarkTest extends TestCase
 
     public function testParseRequiredValueForBenchmarksReturnsExpectedWhenTwoExistedBenchmarksInValue()
     {
-        $argument = '-t';
+        $argument = '-b';
         $value = 'integers,floats';
 
         $method = $this->getPrivateMethod($this->bench, 'parseRequiredValueForBenchmarks');
@@ -115,6 +115,17 @@ class BenchmarkTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertCount(2, $result);
         $this->assertContains('floats', $result);
+    }
+
+    public function testParseRequiredArgumentForIterationsReturnsExpectedWhenCorrectInteger()
+    {
+        $argument = '-i';
+        $value = '42';
+
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentForIterations');
+        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+
+        $this->assertSame(42, $result);
     }
 
     public function testGeneratePrintableReturnsStringWhenValueIsPrintable()
@@ -507,19 +518,30 @@ class BenchmarkTest extends TestCase
                 0,
                 'Option should terminate execution.',
             ],
-            'When benchmarks option contains wrong value' => [
+            'When benchmarks option\'s value is wrong' => [
                 ['-b' => false],
                 'terminateWithMessage',
                 'wrong',
                 'Wrong value passed.',
             ],
-            'When benchmarks option contains undefined benchmark' => [
+            'When benchmarks option\'s value contains undefined benchmark' => [
                 ['-b' => 'test,integers,not_exist'],
                 'terminateWithMessage',
                 'test,not_exist',
                 'Wrong benchmarks names passed.',
             ],
-
+            'When iterations option\'s value is wrong' => [
+                ['-i' => 'x'],
+                'terminateWithMessage',
+                'wrong',
+                'Wrong value passed.',
+            ],
+            'When iterations option\'s value is out of range' => [
+                ['-i' => '-1'],
+                'terminateWithMessage',
+                'between',
+                'Value out of range passed.',
+            ],
         ];
     }
 
