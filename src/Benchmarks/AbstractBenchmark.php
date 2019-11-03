@@ -45,6 +45,8 @@ abstract class AbstractBenchmark
      */
     protected function initBenchmark(array $options)
     {
+        $this->iterations = !empty($options['iterations']) ? $options['iterations'] : $this->iterations;
+
         if ($this->iterations < 1) {
             throw new \LogicException('Number of iterations cannot be less than 1.');
         }

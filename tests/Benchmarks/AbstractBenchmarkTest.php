@@ -3,6 +3,7 @@
 namespace BenchmarkPHP\Tests\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
@@ -10,19 +11,38 @@ class AbstractBenchmarkTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var AbstractBenchmark */
+    /** @var Integers $bench Must implement AbstractBenchmark */
     protected $bench;
 
     protected function setUp()
     {
-        $this->bench = $this->getMockForAbstractClass(AbstractBenchmark::class);
+        $this->bench = new Integers();
+
+        if (!$this->bench instanceof AbstractBenchmark) {
+            throw new \LogicException(get_class($this->bench) . ' doesn\'t extend AbstractBenchmark. Check setUp() method.');
+        }
     }
 
-    // Exceptions.
+    /**
+     * Exceptions.
+     */
 
-    // Corner cases.
+    /**
+     * Corner cases.
+     */
 
-    // Functionality.
+    /**
+     * Functionality.
+     */
+    public function testConstructorUpdatesIterationsWhenIterationsAreInOptions()
+    {
+        $options = ['iterations' => 5];
+
+        $bench = new Integers($options);
+
+        $this->assertSame(5, $bench->getIterations());
+    }
+
     public function testIsDebugModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
