@@ -20,7 +20,7 @@ class Benchmark
     /**
      * @var array
      */
-    const BENCHMARKS = [ // 'filesystem', 'db', 'network'
+    const BENCHMARKS = [ // 'files', 'filesystem', 'database', 'network'
         'integers',
         'floats',
         'strings',
@@ -115,6 +115,7 @@ class Benchmark
 
             if (in_array($argument, self::REQUIRED_ARGUMENTS, true)) {
                 $this->checkRequiredArgumentHasValue($argument, $next);
+                $this->checkRequiredArgumentNotAnOption($argument, $next);
                 $result[$argument] = $next;
                 next($arguments);
 
@@ -137,11 +138,6 @@ class Benchmark
         if ($value === false) {
             $this->reporter->showBlock($this->getVersionString());
             $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty value is passed.' . PHP_EOL);
-        }
-
-        if (strpos($value, '-') === 0) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Wrong value ' . (string)$value . ' is passed.' . PHP_EOL);
         }
     }
 
@@ -210,21 +206,30 @@ class Benchmark
 
     /**
      * @param string $argument
-     * @param string $data
+     * @param string $value
      * @return array
      */
-    protected function parseRequiredArgumentValue($argument, $data)
+    protected function parseRequiredArgumentValue($argument, $value)
     {
-        if (empty($data) || !is_string($data)) {
+        if (empty($value) || !is_string($value)) {
             return [];
         }
 
-        if (strpos($data, '-') !== false) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' received a wrong value ' . $data . '.' . PHP_EOL);
-        }
+        $this->checkRequiredArgumentNotAnOption($argument, $value);
 
-        return explode(',', $data);
+        return explode(',', $value);
+    }
+
+    /**
+     * @param string $argument
+     * @param mixed $value
+     */
+    protected function checkRequiredArgumentNotAnOption($argument, $value)
+    {
+        if (strpos($value, '-') === 0) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Wrong value ' . (is_scalar($value) ? (string)$value . ' ' : ' ') . 'is passed.' . PHP_EOL);
+        }
     }
 
     /**
