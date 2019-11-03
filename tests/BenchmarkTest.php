@@ -104,16 +104,17 @@ class BenchmarkTest extends TestCase
         $this->assertContains('verbose', $result);
     }
 
-    public function testParseRequiredArgumentValueReturnsEmptyArrayWhenEmptyValue()
+    public function testParseRequiredValueForBenchmarksReturnsExpectedWhenTwoExistedBenchmarksInValue()
     {
         $argument = '-t';
-        $value = '';
+        $value = 'integers,floats';
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentValue');
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredValueForBenchmarks');
         $result = $method->invokeArgs($this->bench, [$argument, $value]);
 
         $this->assertInternalType('array', $result);
-        $this->assertEmpty($result);
+        $this->assertCount(2, $result);
+        $this->assertContains('floats', $result);
     }
 
     public function testGeneratePrintableReturnsStringWhenValueIsPrintable()
@@ -500,12 +501,25 @@ class BenchmarkTest extends TestCase
                 'unknown',
                 'Option doesn\'t exist.',
             ],
-            'When option exists and should terminate'  => [
+            'When option exists and should terminate execution' => [
                 ['--version' => false],
                 'terminateWithCode',
                 0,
                 'Option should terminate execution.',
             ],
+            'When benchmarks option contains wrong value' => [
+                ['-b' => false],
+                'terminateWithMessage',
+                'wrong',
+                'Wrong value passed.',
+            ],
+            'When benchmarks option contains undefined benchmark' => [
+                ['-b' => 'test,integers,not_exist'],
+                'terminateWithMessage',
+                'test,not_exist',
+                'Wrong benchmarks names passed.',
+            ],
+
         ];
     }
 

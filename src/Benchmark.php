@@ -189,7 +189,7 @@ class Benchmark
 
                 case '-b':
                 case '--benchmarks':
-                    $options['benchmarks'] = $this->parseRequiredArgumentValue($argument, $value);
+                    $options['benchmarks'] = $this->parseRequiredValueForBenchmarks($argument, $value);
 
                     break;
 
@@ -209,7 +209,7 @@ class Benchmark
      * @param string $value
      * @return array
      */
-    protected function parseRequiredArgumentValue($argument, $value)
+    protected function parseRequiredValueForBenchmarks($argument, $value)
     {
         if (empty($value) || !is_string($value)) {
             $this->reporter->showBlock($this->getVersionString());
@@ -218,7 +218,17 @@ class Benchmark
 
         $this->checkRequiredArgumentNotAnOption($argument, $value);
 
-        return explode(',', $value);
+        $benchmarks = explode(',', $value);
+
+        if (!empty($undefined = array_diff($benchmarks, self::BENCHMARKS))) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires valid benchmarks names. Check ' . $this->generatePrintable(implode(
+                ',',
+                $undefined
+            )) . 'or use -l for more information.' . PHP_EOL);
+        }
+
+        return $benchmarks;
     }
 
     /**
