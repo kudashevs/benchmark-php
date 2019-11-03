@@ -461,42 +461,49 @@ class BenchmarkTest extends TestCase
         ];
     }
 
-    public function testParseArgumentsExecutesTerminateMethodWhenOptionDoesNotExist()
+    /**
+     * @dataProvider provideParseArgumentsData
+     * @param array $arguments
+     * @param string $method
+     * @param string $verify
+     * @param string $message
+     * @throws \ReflectionException
+     */
+    public function testParseArgumentsExecutesTerminateMethod($arguments, $method, $verify, $message)
     {
-        $arguments = ['--not_exist' => false];
-
         $reporter = $this->getMockBuilder(Reporter::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithMessage'])
+            ->setMethods([$method])
             ->getMock();
         $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains('unknown'))
-            ->willReturn(true);
+            ->method($method)
+            ->with($this->stringContains($verify))
+            ->will($this->throwException(new \InvalidArgumentException($message)));
 
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
         $method = $this->getPrivateMethod($partialMock, 'parseArguments');
         $method->invokeArgs($partialMock, [$arguments]);
     }
 
-    public function testParseArgumentsExecutesTerminateMethodWhenOptionExists()
+    public function provideParseArgumentsData()
     {
-        $arguments = ['--version' => false];
-
-        $reporter = $this->getMockBuilder(Reporter::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithCode'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithCode')
-            ->with($this->equalTo(0))
-            ->willReturn(true);
-
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-        $method->invokeArgs($partialMock, [$arguments]);
+        return [
+            'When option does not exist' => [
+                ['--not_exist' => false],
+                'terminateWithMessage',
+                'unknown',
+                'Option doesn\'t exist.',
+            ],
+            'When option exists and should terminate'  => [
+                ['--version' => false],
+                'terminateWithCode',
+                0,
+                'Option should terminate execution.',
+            ],
+        ];
     }
 
     /**
