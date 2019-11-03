@@ -212,7 +212,8 @@ class Benchmark
     protected function parseRequiredArgumentValue($argument, $value)
     {
         if (empty($value) || !is_string($value)) {
-            return [];
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty or wrong value ' . $this->generatePrintable($value) . 'is passed.' . PHP_EOL);
         }
 
         $this->checkRequiredArgumentNotAnOption($argument, $value);
@@ -228,8 +229,17 @@ class Benchmark
     {
         if (strpos($value, '-') === 0) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Wrong value ' . (is_scalar($value) ? (string)$value . ' ' : ' ') . 'is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Wrong value ' . $this->generatePrintable($value) . 'is passed.' . PHP_EOL);
         }
+    }
+
+    /**
+     * @param mixed $value
+     * @return string
+     */
+    protected function generatePrintable($value)
+    {
+        return is_scalar($value) ? (string)$value . ' ' : ' ';
     }
 
     /**

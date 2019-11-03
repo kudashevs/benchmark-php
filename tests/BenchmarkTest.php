@@ -116,20 +116,23 @@ class BenchmarkTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    public function testParseRequiredArgumentValueReturnsExpectedWhenThreeBenchmarksInValue()
+    public function testGeneratePrintableReturnsStringWhenValueIsPrintable()
     {
-        $argument = '-t';
-        $value = 'integers,floats,test';
+        $method = $this->getPrivateMethod($this->bench, 'generatePrintable');
+        $result = $method->invokeArgs($this->bench, [42]);
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentValue');
-        $result = $method->invokeArgs($this->bench, [$argument, $value]);
-
-        $this->assertInternalType('array', $result);
-        $this->assertCount(3, $result);
-        $this->assertContains('test', $result);
+        $this->assertSame('42 ', $result);
     }
 
-    public function testInitBenchmarksReturnExpected()
+    public function testGeneratePrintableReturnsSpaceStringWhenValueIsNotPrintable()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generatePrintable');
+        $result = $method->invokeArgs($this->bench, [[42]]);
+
+        $this->assertSame(' ', $result);
+    }
+
+    public function testInitBenchmarksReturnsExpected()
     {
         $count = $this->countAbstractBenchmarkClasses();
 
