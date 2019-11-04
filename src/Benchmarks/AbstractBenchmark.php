@@ -95,13 +95,9 @@ abstract class AbstractBenchmark
      * @param string $text
      * @return string
      */
-    protected function generatePluralizedCount($count, $text = '')
+    protected function generatePluralizedCount($count, $text = 'function')
     {
         $text = trim($text);
-
-        if (empty($text)) {
-            $text = 'function';
-        }
 
         return ($count > 1) ? $count . ' ' . rtrim($text, 's') . 's' : $count . ' ' . $text;
     }
