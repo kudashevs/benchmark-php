@@ -310,7 +310,8 @@ class Benchmark
                     $instance = new $class($this->options);
                 } catch (\Exception $e) {
                     $instance = [
-                        'fail' => $e->getMessage(),
+                        'fail' => 'instantiation',
+                        'message' => $e->getMessage(),
                     ];
                 }
                 $benchmarks[$name] = $instance;
@@ -360,11 +361,20 @@ class Benchmark
                 continue;
             }
 
-            $benchmark->before();
+            try {
+                $benchmark->before();
 
-            $benchmark->handle();
+                $benchmark->handle();
 
-            $benchmark->after();
+                $benchmark->after();
+            } catch (\Exception $e) {
+                $this->benchmarkSkipped($name, [
+                    'fail' => 'runtime',
+                    'message' => $e->getMessage(),
+                ]);
+
+                continue;
+            }
 
             $data = array_merge([
                 $name => 'completed',
@@ -401,18 +411,22 @@ class Benchmark
     {
         ++$this->statistics['skipped'];
 
+        $name = (string)$name;
+
         $data = [
-            (string)$name => 'skipped',
+            $name => 'skipped',
         ];
 
         if ($this->isDebugMode()) {
             $debug = [];
 
-            if (is_array($benchmark) && array_key_exists('fail', $benchmark)) {
+            if (is_array($benchmark) && array_key_exists('fail', $benchmark) && array_key_exists('message', $benchmark)) {
+                $debug['status'] = $benchmark['fail'];
                 $debug['type'] = 'object';
-                $debug['class'] = ucfirst($name);
-                $debug['message'] = $benchmark['fail'];
+                $debug['class'] = $name;
+                $debug['message'] = $benchmark['message'];
             } else {
+                $debug['status'] = 'unknown';
                 $debug['type'] = gettype($benchmark);
                 $debug['class'] = is_object($benchmark) ? get_class($benchmark) : 'not an object';
                 $debug['message'] = 'Not a benchmark object.';
@@ -422,6 +436,10 @@ class Benchmark
         }
 
         $this->reporter->showBlock($data);
+
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
+            $this->reporter->showSeparator();
+        }
     }
 
     /**
