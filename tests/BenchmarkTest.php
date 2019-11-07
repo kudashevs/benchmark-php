@@ -128,17 +128,17 @@ class BenchmarkTest extends TestCase
         $this->assertSame(42, $result);
     }
 
-    public function testGeneratePrintableReturnsStringWhenValueIsPrintable()
+    public function testGeneratePrintableWithSpaceReturnsStringWhenValueIsPrintable()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePrintable');
+        $method = $this->getPrivateMethod($this->bench, 'generatePrintableWithSpace');
         $result = $method->invokeArgs($this->bench, [42]);
 
         $this->assertSame('42 ', $result);
     }
 
-    public function testGeneratePrintableReturnsSpaceStringWhenValueIsNotPrintable()
+    public function testGeneratePrintableWithSpaceReturnsSpaceStringWhenValueIsNotPrintable()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePrintable');
+        $method = $this->getPrivateMethod($this->bench, 'generatePrintableWithSpace');
         $result = $method->invokeArgs($this->bench, [[42]]);
 
         $this->assertSame(' ', $result);
