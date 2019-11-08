@@ -41,10 +41,7 @@ class BenchmarkTest extends TestCase
     {
         $arguments = [array_shift($_SERVER['argv'])];
 
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
 
         $method = $this->getPrivateMethod($partialMock, 'initArguments');
         $result = $method->invokeArgs($partialMock, [$arguments]);
@@ -62,10 +59,7 @@ class BenchmarkTest extends TestCase
             '--debug' => false,
         ];
 
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
 
         $method = $this->getPrivateMethod($partialMock, 'initArguments');
         $result = $method->invokeArgs($partialMock, [$arguments]);
@@ -77,10 +71,7 @@ class BenchmarkTest extends TestCase
     {
         $arguments = [];
 
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
 
         $method = $this->getPrivateMethod($partialMock, 'parseArguments');
         $result = $method->invokeArgs($partialMock, [$arguments]);
@@ -93,10 +84,7 @@ class BenchmarkTest extends TestCase
     {
         $arguments = ['--verbose' => false];
 
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
 
         $method = $this->getPrivateMethod($partialMock, 'parseArguments');
         $result = $method->invokeArgs($partialMock, [$arguments]);
@@ -304,7 +292,7 @@ class BenchmarkTest extends TestCase
         $stub = $this->getMockBuilder(Integers::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $stub->expects($this->any())
+        $stub->expects($this->once())
             ->method('result')
             ->willReturn([]);
         $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
@@ -548,6 +536,17 @@ class BenchmarkTest extends TestCase
     /**
      * Helpers.
      */
+
+    /**
+     * @return Benchmark|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getPartialMockWithSkippedConstructor()
+    {
+        return $this->getMockBuilder(Benchmark::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+    }
 
     /**
      * @return int|null
