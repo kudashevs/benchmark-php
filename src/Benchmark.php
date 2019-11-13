@@ -433,7 +433,7 @@ class Benchmark
 
         $this->reporter->showBlock($data);
 
-        if ($this->isVerboseMode() || $this->isDebugMode()) {
+        if (!$this->isSilentMode()) {
             $this->reporter->showSeparator();
         }
     }
@@ -464,7 +464,7 @@ class Benchmark
 
         $this->reporter->showBlock($data);
 
-        if ($this->isVerboseMode() || $this->isDebugMode()) {
+        if (!$this->isSilentMode()) {
             $this->reporter->showSeparator();
         }
     }
