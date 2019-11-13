@@ -208,7 +208,7 @@ class BenchmarkTest extends TestCase
         $method->invoke($this->bench);
     }
 
-    public function testBenchmarkCompletedUpdateTotalTime()
+    public function testBenchmarkCompletedUpdatesTotalTime()
     {
         $stub = $this->getMockBuilder(Integers::class)
             ->disableOriginalConstructor()
@@ -222,6 +222,28 @@ class BenchmarkTest extends TestCase
         $method->invoke($this->bench);
 
         $this->assertContains('42', $this->bench->getStatistics(['total_time']));
+    }
+
+    public function testGenerateDefaultReportReturnsExpectedWhenWithoutAdditionalInformation()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultReport');
+        $result = $method->invokeArgs($this->bench, ['test', ['exec_time' => 42]]);
+
+        $this->assertArrayHasKey('test', $result);
+        $this->assertEquals(42, $result['test']);
+    }
+
+    public function testGenerateDefaultReportReturnsExpectedWhenWithAdditionalInformation()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultReport');
+        $result = $method->invokeArgs($this->bench, ['test', ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8]]);
+
+        $this->assertCount(3, $result);
+        $this->assertArrayHasKey('test', $result);
+        $this->assertEquals(42, $result['test']);
+        $this->assertArrayHasKey('write_speed', $result);
+        $this->assertEquals(32, $result['write_speed']);
+        $this->assertArrayNotHasKey('some_time', $result);
     }
 
     public function testGetStatisticsReturnsFullStatisticsWhenEmptyKeys()

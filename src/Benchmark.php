@@ -453,9 +453,7 @@ class Benchmark
             $statistics['exec_time'] = 'malformed time';
         }
 
-        $data = [
-            $name => $statistics['exec_time'],
-        ];
+        $data = $this->generateDefaultReport($name, $statistics);
 
         if (!$this->isSilentMode()) {
             $data[$name] = 'completed';
@@ -467,6 +465,25 @@ class Benchmark
         if (!$this->isSilentMode()) {
             $this->reporter->showSeparator();
         }
+    }
+
+    /**
+     * @param string $name
+     * @param array $statistics
+     * @return array
+     */
+    protected function generateDefaultReport($name, array $statistics)
+    {
+        $additionalKeys = ['write_speed', 'read_speed'];
+        $additional = array_intersect_key($statistics, array_flip($additionalKeys));
+
+        $report = [
+            $name => $statistics['exec_time'],
+        ];
+
+        $report = array_merge($report, $additional);
+
+        return $report;
     }
 
     /**
