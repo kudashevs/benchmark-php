@@ -20,12 +20,13 @@ class Benchmark
     /**
      * @var array
      */
-    const BENCHMARKS = [ // 'files', 'filesystem', 'database', 'network'
+    const BENCHMARKS = [ // 'files', 'database', 'network'
         'integers',
         'floats',
         'strings',
         'arrays',
         'objects',
+        'filesystem',
     ];
 
     /**
@@ -36,6 +37,7 @@ class Benchmark
         '--benchmarks',
         '-i',
         '--iterations',
+        '--temporary-file',
     ];
 
     /**
@@ -201,6 +203,11 @@ class Benchmark
 
                     break;
 
+                case '--temporary-file':
+                    $options['file'] = $this->parseRequiredArgumentForFilename($argument, $value);
+
+                    break;
+
                 default:
                     $this->reporter->showBlock($this->getVersionString());
                     $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
@@ -262,6 +269,23 @@ class Benchmark
         }
 
         return $iterations;
+    }
+
+    /**
+     * @param string $argument
+     * @param string $value
+     * @return string
+     */
+    protected function parseRequiredArgumentForFilename($argument, $value)
+    {
+        if (empty($value) || !is_string($value)) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        $this->checkRequiredArgumentNotAnOption($argument, $value);
+
+        return $value;
     }
 
     /**
@@ -683,6 +707,9 @@ Available Options:
   --version                 Prints the version and exits
   -v, --verbose             Prints verbose information during execution
   --debug                   Prints detailed information during execution
+
+Additional Options [filesystem]:
+  --temporary-file <file>        Path to specific file for filesystem benchmarking
 EOT;
 
         return $message;

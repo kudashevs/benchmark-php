@@ -116,6 +116,17 @@ class BenchmarkTest extends TestCase
         $this->assertSame(42, $result);
     }
 
+    public function testParseRequiredArgumentForFilenameReturnsExpectedWhenCorrectFilename()
+    {
+        $argument = '--temporary-file';
+        $value = 'test.txt';
+
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentForFilename');
+        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+
+        $this->assertSame('test.txt', $result);
+    }
+
     public function testGeneratePrintableWithSpaceReturnsStringWhenValueIsPrintable()
     {
         $method = $this->getPrivateMethod($this->bench, 'generatePrintableWithSpace');
