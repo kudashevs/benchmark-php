@@ -97,7 +97,7 @@ class Benchmark
         $this->handleBenchmarks();
 
         $this->reporter->showBlock($this->getBenchmarksSummary());
-        $this->reporter->showFooter($this->getSummary(['total_time']));
+        $this->reporter->showFooter($this->getExecutionSummary(['total_time']));
     }
 
     /**
@@ -513,6 +513,15 @@ class Benchmark
     }
 
     /**
+     * @param array $information
+     * @return bool
+     */
+    protected function hasCorrectExecutionTime(array $information)
+    {
+        return isset($information['exec_time']) && is_numeric($information['exec_time']);
+    }
+
+    /**
      * @param string $name
      * @param array $statistics
      * @return array
@@ -580,20 +589,48 @@ class Benchmark
     }
 
     /**
-     * @param array $information
-     * @return bool
-     */
-    protected function hasCorrectExecutionTime(array $information)
-    {
-        return isset($information['exec_time']) && is_numeric($information['exec_time']);
-    }
-
-    /**
      * @return array
      */
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBenchmarksSummary()
+    {
+        if (!$this->hasBenchmarks()) {
+            return ['skip' => 'no benchmarks were found'];
+        }
+
+        if ($this->isSilentMode()) {
+            return [];
+        }
+
+        list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
+
+        $summary = ['done' => $this->generatePluralizedBenchmarkCount($completed) . ' completed'];
+
+        if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
+            $summary = array_merge($summary, ['skip' => $this->generatePluralizedBenchmarkCount($skipped) . ' skipped']);
+        }
+
+        return $summary;
+    }
+
+    /**
+     * @param array $keys
+     * @return array
+     */
+    public function getExecutionSummary(array $keys = [])
+    {
+        if ($this->isVerboseMode() || $this->isDebugMode()) {
+            $keys = array_merge(['started_at', 'stopped_at'], $keys);
+        }
+
+        return $this->getStatisticsForHumans($keys);
     }
 
     /**
@@ -637,43 +674,6 @@ class Benchmark
         }
 
         return $updated;
-    }
-
-    /**
-     * @param array $keys
-     * @return array
-     */
-    public function getSummary(array $keys = [])
-    {
-        if ($this->isVerboseMode() || $this->isDebugMode()) {
-            $keys = array_merge(['started_at', 'stopped_at'], $keys);
-        }
-
-        return $this->getStatisticsForHumans($keys);
-    }
-
-    /**
-     * @return array
-     */
-    public function getBenchmarksSummary()
-    {
-        if (!$this->hasBenchmarks()) {
-            return ['skip' => 'no benchmarks were found'];
-        }
-
-        if ($this->isSilentMode()) {
-            return [];
-        }
-
-        list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
-
-        $summary = ['done' => $this->generatePluralizedBenchmarkCount($completed) . ' completed'];
-
-        if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
-            $summary = array_merge($summary, ['skip' => $this->generatePluralizedBenchmarkCount($skipped) . ' skipped']);
-        }
-
-        return $summary;
     }
 
     /**
