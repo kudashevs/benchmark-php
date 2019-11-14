@@ -457,7 +457,7 @@ class Benchmark
 
         if (!$this->isSilentMode()) {
             $data[$name] = 'completed';
-            $data = array_merge($data, $statistics);
+            $data = array_replace($statistics, $data);
         }
 
         $this->reporter->showBlock($data);
