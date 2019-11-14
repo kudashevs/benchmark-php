@@ -203,6 +203,14 @@ class Benchmark
 
                     break;
 
+                case '--binary-prefix':
+                    $options['prefix'] = 'binary';
+                    break;
+
+                case '--decimal-prefix':
+                    $options['prefix'] = 'decimal';
+                    break;
+
                 case '--temporary-file':
                     $options['file'] = $this->parseRequiredArgumentForFilename($argument, $value);
 
@@ -730,7 +738,9 @@ Available Options:
   --debug                   Prints detailed information during execution
 
 Additional Options [filesystem]:
-  --temporary-file <file>        Path to specific file for filesystem benchmarking
+  --binary-prefix           Use binary kilobyte denotes 1024 bytes (this is the default)
+  --decimal-prefix          Use decimal kilobyte denotes 1000 bytes
+  --temporary-file <file>   Path to specific file for filesystem benchmarking
 EOT;
 
         return $message;
