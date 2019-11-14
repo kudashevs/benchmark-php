@@ -40,6 +40,11 @@ class Filesystem extends AbstractBenchmark
     private $handler;
 
     /**
+     * @var int Default base is the binary prefix.
+     */
+    private $base;
+
+    /**
      * Create a new FileSystem instance.
      *
      * @param array $options
@@ -50,6 +55,7 @@ class Filesystem extends AbstractBenchmark
 
         $this->file = $this->initFile($options);
         $this->handler = $this->initHandler();
+        $this->base = $this->initBase($options);
     }
 
     public function __destruct()
@@ -89,6 +95,19 @@ class Filesystem extends AbstractBenchmark
         }
 
         return $handler;
+    }
+
+    /**
+     * @param array $options
+     * @return int
+     */
+    protected function initBase(array $options)
+    {
+        if (array_key_exists('prefix', $options) && $options['prefix'] === 'decimal') {
+            return 1000;
+        }
+
+        return 1024;
     }
 
     /**
@@ -250,13 +269,11 @@ class Filesystem extends AbstractBenchmark
      */
     protected function generateSizeForHumans($size, $precision = 2, $measure = null)
     {
-        $units = ['', 'K', 'M', 'G', 'T'];
+        $base = log($size, $this->base);
+        $measure = ($measure !== null) ? $measure : (int)floor($base);
+        $unit = $this->generateSizePrefix($measure);
 
-        $base = log($size, self::BASE_SIZE);
-        $measure = $measure !== null ? $measure : floor($base);
-        $unit = ($measure < 0 || $measure > count($units)) ? '' : $units[$measure];
-
-        if ($size < self::BASE_SIZE) {
+        if ($size < $this->base) {
             return $this->formatSize($size, 0);
         }
 
@@ -274,5 +291,24 @@ class Filesystem extends AbstractBenchmark
     protected function formatSize($size, $precision)
     {
         return number_format($size, $precision, '.', '');
+    }
+
+    /**
+     * @param int $measure
+     * @return string
+     */
+    protected function generateSizePrefix($measure)
+    {
+        if ($this->base === 1000) {
+            $units = ['', 'KB', 'MB', 'GB', 'TB'];
+        } else {
+            $units = ['', 'K', 'M', 'G', 'T'];
+        }
+
+        if ($measure < 0 || $measure > count($units)) {
+            return '';
+        }
+
+        return $units[$measure];
     }
 }

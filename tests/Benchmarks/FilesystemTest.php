@@ -89,20 +89,21 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGenerateSizeForHumans
+     * @dataProvider provideGenerateSizeForHumansBaseBinary
      * @param array $arguments
      * @param string $expected
      * @throws \ReflectionException
      */
-    public function testGenerateSizeForHumansReturnsExpected($arguments, $expected)
+    public function testGenerateSizeForHumansReturnsExpectedWhenBaseBinary($arguments, $expected)
     {
+        $bench = new Filesystem(['prefix' => 'binary']);
         $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
-        $result = $method->invokeArgs($this->bench, $arguments);
+        $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
     }
 
-    public function provideGenerateSizeForHumans()
+    public function provideGenerateSizeForHumansBaseBinary()
     {
         return [
             'When size is in bytes' => [[512], '512'],
@@ -120,6 +121,96 @@ class FilesystemTest extends TestCase
             'When size is one gigabyte and measure is in megabytes' => [[1073741824, 2, 2], '1000.00M'],
             'When size is one gigabyte and measure is in gigabytes' => [[1073741824, 2, 3], '1.00G'],
             'When size is one gigabyte and measure is in terabytes' => [[1073741824, 3, 4], '0.001T'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGenerateSizeForHumansBaseDecimal
+     * @param array $arguments
+     * @param string $expected
+     * @throws \ReflectionException
+     */
+    public function testGenerateSizeForHumansReturnsExpectedWhenBaseDecimal($arguments, $expected)
+    {
+        $bench = new Filesystem(['prefix' => 'decimal']);
+        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $result = $method->invokeArgs($bench, $arguments);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function provideGenerateSizeForHumansBaseDecimal()
+    {
+        return [
+            'When size is in bytes' => [[512], '512'],
+            'When size is less than kilobyte' => [[1000], '1.00KB'],
+            'When size is one kilobyte and default precise' => [[1024], '1.02KB'],
+            'When size is one kilobyte and precise is 3' => [[1024, 3], '1.024KB'],
+            'When size is in kilobytes and precise is 3' => [[1042, 3], '1.042KB'],
+            'When size is one megabyte and default precise' => [[1048576], '1.05MB'],
+            'When size is one megabyte and precise is 3' => [[1048576, 3], '1.049MB'],
+            'When size is in megabytes and precise is 3' => [[1049600, 3], '1.050MB'],
+            'When size is one gigabyte and default precise' => [[1073741824], '1.07GB'],
+            'When size is one gigabyte and precise is 3' => [[1073741824, 3], '1.074GB'],
+            'When size is in gigabytes and precise is 3' => [[1049756976, 3, 3], '1.050GB'],
+            'When size is one gigabyte and measure is in kilobytes' => [[1073741824, 2, 1], '1073741.82KB'],
+            'When size is one gigabyte and measure is in megabytes' => [[1073741824, 2, 2], '1073.74MB'],
+            'When size is one gigabyte and measure is in gigabytes' => [[1073741824, 2, 3], '1.07GB'],
+            'When size is one gigabyte and measure is in terabytes' => [[1073741824, 3, 4], '0.001TB'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGenerateSizePrefixBaseBinary
+     * @param array $arguments
+     * @param string $expected
+     * @throws \ReflectionException
+     */
+    public function testGenerateSizePrefixReturnsExpectedWhenBaseBinary($arguments, $expected)
+    {
+        $bench = new Filesystem(['prefix' => 'binary']);
+        $method = $this->getPrivateMethod($this->bench, 'generateSizePrefix');
+        $result = $method->invokeArgs($bench, $arguments);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function provideGenerateSizePrefixBaseBinary()
+    {
+        return [
+            'When out of range base' => [[-1], ''],
+            'When 0 base' => [[0], ''],
+            'When 1 base' => [[1], 'K'],
+            'When 2 base' => [[2], 'M'],
+            'When 3 base' => [[3], 'G'],
+            'When 4 base' => [[4], 'T'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGenerateSizePrefixBaseDecimal
+     * @param array $arguments
+     * @param string $expected
+     * @throws \ReflectionException
+     */
+    public function testGenerateSizePrefixReturnsExpectedWhenBaseDecimal($arguments, $expected)
+    {
+        $bench = new Filesystem(['prefix' => 'decimal']);
+        $method = $this->getPrivateMethod($this->bench, 'generateSizePrefix');
+        $result = $method->invokeArgs($bench, $arguments);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function provideGenerateSizePrefixBaseDecimal()
+    {
+        return [
+            'When out of range base' => [[-1], ''],
+            'When 0 base' => [[0], ''],
+            'When 1 base' => [[1], 'KB'],
+            'When 2 base' => [[2], 'MB'],
+            'When 3 base' => [[3], 'GB'],
+            'When 4 base' => [[4], 'TB'],
         ];
     }
 
