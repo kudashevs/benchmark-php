@@ -626,7 +626,7 @@ class Benchmark
      */
     public function getExecutionSummary(array $keys = [])
     {
-        if ($this->isVerboseMode() || $this->isDebugMode()) {
+        if (!$this->isSilentMode()) {
             $keys = array_merge(['started_at', 'stopped_at'], $keys);
         }
 
