@@ -9,20 +9,23 @@ trait HandlesFunctionsTrait
      */
     public function handle()
     {
-        $startTime = microtime(true);
+        $initTime = microtime(true);
+        $diffTime = 0;
 
         foreach ($this->functions as $function) {
+            $startTime = microtime(true);
+
             foreach ($this->data as $i) {
                 $function($i);
             }
+
+            $stopTime = microtime(true);
+            $diffTime += $stopTime - $startTime;
         }
 
-        $stopTime = microtime(true);
-        $diffTime = $stopTime - $startTime;
-
         $this->statistics = [
-            'start_time' => $startTime,
-            'stop_time' => $stopTime,
+            'start_time' => $initTime,
+            'stop_time' => $initTime - $diffTime,
             'exec_time' => $diffTime,
         ];
     }
