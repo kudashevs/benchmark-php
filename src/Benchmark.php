@@ -437,10 +437,22 @@ class Benchmark
             $name => 'skipped',
         ];
 
+        if ($this->isVerboseMode()) {
+            $verbose = [];
+
+            if ($this->hasSkipInformation($benchmark)) {
+                $verbose['message'] = $benchmark['message'];
+            } else {
+                $verbose['message'] = 'Why it wasn\'t a benchmark object?';
+            }
+
+            $data = array_merge($data, $verbose);
+        }
+
         if ($this->isDebugMode()) {
             $debug = [];
 
-            if (is_array($benchmark) && array_key_exists('fail', $benchmark) && array_key_exists('message', $benchmark)) {
+            if ($this->hasSkipInformation($benchmark)) {
                 $debug['status'] = $benchmark['fail'];
                 $debug['type'] = 'object';
                 $debug['class'] = $name;
@@ -449,7 +461,7 @@ class Benchmark
                 $debug['status'] = 'unknown';
                 $debug['type'] = gettype($benchmark);
                 $debug['class'] = is_object($benchmark) ? get_class($benchmark) : 'not an object';
-                $debug['message'] = 'Not a benchmark object.';
+                $debug['message'] = 'Why it wasn\'t a benchmark object?';
             }
 
             $data = array_merge($data, $debug);
@@ -460,6 +472,15 @@ class Benchmark
         if (!$this->isSilentMode()) {
             $this->reporter->showSeparator();
         }
+    }
+
+    /**
+     * @param $benchmark
+     * @return bool
+     */
+    protected function hasSkipInformation($benchmark)
+    {
+        return is_array($benchmark) && array_key_exists('fail', $benchmark) && array_key_exists('message', $benchmark);
     }
 
     /**
