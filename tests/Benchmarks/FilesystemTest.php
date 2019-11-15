@@ -110,13 +110,14 @@ class FilesystemTest extends TestCase
             'When size is less than kilobyte' => [[1000], '1000'],
             'When size is one kilobyte and default precise' => [[1024], '1.00K'],
             'When size is one kilobyte and precise is 3' => [[1024, 3], '1.000K'],
-            'When size is in kilobytes and precise is 3' => [[1042, 3], '1.018K'],
+            'When size is in kilobytes and precise is 3' => [[1042, 3], '1.017K'],
             'When size is one megabyte and default precise' => [[1048576], '1.00M'],
             'When size is one megabyte and precise is 3' => [[1048576, 3], '1.000M'],
             'When size is in megabytes and precise is 3' => [[1049600, 3], '1.001M'],
             'When size is one gigabyte and default precise' => [[1073741824], '1.00G'],
             'When size is one gigabyte and precise is 3' => [[1073741824, 3], '1.000G'],
-            'When size is in gigabytes and precise is 3' => [[1049756976, 3, 3], '0.978G'],
+            'When size is less than gigabyte and precise is 3' => [[1049756976, 3, 3], '0.977G'],
+            'When size is more than gigabyte and precise is 3' => [[1074790400, 3, 3], '1.001G'],
             'When size is one gigabyte and measure is in kilobytes' => [[1073741824, 2, 1], '1000000.00K'],
             'When size is one gigabyte and measure is in megabytes' => [[1073741824, 2, 2], '1000.00M'],
             'When size is one gigabyte and measure is in gigabytes' => [[1073741824, 2, 3], '1.00G'],
@@ -147,12 +148,12 @@ class FilesystemTest extends TestCase
             'When size is one kilobyte and default precise' => [[1024], '1.02KB'],
             'When size is one kilobyte and precise is 3' => [[1024, 3], '1.024KB'],
             'When size is in kilobytes and precise is 3' => [[1042, 3], '1.042KB'],
-            'When size is one megabyte and default precise' => [[1048576], '1.05MB'],
-            'When size is one megabyte and precise is 3' => [[1048576, 3], '1.049MB'],
-            'When size is in megabytes and precise is 3' => [[1049600, 3], '1.050MB'],
+            'When size is one megabyte and default precise' => [[1048576], '1.04MB'],
+            'When size is one megabyte and precise is 3' => [[1048576, 3], '1.048MB'],
+            'When size is in megabytes and precise is 3' => [[1049600, 3], '1.049MB'],
             'When size is one gigabyte and default precise' => [[1073741824], '1.07GB'],
-            'When size is one gigabyte and precise is 3' => [[1073741824, 3], '1.074GB'],
-            'When size is in gigabytes and precise is 3' => [[1049756976, 3, 3], '1.050GB'],
+            'When size is one gigabyte and precise is 3' => [[1073741824, 3], '1.073GB'],
+            'When size is in gigabytes and precise is 3' => [[1049756976, 3, 3], '1.049GB'],
             'When size is one gigabyte and measure is in kilobytes' => [[1073741824, 2, 1], '1073741.82KB'],
             'When size is one gigabyte and measure is in megabytes' => [[1073741824, 2, 2], '1073.74MB'],
             'When size is one gigabyte and measure is in gigabytes' => [[1073741824, 2, 3], '1.07GB'],
@@ -212,6 +213,38 @@ class FilesystemTest extends TestCase
             'When 3 base' => [[3], 'GB'],
             'When 4 base' => [[4], 'TB'],
         ];
+    }
+
+    public function testFormatSizeReturnsExpectedWhenString()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'formatSize');
+        $result = $method->invokeArgs($this->bench, ['test']);
+
+        $this->assertEquals('test', $result);
+    }
+
+    public function testFormatSizeReturnsExpectedWhenInt()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'formatSize');
+        $result = $method->invokeArgs($this->bench, [42]);
+
+        $this->assertEquals(42, $result);
+    }
+
+    public function testFormatSizeReturnsExpectedWhenFloatAndPrecisionIs2()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'formatSize');
+        $result = $method->invokeArgs($this->bench, [2.729513, 2]);
+
+        $this->assertEquals('2.73', $result);
+    }
+
+    public function testFormatSizeReturnsExpectedWhenFloatAndPrecisionIs3()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'formatSize');
+        $result = $method->invokeArgs($this->bench, [2.729513, 3]);
+
+        $this->assertEquals('2.729', $result);
     }
 
     /**

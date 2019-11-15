@@ -269,22 +269,16 @@ class Filesystem extends AbstractBenchmark
      */
     protected function generateSizeForHumans($size, $precision = 2, $measure = null)
     {
-        $base = log($size, $this->base);
-        $measure = ($measure !== null) ? $measure : (int)floor($base);
-        $unit = $this->generateSizePrefix($measure);
-
         if ($size < $this->base) {
             return $this->formatSize($size, 0);
         }
 
-        /*
-         * we don't want to round the last digit as number_format does, so we increase
-         * precision by one and then we will cut the last digit in formatSize method
-         */
-        $calculated = round(1000 ** ($base - $measure), $precision + 1);
-        $formatted = $this->formatSize($calculated, $precision + 1);
+        $base = log($size, $this->base);
+        $measure = ($measure !== null) ? $measure : (int)floor($base);
 
-        return $formatted . $unit;
+        $calculated = round(1000 ** ($base - $measure), 4);
+
+        return $this->formatSize($calculated, $precision) . $this->generateSizePrefix($measure);
     }
 
     /**
@@ -292,7 +286,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function formatSize($size, $precision)
+    protected function formatSize($size, $precision = 2)
     {
         if (!is_numeric($size)) {
             return $size;
@@ -302,7 +296,11 @@ class Filesystem extends AbstractBenchmark
             return (string)$size;
         }
 
-        $formatted = number_format($size, $precision, '.', '');
+        /*
+        * we don't want to round the last digit as number_format does, so we increase
+        * precision by one and then we will cut the last digit in the output
+        */
+        $formatted = number_format($size, $precision + 1, '.', '');
 
         return substr($formatted, 0, -1);
     }
