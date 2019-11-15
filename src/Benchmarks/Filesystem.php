@@ -277,8 +277,12 @@ class Filesystem extends AbstractBenchmark
             return $this->formatSize($size, 0);
         }
 
-        $calculated = round(1000 ** ($base - $measure), $precision);
-        $formatted = $this->formatSize($calculated, $precision);
+        /*
+         * we don't want to round the last digit as number_format does, so we increase
+         * precision by one and then we will cut the last digit in formatSize method
+         */
+        $calculated = round(1000 ** ($base - $measure), $precision + 1);
+        $formatted = $this->formatSize($calculated, $precision + 1);
 
         return $formatted . $unit;
     }
@@ -290,7 +294,17 @@ class Filesystem extends AbstractBenchmark
      */
     protected function formatSize($size, $precision)
     {
-        return number_format($size, $precision, '.', '');
+        if (!is_numeric($size)) {
+            return $size;
+        }
+
+        if (is_int($size)) {
+            return (string)$size;
+        }
+
+        $formatted = number_format($size, $precision, '.', '');
+
+        return substr($formatted, 0, -1);
     }
 
     /**
