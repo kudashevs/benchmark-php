@@ -545,7 +545,7 @@ class Benchmark
         $additional = array_intersect_key($statistics, array_flip($additionalKeys));
 
         $report = [
-            $name => $statistics['exec_time'],
+            $name => $this->generateDefaultExecutionTime($statistics['exec_time'], self::TIME_PRECISION),
         ];
 
         $report = array_merge($report, $additional);
@@ -697,6 +697,10 @@ class Benchmark
 
         if (empty($result)) {
             return $result;
+        }
+
+        if ($this->isSilentMode() && array_key_exists('total_time', $result)) {
+            $result['total_time'] = $this->generateDefaultExecutionTime($result['total_time'], self::TIME_PRECISION);
         }
 
         $updated = [];
