@@ -241,7 +241,7 @@ class BenchmarkTest extends TestCase
         $result = $method->invokeArgs($this->bench, ['test', ['exec_time' => 42]]);
 
         $this->assertArrayHasKey('test', $result);
-        $this->assertEquals(42, $result['test']);
+        $this->assertStringStartsWith('42', $result['test']);
     }
 
     public function testGenerateDefaultReportReturnsExpectedWhenWithAdditionalInformation()
@@ -251,10 +251,66 @@ class BenchmarkTest extends TestCase
 
         $this->assertCount(3, $result);
         $this->assertArrayHasKey('test', $result);
-        $this->assertEquals(42, $result['test']);
+        $this->assertStringStartsWith('42', $result['test']);
         $this->assertArrayHasKey('write_speed', $result);
         $this->assertEquals(32, $result['write_speed']);
         $this->assertArrayNotHasKey('some_time', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenString()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, ['test']);
+
+        $this->assertEquals('test', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs0()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [1, 0]);
+
+        $this->assertEquals('1s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs2()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [1, 2]);
+
+        $this->assertEquals('1.00s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs2()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [2.729513, 2]);
+
+        $this->assertEquals('2.72s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsWithoutRoundingWhenTimeAndPrecisionIs3()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [2.729513, 3]);
+
+        $this->assertEquals('2.729s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsWithTrailingZeroWhenTimeAndPrecisionIs3()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [2.720513, 3]);
+
+        $this->assertEquals('2.720s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs10()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [42.7684543132782, 10]);
+
+        $this->assertEquals('42.7684543132s', $result);
     }
 
     public function testGetStatisticsReturnsFullStatisticsWhenEmptyKeys()

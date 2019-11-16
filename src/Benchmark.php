@@ -18,6 +18,11 @@ class Benchmark
     const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
+     * @var int Execution time output precision
+     */
+    const TIME_PRECISION = 3;
+
+    /**
      * @var array
      */
     const BENCHMARKS = [ // 'files', 'database', 'network'
@@ -546,6 +551,26 @@ class Benchmark
         $report = array_merge($report, $additional);
 
         return $report;
+    }
+
+    /**
+     * @param mixed $time
+     * @param int $precision
+     * @return string
+     */
+    protected function generateDefaultExecutionTime($time, $precision = 0)
+    {
+        if (!is_numeric($time)) {
+            return $time;
+        }
+
+        if ($precision === 0) {
+            return floor($time) . 's';
+        }
+
+        $time = number_format($time, $precision + 2, '.', '');
+
+        return substr($time, 0, -2). 's';
     }
 
     /**
