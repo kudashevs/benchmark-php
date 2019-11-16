@@ -542,13 +542,13 @@ class Benchmark
     protected function generateDefaultReport($name, array $statistics)
     {
         $additionalKeys = ['write_speed', 'read_speed'];
-        $additional = array_intersect_key($statistics, array_flip($additionalKeys));
+        $additionalInformation = array_intersect_key($statistics, array_flip($additionalKeys));
 
         $report = [
             $name => $this->generateDefaultExecutionTime($statistics['exec_time'], self::TIME_PRECISION),
         ];
 
-        $report = array_merge($report, $additional);
+        $report = array_merge($report, $additionalInformation);
 
         return $report;
     }
