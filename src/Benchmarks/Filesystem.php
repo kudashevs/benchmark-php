@@ -252,12 +252,16 @@ class Filesystem extends AbstractBenchmark
 
     /**
      * @param int $size
-     * @param float $time
+     * @param int|float $time
      * @param int $precision
      * @return string
      */
-    protected function calculateSpeed($size, $time, $precision = 2)
+    protected function calculateSpeed($size, $time, $precision = 3)
     {
+        if ($time == 0) {
+            throw new \RuntimeException('The ' . __FUNCTION__ . ' time argument cannot be zero. Check argument value.');
+        }
+
         return $this->generateSizeForHumans($size / $time, $precision) . '/s';
     }
 

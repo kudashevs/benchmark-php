@@ -33,6 +33,16 @@ class FilesystemTest extends TestCase
         $method->invokeArgs($partialMock, [$options]);
     }
 
+    public function testCalculateSpeedThrowsExceptionWhenTimeIs0()
+    {
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
+        $method = $this->getPrivateMethod($partialMock, 'calculateSpeed');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('cannot be zero');
+        $method->invokeArgs($partialMock, [42, 0]);
+    }
+
     /**
      * Corner cases.
      */
