@@ -73,7 +73,7 @@ trait HandlesFunctionsTrait
         }
 
         if (empty($functions)) {
-            throw new \LogicException('There is no functions to proceed.');
+            throw new \LogicException('There are no functions to proceed.');
         }
 
         return $functions;
