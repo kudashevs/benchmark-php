@@ -105,12 +105,12 @@ class BenchmarkTest extends TestCase
         $this->assertContains('floats', $result);
     }
 
-    public function testParseRequiredArgumentIsPositiveIntegerReturnsExpectedWhenCorrectInteger()
+    public function testParseRequiredArgumentIsIterationReturnsExpectedWhenIteration()
     {
         $argument = '-i';
-        $value = '42';
+        $value = 42;
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsPositiveInteger');
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsIteration');
         $result = $method->invokeArgs($this->bench, [$argument, $value]);
 
         $this->assertSame(42, $result);

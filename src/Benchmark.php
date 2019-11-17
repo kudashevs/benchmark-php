@@ -204,7 +204,7 @@ class Benchmark
 
                 case '-i':
                 case '--iterations':
-                    $options['iterations'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
+                    $options['iterations'] = $this->parseRequiredArgumentIsIteration($argument, $value);
 
                     break;
 
@@ -243,7 +243,7 @@ class Benchmark
     {
         if (empty($value) || !is_string($value)) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires a benchmark name. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
 
         $this->checkRequiredArgumentNotAnOption($argument, $value);
@@ -252,7 +252,7 @@ class Benchmark
 
         if (!empty($undefined = array_diff($benchmarks, self::BENCHMARKS))) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires valid benchmarks names. Check ' . $this->generatePrintableWithSpace(implode(
+            $this->terminateWithMessage('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
                 $undefined
             )) . 'or use -l for more information.' . PHP_EOL);
@@ -263,24 +263,24 @@ class Benchmark
 
     /**
      * @param string $argument
-     * @param string $value
+     * @param int|float $value
      * @return int
      */
-    protected function parseRequiredArgumentIsPositiveInteger($argument, $value)
+    protected function parseRequiredArgumentIsIteration($argument, $value)
     {
         $minIterations = 1;
         $maxIterations = 100000000;
 
-        if (empty($value) || !is_numeric($value)) {
+        if ($value === '' || !is_numeric($value)) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires a number of iterations. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
 
         $iterations = (int)$value;
 
         if ($iterations < $minIterations || $iterations > $maxIterations) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
 
         return $iterations;
@@ -295,7 +295,7 @@ class Benchmark
     {
         if (empty($value) || !is_string($value)) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires a filename. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
 
         $this->checkRequiredArgumentNotAnOption($argument, $value);
@@ -311,7 +311,7 @@ class Benchmark
     {
         if (strpos($value, '-') === 0) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
     }
 
