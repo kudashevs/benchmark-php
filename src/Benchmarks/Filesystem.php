@@ -5,7 +5,7 @@ namespace BenchmarkPHP\Benchmarks;
 class Filesystem extends AbstractBenchmark
 {
     /**
-     * @var int We start with kilobyte.
+     * @var int We use binary kilobyte as base.
      */
     const BASE_SIZE = 1024;
 
@@ -40,7 +40,7 @@ class Filesystem extends AbstractBenchmark
     private $handler;
 
     /**
-     * @var int Default base is the binary prefix.
+     * @var int
      */
     private $base;
 
@@ -98,16 +98,18 @@ class Filesystem extends AbstractBenchmark
     }
 
     /**
+     * Returns measurement base. Default base is 1000 (decimal prefix).
+     *
      * @param array $options
      * @return int
      */
     protected function initBase(array $options)
     {
-        if (array_key_exists('prefix', $options) && $options['prefix'] === 'decimal') {
-            return 1000;
+        if (isset($options['prefix']) && $options['prefix'] === 'binary') {
+            return 1024;
         }
 
-        return 1024;
+        return 1000;
     }
 
     /**

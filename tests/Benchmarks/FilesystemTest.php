@@ -90,12 +90,12 @@ class FilesystemTest extends TestCase
         $this->assertEquals(count($result), count(array_filter($result)));
     }
 
-    public function testCalculateSpeedReturnsExpected()
+    public function testCalculateSpeedReturnsExpectedWhenDefaultPrecision()
     {
         $method = $this->getPrivateMethod($this->bench, 'calculateSpeed');
         $result = $method->invokeArgs($this->bench, [1048576, 1]);
 
-        $this->assertEquals('1.00M/s', $result);
+        $this->assertEquals('1.048MB/s', $result);
     }
 
     /**

@@ -208,6 +208,11 @@ class Benchmark
 
                     break;
 
+                case '--decimal-prefix':
+                    $options['prefix'] = 'decimal';
+
+                    break;
+
                 case '--binary-prefix':
                     $options['prefix'] = 'binary';
 
