@@ -406,6 +406,8 @@ class Benchmark
                 $benchmark->handle();
 
                 $benchmark->after();
+
+                $results = $benchmark->result();
             } catch (\Exception $e) {
                 $this->benchmarkSkipped($name, [
                     'fail' => 'runtime',
@@ -415,7 +417,7 @@ class Benchmark
                 continue;
             }
 
-            $this->benchmarkCompleted($name, $benchmark->result());
+            $this->benchmarkCompleted($name, $results);
         }
 
         $this->afterHandle(); // clean, etc.
