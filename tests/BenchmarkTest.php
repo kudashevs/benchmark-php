@@ -92,12 +92,12 @@ class BenchmarkTest extends TestCase
         $this->assertContains('verbose', $result);
     }
 
-    public function testParseRequiredValueForBenchmarksReturnsExpectedWhenTwoExistedBenchmarksInValue()
+    public function testParseRequiredArgumentIsBenchmarkNameReturnsExpectedWhenTwoExistedBenchmarksInValue()
     {
         $argument = '-b';
         $value = 'integers,floats';
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredValueForBenchmarks');
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsBenchmarkName');
         $result = $method->invokeArgs($this->bench, [$argument, $value]);
 
         $this->assertInternalType('array', $result);
@@ -105,23 +105,23 @@ class BenchmarkTest extends TestCase
         $this->assertContains('floats', $result);
     }
 
-    public function testParseRequiredArgumentForIterationsReturnsExpectedWhenCorrectInteger()
+    public function testParseRequiredArgumentIsPositiveIntegerReturnsExpectedWhenCorrectInteger()
     {
         $argument = '-i';
         $value = '42';
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentForIterations');
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsPositiveInteger');
         $result = $method->invokeArgs($this->bench, [$argument, $value]);
 
         $this->assertSame(42, $result);
     }
 
-    public function testParseRequiredArgumentForFilenameReturnsExpectedWhenCorrectFilename()
+    public function testParseRequiredArgumentIsFilenameReturnsExpectedWhenCorrectFilename()
     {
         $argument = '--temporary-file';
         $value = 'test.txt';
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentForFilename');
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsFilename');
         $result = $method->invokeArgs($this->bench, [$argument, $value]);
 
         $this->assertSame('test.txt', $result);

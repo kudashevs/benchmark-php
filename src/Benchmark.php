@@ -198,26 +198,28 @@ class Benchmark
 
                 case '-b':
                 case '--benchmarks':
-                    $options['benchmarks'] = $this->parseRequiredValueForBenchmarks($argument, $value);
+                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
 
                     break;
 
                 case '-i':
                 case '--iterations':
-                    $options['iterations'] = $this->parseRequiredArgumentForIterations($argument, $value);
+                    $options['iterations'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
 
                     break;
 
                 case '--binary-prefix':
                     $options['prefix'] = 'binary';
+
                     break;
 
                 case '--decimal-prefix':
                     $options['prefix'] = 'decimal';
+
                     break;
 
                 case '--temporary-file':
-                    $options['file'] = $this->parseRequiredArgumentForFilename($argument, $value);
+                    $options['file'] = $this->parseRequiredArgumentIsFilename($argument, $value);
 
                     break;
 
@@ -237,7 +239,7 @@ class Benchmark
      * @param string $value
      * @return array
      */
-    protected function parseRequiredValueForBenchmarks($argument, $value)
+    protected function parseRequiredArgumentIsBenchmarkName($argument, $value)
     {
         if (empty($value) || !is_string($value)) {
             $this->reporter->showBlock($this->getVersionString());
@@ -264,7 +266,7 @@ class Benchmark
      * @param string $value
      * @return int
      */
-    protected function parseRequiredArgumentForIterations($argument, $value)
+    protected function parseRequiredArgumentIsPositiveInteger($argument, $value)
     {
         $minIterations = 1;
         $maxIterations = 100000000;
@@ -289,7 +291,7 @@ class Benchmark
      * @param string $value
      * @return string
      */
-    protected function parseRequiredArgumentForFilename($argument, $value)
+    protected function parseRequiredArgumentIsFilename($argument, $value)
     {
         if (empty($value) || !is_string($value)) {
             $this->reporter->showBlock($this->getVersionString());
@@ -570,7 +572,7 @@ class Benchmark
 
         $time = number_format($time, $precision + 2, '.', '');
 
-        return substr($time, 0, -2). 's';
+        return substr($time, 0, -2) . 's';
     }
 
     /**
