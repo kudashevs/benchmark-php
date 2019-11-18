@@ -99,7 +99,69 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGenerateSizeForHumansBaseBinary
+     * @dataProvider provideGenerateSizeForHumansWithoutRounding
+     * @param array $arguments
+     * @param string $expected
+     * @throws \ReflectionException
+     */
+    public function testGenerateSizeForHumansReturnExpectedWithoutRounding($arguments, $expected)
+    {
+        $bench = new Filesystem(['prefix' => 'decimal', 'rounding' => false]);
+        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $result = $method->invokeArgs($bench, $arguments);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function provideGenerateSizeForHumansWithoutRounding()
+    {
+        return [
+            'When size is 1 in bytes and default precision' => [[1, 3], '0.001KB'],
+            'When size is 16 in bytes and precision 2' => [[16, 2], '0.01KB'],
+            'When size is 32 in bytes and precision 2' => [[32, 2], '0.03KB'],
+            'When size is 34 in bytes and precision 2' => [[34, 2], '0.03KB'],
+            'When size is 35 in bytes and precision 2' => [[35, 2], '0.03KB'],
+            'When size is 39 in bytes and precision 2' => [[39, 2], '0.03KB'],
+            'When size is 49 in bytes and precision 1' => [[49, 1], '0.0KB'],
+            'When size is 50 in bytes and precision 1' => [[50, 1], '0.0KB'],
+            'When size is 51 in bytes and precision 1' => [[51, 1], '0.0KB'],
+            'When size is 440 in bytes and precision 2' => [[440, 2], '0.44KB'],
+            'When size is 450 in bytes and precision 2' => [[450, 2], '0.45KB'],
+            'When size is 460 in bytes and precision 2' => [[460, 2], '0.46KB'],
+            'When size is 440 in bytes and precision 1' => [[440, 1], '0.4KB'],
+            'When size is 450 in bytes and precision 1' => [[450, 1], '0.4KB'],
+            'When size is 460 in bytes and precision 1' => [[460, 1], '0.4KB'],
+            'When size is 990 in bytes and precision 2' => [[990, 2], '0.99KB'],
+            'When size is 994 in bytes and precision 2' => [[994, 2], '0.99KB'],
+            'When size is 995 in bytes and precision 2' => [[995, 2], '0.99KB'],
+            'When size is 999 in bytes and precision 2' => [[999, 2], '0.99KB'],
+            'When size is 1000 in bytes and precision 2' => [[1000, 2], '1.00KB'],
+            'When size is 990 in bytes and precision 1' => [[990, 1], '0.9KB'],
+            'When size is 994 in bytes and precision 1' => [[994, 1], '0.9KB'],
+            'When size is 995 in bytes and precision 1' => [[995, 1], '0.9KB'],
+            'When size is 999 in bytes and precision 1' => [[999, 1], '0.9KB'],
+            'When size is 1000 in bytes and precision 1' => [[1000, 1], '1.0KB'],
+            'When size is 440 in kilobytes and precision 2' => [[440000, 2], '0.44MB'],
+            'When size is 450 in kilobytes and precision 2' => [[450000, 2], '0.45MB'],
+            'When size is 460 in kilobytes and precision 2' => [[460000, 2], '0.46MB'],
+            'When size is 440 in kilobytes and precision 1' => [[440000, 1], '0.4MB'],
+            'When size is 450 in kilobytes and precision 1' => [[450000, 1], '0.4MB'],
+            'When size is 460 in kilobytes and precision 1' => [[460000, 1], '0.4MB'],
+            'When size is 990 in kilobytes and precision 2' => [[990000, 2], '0.99MB'],
+            'When size is 994 in kilobytes and precision 2' => [[994000, 2], '0.99MB'],
+            'When size is 995 in kilobytes and precision 2' => [[995000, 2], '0.99MB'],
+            'When size is 999 in kilobytes and precision 2' => [[999000, 2], '0.99MB'],
+            'When size is 1000 in kilobytes and precision 2' => [[1000000, 2], '1.00MB'],
+            'When size is 990 in kilobytes and precision 1' => [[990000, 1], '0.9MB'],
+            'When size is 994 in kilobytes and precision 1' => [[994000, 1], '0.9MB'],
+            'When size is 995 in kilobytes and precision 1' => [[995000, 1], '0.9MB'],
+            'When size is 999 in kilobytes and precision 1' => [[999000, 1], '0.9MB'],
+            'When size is 1000 in kilobytes and precision 1' => [[1000000, 1], '1.0MB'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGenerateSizeForHumansBase1024
      * @param array $arguments
      * @param string $expected
      * @throws \ReflectionException
@@ -113,30 +175,32 @@ class FilesystemTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function provideGenerateSizeForHumansBaseBinary()
+    public function provideGenerateSizeForHumansBase1024()
     {
         return [
-            'When size is in bytes' => [[512], '512'],
-            'When size is less than kilobyte' => [[1000], '1000'],
-            'When size is one kilobyte and default precise' => [[1024], '1.00K'],
-            'When size is one kilobyte and precise is 3' => [[1024, 3], '1.000K'],
-            'When size is in kilobytes and precise is 3' => [[1042, 3], '1.017K'],
-            'When size is one megabyte and default precise' => [[1048576], '1.00M'],
-            'When size is one megabyte and precise is 3' => [[1048576, 3], '1.000M'],
-            'When size is in megabytes and precise is 3' => [[1049600, 3], '1.001M'],
-            'When size is one gigabyte and default precise' => [[1073741824], '1.00G'],
-            'When size is one gigabyte and precise is 3' => [[1073741824, 3], '1.000G'],
-            'When size is less than gigabyte and precise is 3' => [[1049756976, 3, 3], '0.977G'],
-            'When size is more than gigabyte and precise is 3' => [[1074790400, 3, 3], '1.001G'],
-            'When size is one gigabyte and measure is in kilobytes' => [[1073741824, 2, 1], '1000000.00K'],
-            'When size is one gigabyte and measure is in megabytes' => [[1073741824, 2, 2], '1000.00M'],
-            'When size is one gigabyte and measure is in gigabytes' => [[1073741824, 2, 3], '1.00G'],
-            'When size is one gigabyte and measure is in terabytes' => [[1073741824, 3, 4], '0.001T'],
+            'When size is 1 in kibibytes' => [[1], '0.001K'],
+            'When size is 16 in kibibytes' => [[16], '0.015K'],
+            'When size is 32 in kibibytes' => [[32], '0.031K'],
+            'When size is 512 in kibibytes' => [[512], '0.500K'],
+            'When size is 1000 in kibibytes' => [[1000], '0.976K'],
+            'When size is 1024 in kibibytes' => [[1024], '1.000K'], // 1 kibibyte
+            'When size is 1042 in kibibytes' => [[1042], '1.017K'],
+            'When size is 1047552 in mebibytes' => [[1047552], '0.999M'],
+            'When size is 1048576 in mebibytes' => [[1048576], '1.000M'], // 1 mebibyte
+            'When size is 1049600 in mebibytes' => [[1049600], '1.001M'],
+            'When size is 1.015 mebibytes' => [[1063936], '1.014M'],
+            'When size is 2.0 mebibytes' => [[2097152], '2.000M'],
+            'When size is 3.5 mebibytes' => [[3670016], '3.500M'],
+            'When size is 1049756976 in gibibytes' => [[1049756976], '0.977G'],
+            'When size is 1073741824 in gibibytes' => [[1073741824], '1.000G'], // 1 gibibyte
+            'When size is 1074790400 in gibibytes' => [[1074790400], '1.001G'],
+            'When size is 3.0 gibibytes' => [[3221225472], '3.000G'],
+            'When size is 3.1 gibibytes' => [[3326083072], '3.097G'],
         ];
     }
 
     /**
-     * @dataProvider provideGenerateSizeForHumansBaseDecimal
+     * @dataProvider provideGenerateSizeForHumansBase1000
      * @param array $arguments
      * @param string $expected
      * @throws \ReflectionException
@@ -150,24 +214,32 @@ class FilesystemTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function provideGenerateSizeForHumansBaseDecimal()
+    public function provideGenerateSizeForHumansBase1000()
     {
         return [
-            'When size is in bytes' => [[512], '512'],
-            'When size is less than kilobyte' => [[1000], '1.00KB'],
-            'When size is one kilobyte and default precise' => [[1024], '1.02KB'],
-            'When size is one kilobyte and precise is 3' => [[1024, 3], '1.024KB'],
-            'When size is in kilobytes and precise is 3' => [[1042, 3], '1.042KB'],
-            'When size is one megabyte and default precise' => [[1048576], '1.04MB'],
-            'When size is one megabyte and precise is 3' => [[1048576, 3], '1.048MB'],
-            'When size is in megabytes and precise is 3' => [[1049600, 3], '1.049MB'],
-            'When size is one gigabyte and default precise' => [[1073741824], '1.07GB'],
-            'When size is one gigabyte and precise is 3' => [[1073741824, 3], '1.073GB'],
-            'When size is in gigabytes and precise is 3' => [[1049756976, 3, 3], '1.049GB'],
-            'When size is one gigabyte and measure is in kilobytes' => [[1073741824, 2, 1], '1073741.82KB'],
-            'When size is one gigabyte and measure is in megabytes' => [[1073741824, 2, 2], '1073.74MB'],
-            'When size is one gigabyte and measure is in gigabytes' => [[1073741824, 2, 3], '1.07GB'],
-            'When size is one gigabyte and measure is in terabytes' => [[1073741824, 3, 4], '0.001TB'],
+            'When size is 1 in kilobytes' => [[1], '0.001KB'],
+            'When size is 16 in kilobytes' => [[16], '0.016KB'],
+            'When size is 32 in kilobytes' => [[32], '0.032KB'],
+            'When size is 512 in kilobytes' => [[512], '0.512KB'],
+            'When size is 900 in kilobytes' => [[900], '0.900KB'],
+            'When size is 1000 in kilobytes' => [[1000], '1.000KB'], // 1 kilobyte
+            'When size is 1024 in kilobytes' => [[1024], '1.024KB'],
+            'When size is 1042 in kilobytes' => [[1042], '1.042KB'],
+            'When size is 999000 in megabytes' => [[999000], '0.999MB'],
+            'When size is 1000000 in megabytes' => [[1000000], '1.000MB'], // 1 megabyte
+            'When size is 1047552 in megabytes' => [[1047552], '1.047MB'],
+            'When size is 1048576 in megabytes' => [[1048576], '1.048MB'], // 1 mebibyte
+            'When size is 1049600 in megabytes' => [[1049600], '1.049MB'],
+            'When size is 1.015 mebibytes in megabytes' => [[1063936], '1.063MB'],
+            'When size is 2.0 mebibytes in megabytes' => [[2097152], '2.097MB'],
+            'When size is 3.5 mebibytes in megabytes' => [[3670016], '3.670MB'],
+            'When size is 999000000 in gigabytes' => [[999000000], '0.999GB'],
+            'When size is 1000000000 in gigabytes' => [[1000000000], '1.000GB'], // 1 gigabyte
+            'When size is 1049756976 in gigabytes' => [[1049756976], '1.049GB'],
+            'When size is 1073741824 in gigabytes' => [[1073741824], '1.073GB'], // 1 gibibyte
+            'When size is 1074790400 in gigabytes' => [[1074790400], '1.074GB'],
+            'When size is 3.0 gibibytes in gigabytes' => [[3221225472], '3.221GB'],
+            'When size is 3.1 gibibytes in gigabytes' => [[3326083072], '3.326GB'],
         ];
     }
 

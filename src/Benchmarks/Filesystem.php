@@ -25,6 +25,11 @@ class Filesystem extends AbstractBenchmark
     const FILE_SIZE = self::BASE_COUNT * (self::BASE_SIZE ** self::BASE_MULTIPLIER);
 
     /**
+     * @var int Possible values are from 0 to 3.
+     */
+    const PRECISION = 3;
+
+    /**
      * @var int
      */
     protected $iterations = 100;
@@ -270,21 +275,41 @@ class Filesystem extends AbstractBenchmark
     /**
      * @param int|float $size Size in bytes.
      * @param int $precision
-     * @param int $measure
      * @return string
      */
-    protected function generateSizeForHumans($size, $precision = 2, $measure = null)
+    protected function generateSizeForHumans($size, $precision = null)
     {
-        if ($size < $this->base) {
-            return $this->formatSize($size, 0);
+        $precision = $this->isValidPrecision($precision) ? $precision : self::PRECISION;
+
+        // We don't want precision more than 3 because with thousandths it is meaningless
+        if (isset($this->options['precision']) && $this->options['precision'] > 0 && $this->options['precision'] <= 3) {
+            $precision = $this->options['precision'];
         }
 
-        $base = log($size, $this->base);
-        $measure = ($measure !== null) ? $measure : (int)floor($base);
+        $ration = log($size, $this->base);
+        $measure = (int)round($ration);
 
-        $calculated = round(1000 ** ($base - $measure), 4);
+        // we want to start with thousandth
+        if ($size < $this->base) {
+            $measure = 1;
+        }
+
+        $calculated = $this->base ** ($ration - $measure);
 
         return $this->formatSize($calculated, $precision) . $this->generateSizePrefix($measure);
+    }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    protected function isValidPrecision($value)
+    {
+        if (!is_int($value)) {
+            return false;
+        }
+
+        return $value > 0 && $value <= 3;
     }
 
     /**
