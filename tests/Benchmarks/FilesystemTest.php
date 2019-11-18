@@ -297,36 +297,20 @@ class FilesystemTest extends TestCase
         ];
     }
 
-    public function testFormatSizeReturnsExpectedWhenString()
+    public function testIsValidPrecisionReturnsExpectedWhenNotAnInteger()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatSize');
-        $result = $method->invokeArgs($this->bench, ['test']);
+        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
+        $result = $method->invokeArgs($this->bench, [null]);
 
-        $this->assertEquals('test', $result);
+        $this->assertFalse($result);
     }
 
-    public function testFormatSizeReturnsExpectedWhenInt()
+    public function testIsValidPrecisionReturnsExpectedWhenGreaterThan3()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatSize');
-        $result = $method->invokeArgs($this->bench, [42]);
+        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
+        $result = $method->invokeArgs($this->bench, [4]);
 
-        $this->assertEquals(42, $result);
-    }
-
-    public function testFormatSizeReturnsExpectedWhenFloatAndPrecisionIs2()
-    {
-        $method = $this->getPrivateMethod($this->bench, 'formatSize');
-        $result = $method->invokeArgs($this->bench, [2.729513, 2]);
-
-        $this->assertEquals('2.73', $result);
-    }
-
-    public function testFormatSizeReturnsExpectedWhenFloatAndPrecisionIs3()
-    {
-        $method = $this->getPrivateMethod($this->bench, 'formatSize');
-        $result = $method->invokeArgs($this->bench, [2.729513, 3]);
-
-        $this->assertEquals('2.729', $result);
+        $this->assertFalse($result);
     }
 
     /**
