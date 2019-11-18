@@ -587,49 +587,49 @@ class BenchmarkTest extends TestCase
                 0,
                 'Return help message.',
             ],
-            'When option does not exist' => [
+            'When option does not exist returns error message' => [
                 ['--not_exist' => false],
                 'terminateWithMessage',
                 'unknown',
                 'Option doesn\'t exist.',
             ],
-            'When option exists and should terminate execution' => [
+            'When option exists and should returns something' => [
                 ['--version' => false],
                 'terminateWithCode',
                 0,
                 'Option should terminate execution.',
             ],
-            'When benchmarks option\'s value is wrong' => [
+            'When benchmarks option\'s value is wrong returns error message' => [
                 ['-b' => false],
                 'terminateWithMessage',
                 'wrong',
                 'Wrong value passed.',
             ],
-            'When benchmarks option\'s value contains undefined benchmark' => [
+            'When benchmarks option\'s value contains undefined benchmark returns error message' => [
                 ['-b' => 'test,integers,not_exist'],
                 'terminateWithMessage',
                 'test,not_exist',
                 'Wrong benchmarks names passed.',
             ],
-            'When iterations option\'s value is wrong' => [
+            'When iterations option\'s value is wrong returns error message' => [
                 ['-i' => 'x'],
                 'terminateWithMessage',
                 'wrong',
                 'Wrong value passed.',
             ],
-            'When iterations option\'s value is out of range' => [
-                ['-i' => '-1'],
+            'When iterations option\'s value is out of range returns error message' => [
+                ['-i' => '0'],
                 'terminateWithMessage',
                 'between',
                 'Value out of range passed.',
             ],
-            'When precision option\'s value is wrong' => [
+            'When precision option\'s value is wrong returns error message' => [
                 ['--precision' => 'x'],
                 'terminateWithMessage',
                 'wrong',
                 'Wrong value passed.',
             ],
-            'When precision option\'s value is out of range' => [
+            'When precision option\'s value is out of range returns error message' => [
                 ['--precision' => '-1'],
                 'terminateWithMessage',
                 'positive',
