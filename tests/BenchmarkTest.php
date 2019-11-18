@@ -17,8 +17,8 @@ class BenchmarkTest extends TestCase
 
     protected function setUp()
     {
-        $_SERVER['argc'] = 1;
-        $_SERVER['argv'] = [array_shift($_SERVER['argv'])];
+        $_SERVER['argc'] = 2;
+        $_SERVER['argv'] = [array_shift($_SERVER['argv']), '-a'];
 
         /** @var Reporter|\PHPUnit_Framework_MockObject_MockObject $reporter */
         $reporter = $this->getMockBuilder(Reporter::class)
@@ -65,19 +65,6 @@ class BenchmarkTest extends TestCase
         $result = $method->invokeArgs($partialMock, [$arguments]);
 
         $this->assertEquals($expected, $result);
-    }
-
-    public function testParseArgumentsReturnsDefaultOptionsWhenEmptyArray()
-    {
-        $arguments = [];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-        $result = $method->invokeArgs($partialMock, [$arguments]);
-
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('verbose', $result);
     }
 
     public function testParseArgumentsReturnsExpectedWhenArgumentIsAnOption()
@@ -594,6 +581,12 @@ class BenchmarkTest extends TestCase
     public function provideParseArgumentsData()
     {
         return [
+            'When empty arguments returns help message' => [
+                [],
+                'terminateWithCode',
+                0,
+                'Return help message.',
+            ],
             'When option does not exist' => [
                 ['--not_exist' => false],
                 'terminateWithMessage',

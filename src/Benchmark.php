@@ -170,7 +170,8 @@ class Benchmark
     protected function parseArguments(array $arguments)
     {
         if (empty($arguments)) {
-            return $this->options;
+            $this->reporter->showBlock($this->getHelp());
+            $this->terminateWithCode(0);
         }
 
         $options = [];
@@ -191,6 +192,11 @@ class Benchmark
                 case '--version':
                     $this->reporter->showBlock($this->getVersionString());
                     $this->terminateWithCode(0);
+
+                    break;
+
+                case '-a':
+                case '--all':
 
                     break;
 
@@ -795,6 +801,7 @@ Usage:
   benchmark [options]
 
 Available Options:
+  -a, --all                 Executes all available benchmarks
   -l, --list                Prints the list of available benchmarks
   -b, --benchmarks <list>   Executes benchmarks from a comma separated list
   -i, --iterations <num>    Executes benchmarks with fixed number of iterations
