@@ -147,7 +147,19 @@ class Benchmark
     {
         if ($value === false) {
             $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a value. Empty value is passed.' . PHP_EOL);
+            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
+        }
+    }
+
+    /**
+     * @param string $argument
+     * @param mixed $value
+     */
+    protected function checkRequiredArgumentNotAnOption($argument, $value)
+    {
+        if (strpos($value, '-') === 0) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
     }
 
@@ -334,18 +346,6 @@ class Benchmark
         $this->checkRequiredArgumentNotAnOption($argument, $value);
 
         return $value;
-    }
-
-    /**
-     * @param string $argument
-     * @param mixed $value
-     */
-    protected function checkRequiredArgumentNotAnOption($argument, $value)
-    {
-        if (strpos($value, '-') === 0) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
     }
 
     /**
