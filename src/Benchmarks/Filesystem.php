@@ -32,7 +32,7 @@ class Filesystem extends AbstractBenchmark
     /**
      * @var bool
      */
-    const ROUNDING = false;
+    const ROUNDING = true;
 
     /**
      * @var int

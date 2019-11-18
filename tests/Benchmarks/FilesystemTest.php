@@ -90,27 +90,27 @@ class FilesystemTest extends TestCase
         $this->assertEquals(count($result), count(array_filter($result)));
     }
 
-    public function testCalculateSpeedReturnsExpectedWhenDefaultPrecision()
+    public function testCalculateSpeedReturnsExpectedWhenDefaultPrecisionAndDefaultRounding()
     {
         $method = $this->getPrivateMethod($this->bench, 'calculateSpeed');
         $result = $method->invokeArgs($this->bench, [1048576, 1]);
 
-        $this->assertEquals('1.048MB/s', $result);
+        $this->assertEquals('1.049MB/s', $result);
     }
 
-    public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndDefaultRounding()
+    public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndWithRounding()
     {
-        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2]);
+        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2, 'rounding' => true]);
 
         $method = $this->getPrivateMethod($bench, 'calculateSpeed');
         $result = $method->invokeArgs($bench, [1048576, 1]);
 
-        $this->assertEquals('1.04MB/s', $result);
+        $this->assertEquals('1.05MB/s', $result);
     }
 
     public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndWithoutRounding()
     {
-        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2]);
+        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2, 'rounding' => false]);
 
         $method = $this->getPrivateMethod($bench, 'calculateSpeed');
         $result = $method->invokeArgs($bench, [1048576, 1]);
@@ -250,7 +250,7 @@ class FilesystemTest extends TestCase
      */
     public function testGenerateSizeForHumansReturnsExpectedWhenBaseBinary($arguments, $expected)
     {
-        $bench = new Filesystem(['prefix' => 'binary']);
+        $bench = new Filesystem(['prefix' => 'binary', 'rounding' => false]);
         $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
         $result = $method->invokeArgs($bench, $arguments);
 
@@ -289,7 +289,7 @@ class FilesystemTest extends TestCase
      */
     public function testGenerateSizeForHumansReturnsExpectedWhenBaseDecimal($arguments, $expected)
     {
-        $bench = new Filesystem(['prefix' => 'decimal']);
+        $bench = new Filesystem(['prefix' => 'decimal', 'rounding' => false]);
         $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
         $result = $method->invokeArgs($bench, $arguments);
 
@@ -344,10 +344,10 @@ class FilesystemTest extends TestCase
         return [
             'When argument is string' => [['test'], 'test'],
             'When argument is integer' => [[42], 42],
-            'When argument is float and precision is 0' => [[2.729513, 0], 2],
-            'When argument is float and precision is 1' => [[2.729513, 1], 2.7],
-            'When argument is float and precision is 2' => [[2.729513, 2], 2.73],
-            'When argument is float and precision is 3' => [[2.729513, 3], 2.729],
+            'When argument is float and precision is 0' => [[2.729413, 0], 2],
+            'When argument is float and precision is 1' => [[2.729413, 1], 2.7],
+            'When argument is float and precision is 2' => [[2.729413, 2], 2.73],
+            'When argument is float and precision is 3' => [[2.729413, 3], 2.729],
             'When argument is float and precision is 10' => [[2.7684543132, 10], 2.7684543132],
         ];
     }
