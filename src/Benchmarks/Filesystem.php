@@ -263,7 +263,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function calculateSpeed($size, $time, $precision = 3)
+    protected function calculateSpeed($size, $time, $precision = self::PRECISION)
     {
         if ($time == 0) {
             throw new \RuntimeException('The ' . __FUNCTION__ . ' time argument cannot be zero. Check argument value.');
