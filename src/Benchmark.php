@@ -514,7 +514,7 @@ class Benchmark
     {
         ++$this->statistics['completed'];
 
-        if ($this->hasCorrectExecutionTime($statistics)) {
+        if ($this->hasValidExecutionTime($statistics)) {
             $this->statistics['total_time'] += $statistics['exec_time'];
         } else {
             $statistics['exec_time'] = 'malformed time';
@@ -538,7 +538,7 @@ class Benchmark
      * @param array $information
      * @return bool
      */
-    protected function hasCorrectExecutionTime(array $information)
+    protected function hasValidExecutionTime(array $information)
     {
         return isset($information['exec_time']) && is_numeric($information['exec_time']);
     }
