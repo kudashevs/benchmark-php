@@ -30,6 +30,11 @@ class Filesystem extends AbstractBenchmark
     const PRECISION = 3;
 
     /**
+     * @var bool
+     */
+    const ROUNDING = false;
+
+    /**
      * @var int
      */
     protected $iterations = 100;
@@ -317,23 +322,35 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function formatSize($size, $precision = 2)
+    protected function formatSize($size, $precision = self::PRECISION)
     {
         if (!is_numeric($size)) {
             return $size;
         }
 
-        if (is_int($size)) {
-            return (string)$size;
+        if (is_int($size) || $precision === 0) {
+            return (string)floor($size);
+        }
+
+        $rounding = self::ROUNDING;
+
+        if (isset($this->options['rounding']) && is_bool($this->options['rounding'])) {
+            $rounding = $this->options['rounding'];
+        }
+
+        if ($rounding) {
+            return number_format($size, $precision, '.', '');
         }
 
         /*
-        * we don't want to round the last digit as number_format does, so we increase
-        * precision by one and then we will cut the last digit in the output
-        */
-        $formatted = number_format($size, $precision + 1, '.', '');
+         * We don't want to round the last digit as number_format does, so we increase
+         * precision by number and then we will cut the last digits in the output.
+         * We check precision for 1 because we don't want to rounding 0.9 to 1.0.
+         */
+        $cut = ($precision <= 1) ? 2 : 1;
+        $unrounded = number_format($size, $precision + $cut, '.', '');
 
-        return substr($formatted, 0, -1);
+        return substr($unrounded, 0, -$cut);
     }
 
     /**

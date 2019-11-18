@@ -98,6 +98,88 @@ class FilesystemTest extends TestCase
         $this->assertEquals('1.048MB/s', $result);
     }
 
+    public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndDefaultRounding()
+    {
+        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2]);
+
+        $method = $this->getPrivateMethod($bench, 'calculateSpeed');
+        $result = $method->invokeArgs($bench, [1048576, 1]);
+
+        $this->assertEquals('1.04MB/s', $result);
+    }
+
+    public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndWithoutRounding()
+    {
+        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2]);
+
+        $method = $this->getPrivateMethod($bench, 'calculateSpeed');
+        $result = $method->invokeArgs($bench, [1048576, 1]);
+
+        $this->assertEquals('1.04MB/s', $result);
+    }
+
+    /**
+     * @dataProvider provideGenerateSizeForHumansWithRounding
+     * @param array $arguments
+     * @param string $expected
+     * @throws \ReflectionException
+     */
+    public function testGenerateSizeForHumansReturnExpectedWithRounding($arguments, $expected)
+    {
+        $bench = new Filesystem(['prefix' => 'decimal', 'rounding' => true]);
+        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $result = $method->invokeArgs($bench, $arguments);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function provideGenerateSizeForHumansWithRounding()
+    {
+        return [
+            'When size is 1 in bytes and default precision' => [[1, 3], '0.001KB'],
+            'When size is 16 in bytes and precision 2' => [[16, 2], '0.02KB'],
+            'When size is 32 in bytes and precision 2' => [[32, 2], '0.03KB'],
+            'When size is 34 in bytes and precision 2' => [[34, 2], '0.03KB'],
+            'When size is 35 in bytes and precision 2' => [[35, 2], '0.04KB'],
+            'When size is 39 in bytes and precision 2' => [[39, 2], '0.04KB'],
+            'When size is 49 in bytes and precision 1' => [[49, 1], '0.0KB'],
+            'When size is 50 in bytes and precision 1' => [[50, 1], '0.1KB'],
+            'When size is 51 in bytes and precision 1' => [[51, 1], '0.1KB'],
+            'When size is 440 in bytes and precision 2' => [[440, 2], '0.44KB'],
+            'When size is 450 in bytes and precision 2' => [[450, 2], '0.45KB'],
+            'When size is 460 in bytes and precision 2' => [[460, 2], '0.46KB'],
+            'When size is 440 in bytes and precision 1' => [[440, 1], '0.4KB'],
+            'When size is 450 in bytes and precision 1' => [[450, 1], '0.5KB'],
+            'When size is 460 in bytes and precision 1' => [[460, 1], '0.5KB'],
+            'When size is 990 in bytes and precision 2' => [[990, 2], '0.99KB'],
+            'When size is 994 in bytes and precision 2' => [[994, 2], '0.99KB'],
+            'When size is 995 in bytes and precision 2' => [[995, 2], '1.00KB'],
+            'When size is 999 in bytes and precision 2' => [[999, 2], '1.00KB'],
+            'When size is 1000 in bytes and precision 2' => [[1000, 2], '1.00KB'],
+            'When size is 990 in bytes and precision 1' => [[990, 1], '1.0KB'],
+            'When size is 994 in bytes and precision 1' => [[994, 1], '1.0KB'],
+            'When size is 995 in bytes and precision 1' => [[995, 1], '1.0KB'],
+            'When size is 999 in bytes and precision 1' => [[999, 1], '1.0KB'],
+            'When size is 1000 in bytes and precision 1' => [[1000, 1], '1.0KB'],
+            'When size is 440 in kilobytes and precision 2' => [[440000, 2], '0.44MB'],
+            'When size is 450 in kilobytes and precision 2' => [[450000, 2], '0.45MB'],
+            'When size is 460 in kilobytes and precision 2' => [[460000, 2], '0.46MB'],
+            'When size is 440 in kilobytes and precision 1' => [[440000, 1], '0.4MB'],
+            'When size is 450 in kilobytes and precision 1' => [[450000, 1], '0.5MB'],
+            'When size is 460 in kilobytes and precision 1' => [[460000, 1], '0.5MB'],
+            'When size is 990 in kilobytes and precision 2' => [[990000, 2], '0.99MB'],
+            'When size is 994 in kilobytes and precision 2' => [[994000, 2], '0.99MB'],
+            'When size is 995 in kilobytes and precision 2' => [[995000, 2], '1.00MB'],
+            'When size is 999 in kilobytes and precision 2' => [[999000, 2], '1.00MB'],
+            'When size is 1000 in kilobytes and precision 2' => [[1000000, 2], '1.00MB'],
+            'When size is 990 in kilobytes and precision 1' => [[990000, 1], '1.0MB'],
+            'When size is 994 in kilobytes and precision 1' => [[994000, 1], '1.0MB'],
+            'When size is 995 in kilobytes and precision 1' => [[995000, 1], '1.0MB'],
+            'When size is 999 in kilobytes and precision 1' => [[999000, 1], '1.0MB'],
+            'When size is 1000 in kilobytes and precision 1' => [[1000000, 1], '1.0MB'],
+        ];
+    }
+
     /**
      * @dataProvider provideGenerateSizeForHumansWithoutRounding
      * @param array $arguments
@@ -240,6 +322,33 @@ class FilesystemTest extends TestCase
             'When size is 1074790400 in gigabytes' => [[1074790400], '1.074GB'],
             'When size is 3.0 gibibytes in gigabytes' => [[3221225472], '3.221GB'],
             'When size is 3.1 gibibytes in gigabytes' => [[3326083072], '3.326GB'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideFormatSizeVarious
+     * @param array $arguments
+     * @param mixed $expected
+     * @throws \ReflectionException
+     */
+    public function testFormatSizeReturnsExpected($arguments, $expected)
+    {
+        $method = $this->getPrivateMethod($this->bench, 'formatSize');
+        $result = $method->invokeArgs($this->bench, $arguments);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function provideFormatSizeVarious()
+    {
+        return [
+            'When argument is string' => [['test'], 'test'],
+            'When argument is integer' => [[42], 42],
+            'When argument is float and precision is 0' => [[2.729513, 0], 2],
+            'When argument is float and precision is 1' => [[2.729513, 1], 2.7],
+            'When argument is float and precision is 2' => [[2.729513, 2], 2.73],
+            'When argument is float and precision is 3' => [[2.729513, 3], 2.729],
+            'When argument is float and precision is 10' => [[2.7684543132, 10], 2.7684543132],
         ];
     }
 
