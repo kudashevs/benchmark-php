@@ -262,7 +262,7 @@ class FilesystemTest extends TestCase
     {
         return [
             'When out of range base' => [[-1], ''],
-            'When 0 base' => [[0], ''],
+            'When 0 base' => [[0], 'B'],
             'When 1 base' => [[1], 'K'],
             'When 2 base' => [[2], 'M'],
             'When 3 base' => [[3], 'G'],
@@ -289,7 +289,7 @@ class FilesystemTest extends TestCase
     {
         return [
             'When out of range base' => [[-1], ''],
-            'When 0 base' => [[0], ''],
+            'When 0 base' => [[0], 'B'],
             'When 1 base' => [[1], 'KB'],
             'When 2 base' => [[2], 'MB'],
             'When 3 base' => [[3], 'GB'],

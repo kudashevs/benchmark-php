@@ -343,9 +343,9 @@ class Filesystem extends AbstractBenchmark
     protected function generateSizePrefix($measure)
     {
         if ($this->base === 1000) {
-            $units = ['', 'KB', 'MB', 'GB', 'TB'];
+            $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         } else {
-            $units = ['', 'K', 'M', 'G', 'T'];
+            $units = ['B', 'K', 'M', 'G', 'T'];
         }
 
         if ($measure < 0 || $measure > count($units)) {
