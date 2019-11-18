@@ -116,6 +116,17 @@ class BenchmarkTest extends TestCase
         $this->assertSame(42, $result);
     }
 
+    public function testParseRequiredArgumentIsPositiveIntegerReturnsExpectedWhenPositiveInteger()
+    {
+        $argument = '--precision';
+        $value = 0;
+
+        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsPositiveInteger');
+        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+
+        $this->assertSame(0, $result);
+    }
+
     public function testParseRequiredArgumentIsFilenameReturnsExpectedWhenCorrectFilename()
     {
         $argument = '--temporary-file';
@@ -618,6 +629,18 @@ class BenchmarkTest extends TestCase
                 'terminateWithMessage',
                 'between',
                 'Value out of range passed.',
+            ],
+            'When precision option\'s value is wrong' => [
+                ['--precision' => 'x'],
+                'terminateWithMessage',
+                'wrong',
+                'Wrong value passed.',
+            ],
+            'When precision option\'s value is out of range' => [
+                ['--precision' => '-1'],
+                'terminateWithMessage',
+                'positive',
+                'Value is not positive numeric.',
             ],
         ];
     }

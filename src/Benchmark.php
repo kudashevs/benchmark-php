@@ -43,6 +43,7 @@ class Benchmark
         '-i',
         '--iterations',
         '--temporary-file',
+        '--precision',
     ];
 
     /**
@@ -218,8 +219,8 @@ class Benchmark
 
                     break;
 
-                case '--decimal-prefix':
-                    $options['prefix'] = 'decimal';
+                case '--precision':
+                    $options['precision'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
 
                     break;
 
@@ -289,6 +290,28 @@ class Benchmark
         }
 
         return $iterations;
+    }
+
+    /**
+     * @param string $argument
+     * @param int|float $value
+     * @return int
+     */
+    protected function parseRequiredArgumentIsPositiveInteger($argument, $value)
+    {
+        if ($value === '' || !is_numeric($value)) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires a numeric value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        $value = (int)$value;
+
+        if ($value < 0) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires a positive numeric. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        return $value;
     }
 
     /**
@@ -776,9 +799,10 @@ Available Options:
   --debug                   Prints detailed information during execution
 
 Additional Options [filesystem]:
-  --binary-prefix           Use binary kilobyte denotes 1024 bytes (this is the default)
-  --decimal-prefix          Use decimal kilobyte denotes 1000 bytes
   --temporary-file <file>   Path to specific file for filesystem benchmarking
+  --decimal-prefix          Use decimal prefix kilo denotes 1000 (the default)
+  --binary-prefix           Use binary prefix kilo denotes 1024
+  --precision <num>         Use precision for data formatting (min 1, max 3, default 3)
 EOT;
 
         return $message;
