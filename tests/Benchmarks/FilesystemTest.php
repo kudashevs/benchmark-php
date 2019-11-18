@@ -127,7 +127,7 @@ class FilesystemTest extends TestCase
     public function testGenerateSizeForHumansReturnExpectedWithRounding($arguments, $expected)
     {
         $bench = new Filesystem(['prefix' => 'decimal', 'rounding' => true]);
-        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $method = $this->getPrivateMethod($bench, 'generateSizeForHumans');
         $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
@@ -189,7 +189,7 @@ class FilesystemTest extends TestCase
     public function testGenerateSizeForHumansReturnExpectedWithoutRounding($arguments, $expected)
     {
         $bench = new Filesystem(['prefix' => 'decimal', 'rounding' => false]);
-        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $method = $this->getPrivateMethod($bench, 'generateSizeForHumans');
         $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
@@ -251,7 +251,7 @@ class FilesystemTest extends TestCase
     public function testGenerateSizeForHumansReturnsExpectedWhenBaseBinary($arguments, $expected)
     {
         $bench = new Filesystem(['prefix' => 'binary', 'rounding' => false]);
-        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $method = $this->getPrivateMethod($bench, 'generateSizeForHumans');
         $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
@@ -290,7 +290,7 @@ class FilesystemTest extends TestCase
     public function testGenerateSizeForHumansReturnsExpectedWhenBaseDecimal($arguments, $expected)
     {
         $bench = new Filesystem(['prefix' => 'decimal', 'rounding' => false]);
-        $method = $this->getPrivateMethod($this->bench, 'generateSizeForHumans');
+        $method = $this->getPrivateMethod($bench, 'generateSizeForHumans');
         $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
@@ -361,7 +361,7 @@ class FilesystemTest extends TestCase
     public function testGenerateSizePrefixReturnsExpectedWhenBaseBinary($arguments, $expected)
     {
         $bench = new Filesystem(['prefix' => 'binary']);
-        $method = $this->getPrivateMethod($this->bench, 'generateSizePrefix');
+        $method = $this->getPrivateMethod($bench, 'generateSizePrefix');
         $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
@@ -388,7 +388,7 @@ class FilesystemTest extends TestCase
     public function testGenerateSizePrefixReturnsExpectedWhenBaseDecimal($arguments, $expected)
     {
         $bench = new Filesystem(['prefix' => 'decimal']);
-        $method = $this->getPrivateMethod($this->bench, 'generateSizePrefix');
+        $method = $this->getPrivateMethod($bench, 'generateSizePrefix');
         $result = $method->invokeArgs($bench, $arguments);
 
         $this->assertSame($expected, $result);
