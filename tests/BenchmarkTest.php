@@ -79,6 +79,56 @@ class BenchmarkTest extends TestCase
         $this->assertContains('verbose', $result);
     }
 
+    public function testCheckMutuallyExclusiveReturnsExpectedWhenNotExclusiveKey()
+    {
+        $key = '-v';
+        $arguments = ['-l' => false, '--version' => false];
+
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
+
+        $method = $this->getPrivateMethod($partialMock, 'checkMutuallyExclusive');
+        $result = $method->invokeArgs($partialMock, [$key, $arguments]);
+
+        $this->assertNull($result);
+    }
+
+    public function testCheckMutuallyExclusiveReturnsExpectedWhenArgumentsWithoutExclusive()
+    {
+        $key = '-a';
+        $arguments = ['-l' => false, '--version' => false];
+
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
+
+        $method = $this->getPrivateMethod($partialMock, 'checkMutuallyExclusive');
+        $result = $method->invokeArgs($partialMock, [$key, $arguments]);
+
+        $this->assertNull($result);
+    }
+
+    public function testCheckMutuallyExclusiveReturnsExpectedWhenArgumentsWithExclusive()
+    {
+        $key = '-a';
+        $arguments = ['-l' => false, '--benchmarks' => false, '-b' => 42];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->with($this->stringContains('mutually'))
+            ->will($this->throwException(new \InvalidArgumentException('Contains mutually exclusive options.')));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Contains mutually exclusive options.');
+        $method = $this->getPrivateMethod($partialMock, 'checkMutuallyExclusive');
+        $result = $method->invokeArgs($partialMock, [$key, $arguments]);
+
+        $this->assertTrue($result);
+    }
+
     public function testParseRequiredArgumentIsBenchmarkNameReturnsExpectedWhenTwoExistedBenchmarksInValue()
     {
         $argument = '-b';
@@ -598,6 +648,12 @@ class BenchmarkTest extends TestCase
                 'terminateWithCode',
                 0,
                 'Option should terminate execution.',
+            ],
+            'When all and benchmarks option in the same time returns error message' => [
+                ['-a' => false, '-b' => 'integers'],
+                'terminateWithMessage',
+                'wrong',
+                'Wrong options combination.',
             ],
             'When benchmarks option\'s value is wrong returns error message' => [
                 ['-b' => false],

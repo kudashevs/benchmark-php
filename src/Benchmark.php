@@ -198,6 +198,7 @@ class Benchmark
 
                 case '-a':
                 case '--all':
+                    $this->checkMutuallyExclusive($argument, $arguments);
 
                     break;
 
@@ -262,6 +263,32 @@ class Benchmark
         }
 
         return $options;
+    }
+
+    /**
+     * @param string $key
+     * @param array $arguments
+     * @return void
+     */
+    protected function checkMutuallyExclusive($key, array $arguments)
+    {
+        $exclude = [
+            '-a' => ['-b', '--benchmarks'],
+            '--all' => ['-b', '--benchmarks'],
+        ];
+
+        if (!array_key_exists($key, $exclude)) {
+            return;
+        }
+
+        if (!$exclusive = array_intersect_key($arguments, array_flip($exclude[$key]))) {
+            return;
+        }
+
+        $exclusive = implode(',', array_keys($exclusive));
+
+        $this->reporter->showBlock($this->getVersionString());
+        $this->terminateWithMessage('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.' . PHP_EOL);
     }
 
     /**
