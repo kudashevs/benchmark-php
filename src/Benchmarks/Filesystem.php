@@ -25,7 +25,7 @@ class Filesystem extends AbstractBenchmark
     const FILE_SIZE = self::BASE_COUNT * (self::BASE_SIZE ** self::BASE_MULTIPLIER);
 
     /**
-     * @var int Possible values are from 0 to 3.
+     * @var int Processed data output precision (possible values are from 0 to 3).
      */
     const PRECISION = 3;
 
@@ -287,7 +287,7 @@ class Filesystem extends AbstractBenchmark
         $precision = $this->isValidPrecision($precision) ? $precision : self::PRECISION;
 
         // We don't want precision more than 3 because with thousandths it is meaningless
-        if (isset($this->options['data_precise']) && $this->options['data_precise'] > 0 && $this->options['data_precise'] <= 3) {
+        if (isset($this->options['data_precise']) && $this->isValidPrecision($this->options['data_precise'])) {
             $precision = $this->options['data_precise'];
         }
 
@@ -314,7 +314,7 @@ class Filesystem extends AbstractBenchmark
             return false;
         }
 
-        return $value > 0 && $value <= 3;
+        return $value >= 0 && $value <= 3;
     }
 
     /**
