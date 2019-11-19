@@ -695,6 +695,38 @@ class BenchmarkTest extends TestCase
     }
 
     /**
+     * Captured bugs.
+     */
+
+    /**
+     * @dataProvider provideParseArgumentsData
+     * @throws \ReflectionException
+     */
+    public function testRequireValueConstContainsOnlyRequireValueOptions()
+    {
+        $message = 'Option requires the value.';
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->with($this->stringContains('requires'))
+            ->will($this->throwException(new \InvalidArgumentException($message)));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+
+        $method = $this->getPrivateMethod($partialMock, 'initArguments');
+        foreach (Benchmark::REQUIRE_VALUE as $option) {
+            $method->invokeArgs($partialMock, [[array_shift($_SERVER['argv']), $option]]);
+        }
+    }
+
+    /**
      * Helpers.
      */
 
