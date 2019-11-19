@@ -37,7 +37,7 @@ class Benchmark
     /**
      * @var array
      */
-    const REQUIRES_VALUE = [
+    const REQUIRE_VALUE = [
         '-b',
         '--benchmarks',
         '-i',
@@ -123,7 +123,7 @@ class Benchmark
         while ($argument = current($arguments)) {
             $next = next($arguments);
 
-            if (in_array($argument, self::REQUIRES_VALUE, true)) {
+            if (in_array($argument, self::REQUIRE_VALUE, true)) {
                 $this->checkRequiredArgumentHasValue($argument, $next);
                 $this->checkRequiredArgumentNotAnOption($argument, $next);
                 $result[$argument] = $next;
