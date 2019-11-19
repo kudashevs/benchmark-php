@@ -699,13 +699,13 @@ class BenchmarkTest extends TestCase
      */
 
     /**
-     * @dataProvider provideParseArgumentsData
+     * @dataProvider provideRequireValueConst
+     * @param array $arguments
+     * @param string $message
      * @throws \ReflectionException
      */
-    public function testRequireValueConstContainsOnlyRequireValueOptions()
+    public function testRequireValueConstContainsOnlyRequireValueOptions($arguments, $message)
     {
-        $message = 'Option requires the value.';
-
         $reporter = $this->getMockBuilder(Reporter::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
@@ -720,10 +720,20 @@ class BenchmarkTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
 
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        foreach (Benchmark::REQUIRE_VALUE as $option) {
-            $method->invokeArgs($partialMock, [[array_shift($_SERVER['argv']), $option]]);
-        }
+        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
+           $method->invokeArgs($partialMock, [$arguments]);
+    }
+
+    public function provideRequireValueConst()
+    {
+        return array_reduce(Benchmark::REQUIRE_VALUE, function ($acc, $v) {
+            $acc['When required value for option ' . $v . ' is missed'] = [
+                [$v => false],
+                'Option ' . $v . ' requires the value.'
+            ];
+
+            return $acc;
+        }, []);
     }
 
     /**
