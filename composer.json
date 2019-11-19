@@ -25,5 +25,8 @@
     "psr-4": {
       "BenchmarkPHP\\Tests\\": "tests/"
     }
-  }
+  },
+  "bin": [
+    "benchmark-php"
+  ]
 }

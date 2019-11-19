@@ -826,7 +826,7 @@ class Benchmark
         $message .= $this->getFullTitle() . str_repeat(PHP_EOL, 2);
         $message .= <<<EOT
 Usage:
-  benchmark [options]
+  benchmark-php [options]
 
 Available Options:
   -a, --all                 Executes all available benchmarks
