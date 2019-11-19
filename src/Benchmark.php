@@ -244,7 +244,7 @@ class Benchmark
 
                     break;
 
-                case '--no-rounding':
+                case '--disable-rounding':
                     $options['rounding'] = false;
 
                     break;
@@ -843,7 +843,7 @@ Additional Options [filesystem]:
   --decimal-prefix          Use decimal prefix kilo denotes 1000 (the default)
   --binary-prefix           Use binary prefix kilo denotes 1024
   --precision <num>         Use precision for data formatting (min 1, max 3, default 3)
-  --no-rounding                Use rounding for data formatting
+  --disable-rounding        Disable rounding for data formatting
 EOT;
 
         return $message;
