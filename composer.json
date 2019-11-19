@@ -1,6 +1,7 @@
 {
   "name": "kudashevs/benchmark-php",
   "description": "A benchmark application with a set of benchmarks for PHP benchmarking.",
+  "type": "library",
   "keywords": ["php", "benchmark", "benchmarking"],
   "license": "MIT",
   "authors": [
