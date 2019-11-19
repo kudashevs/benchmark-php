@@ -43,7 +43,7 @@ class Benchmark
         '-i',
         '--iterations',
         '--temporary-file',
-        '--precision',
+        '--data-precision',
     ];
 
     /**
@@ -239,8 +239,8 @@ class Benchmark
 
                     break;
 
-                case '--precision':
-                    $options['precision'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
+                case '--data-precision':
+                    $options['data_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
 
                     break;
 
@@ -842,7 +842,7 @@ Additional Options [filesystem]:
   --temporary-file <file>   Path to specific file for filesystem benchmarking
   --decimal-prefix          Use decimal prefix kilo denotes 1000 (the default)
   --binary-prefix           Use binary prefix kilo denotes 1024
-  --precision <num>         Use precision for data formatting (min 1, max 3, default 3)
+  --data-precision <num>    Use precision for data formatting (min 1, max 3, default 3)
   --disable-rounding        Disable rounding for data formatting
 EOT;
 

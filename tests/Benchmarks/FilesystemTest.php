@@ -100,7 +100,7 @@ class FilesystemTest extends TestCase
 
     public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndWithRounding()
     {
-        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2, 'rounding' => true]);
+        $bench = new Filesystem(['prefix' => 'decimal', 'data_precise' => 2, 'rounding' => true]);
 
         $method = $this->getPrivateMethod($bench, 'calculateSpeed');
         $result = $method->invokeArgs($bench, [1048576, 1]);
@@ -110,7 +110,7 @@ class FilesystemTest extends TestCase
 
     public function testCalculateSpeedReturnsExpectedWhenPrecisionIs2AndWithoutRounding()
     {
-        $bench = new Filesystem(['prefix' => 'decimal', 'precision' => 2, 'rounding' => false]);
+        $bench = new Filesystem(['prefix' => 'decimal', 'data_precise' => 2, 'rounding' => false]);
 
         $method = $this->getPrivateMethod($bench, 'calculateSpeed');
         $result = $method->invokeArgs($bench, [1048576, 1]);

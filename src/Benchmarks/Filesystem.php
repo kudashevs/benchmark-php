@@ -287,8 +287,8 @@ class Filesystem extends AbstractBenchmark
         $precision = $this->isValidPrecision($precision) ? $precision : self::PRECISION;
 
         // We don't want precision more than 3 because with thousandths it is meaningless
-        if (isset($this->options['precision']) && $this->options['precision'] > 0 && $this->options['precision'] <= 3) {
-            $precision = $this->options['precision'];
+        if (isset($this->options['data_precise']) && $this->options['data_precise'] > 0 && $this->options['data_precise'] <= 3) {
+            $precision = $this->options['data_precise'];
         }
 
         $ration = log($size, $this->base);

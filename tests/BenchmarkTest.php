@@ -680,13 +680,13 @@ class BenchmarkTest extends TestCase
                 'Value out of range passed.',
             ],
             'When precision option\'s value is wrong returns error message' => [
-                ['--precision' => 'x'],
+                ['--data-precision' => 'x'],
                 'terminateWithMessage',
                 'wrong',
                 'Wrong value passed.',
             ],
             'When precision option\'s value is out of range returns error message' => [
-                ['--precision' => '-1'],
+                ['--data-precision' => '-1'],
                 'terminateWithMessage',
                 'positive',
                 'Value is not positive numeric.',
