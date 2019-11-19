@@ -179,19 +179,9 @@ class Benchmark
 
         foreach ($arguments as $argument => $value) {
             switch ($argument) {
-                case '--debug':
-                    $options['debug'] = true;
-
-                    break;
-
-                case '-v':
-                case '--verbose':
-                    $options['verbose'] = true;
-
-                    break;
-
-                case '--version':
-                    $this->reporter->showBlock($this->getVersionString());
+                case '-h':
+                case '--help':
+                    $this->reporter->showBlock($this->getHelp());
                     $this->terminateWithCode(0);
 
                     break;
@@ -199,6 +189,12 @@ class Benchmark
                 case '-a':
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
+
+                    break;
+
+                case '-b':
+                case '--benchmarks':
+                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
 
                     break;
 
@@ -210,22 +206,26 @@ class Benchmark
 
                     break;
 
-                case '-h':
-                case '--help':
-                    $this->reporter->showBlock($this->getHelp());
-                    $this->terminateWithCode(0);
-
-                    break;
-
-                case '-b':
-                case '--benchmarks':
-                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
-
-                    break;
-
                 case '-i':
                 case '--iterations':
                     $options['iterations'] = $this->parseRequiredArgumentIsIteration($argument, $value);
+
+                    break;
+
+                case '-v':
+                case '--verbose':
+                    $options['verbose'] = true;
+
+                    break;
+
+                case '--debug':
+                    $options['debug'] = true;
+
+                    break;
+
+                case '--version':
+                    $this->reporter->showBlock($this->getVersionString());
+                    $this->terminateWithCode(0);
 
                     break;
 
@@ -829,11 +829,11 @@ Usage:
   benchmark-php [options]
 
 Available Options:
-  -a, --all                 Executes all available benchmarks
-  -l, --list                Prints the list of available benchmarks
-  -b, --benchmarks <list>   Executes benchmarks from a comma separated list
-  -i, --iterations <num>    Executes benchmarks with fixed number of iterations
   -h, --help                Prints this usage information and exits
+  -a, --all                 Executes all available benchmarks
+  -b, --benchmarks <list>   Executes benchmarks from a comma separated list
+  -l, --list                Prints the list of available benchmarks
+  -i, --iterations <num>    Executes benchmarks with fixed number of iterations
   -v, --verbose             Prints verbose information during execution
   --debug                   Prints detailed information during execution
   --version                 Prints the version and exits
