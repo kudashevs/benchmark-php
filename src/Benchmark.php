@@ -834,9 +834,9 @@ Available Options:
   -b, --benchmarks <list>   Executes benchmarks from a comma separated list
   -i, --iterations <num>    Executes benchmarks with fixed number of iterations
   -h, --help                Prints this usage information and exits
-  --version                 Prints the version and exits
   -v, --verbose             Prints verbose information during execution
   --debug                   Prints detailed information during execution
+  --version                 Prints the version and exits
 
 Additional Options [filesystem]:
   --temporary-file <file>   Path to specific file for filesystem benchmarking
