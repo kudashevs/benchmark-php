@@ -154,6 +154,7 @@ class Benchmark
     /**
      * @param string $argument
      * @param mixed $value
+     * @return void
      */
     protected function checkRequiredArgumentNotAnOption($argument, $value)
     {
