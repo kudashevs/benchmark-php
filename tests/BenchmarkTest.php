@@ -579,19 +579,19 @@ class BenchmarkTest extends TestCase
     public function provideInitArgumentsData()
     {
         return [
-            'When required option value is missed' => [
+            'When required value for option -b is missed' => [
                 array_merge($_SERVER['argv'], ['-b']),
                 ['-b'],
                 'empty',
                 'Passed value is empty.',
             ],
-            'When required option value looks like another option' => [
+            'When required value for option -b looks like another option' => [
                 array_merge($_SERVER['argv'], ['-b', '-c']),
                 ['-b'],
                 'wrong',
                 'Passed value looks like option.',
             ],
-            'When one of required option values looks like another option' => [
+            'When one of required values looks like another option' => [
                 array_merge($_SERVER['argv'], ['-c', 'path', '--benchmarks', '--debug']),
                 ['-c', '--benchmarks'],
                 'wrong',
