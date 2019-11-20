@@ -305,16 +305,16 @@ class Filesystem extends AbstractBenchmark
     }
 
     /**
-     * @param mixed $value
+     * @param mixed $precision
      * @return bool
      */
-    protected function isValidPrecision($value)
+    protected function isValidPrecision($precision)
     {
-        if (!is_int($value)) {
+        if (!is_int($precision)) {
             return false;
         }
 
-        return $value >= 0 && $value <= 3;
+        return $precision >= 0 && $precision <= 3;
     }
 
     /**
