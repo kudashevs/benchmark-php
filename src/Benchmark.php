@@ -18,7 +18,7 @@ class Benchmark
     const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
-     * @var int Execution time output precision
+     * @var int Execution time output precision (possible values are from 1 to 12).
      */
     const TIME_PRECISION = 3;
 
@@ -43,6 +43,7 @@ class Benchmark
         '-i',
         '--iterations',
         '--temporary-file',
+        '--time-precision',
         '--data-precision',
     ];
 
@@ -209,6 +210,11 @@ class Benchmark
                 case '-i':
                 case '--iterations':
                     $options['iterations'] = $this->parseRequiredArgumentIsIteration($argument, $value);
+
+                    break;
+
+                case '--time-precision':
+                    $options['time_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
 
                     break;
 
@@ -616,7 +622,7 @@ class Benchmark
         $additionalInformation = array_intersect_key($statistics, array_flip($additionalKeys));
 
         $report = [
-            $name => $this->generateDefaultExecutionTime($statistics['exec_time'], self::TIME_PRECISION),
+            $name => $this->generateDefaultExecutionTime($statistics['exec_time']),
         ];
 
         $report = array_merge($report, $additionalInformation);
@@ -629,19 +635,42 @@ class Benchmark
      * @param int $precision
      * @return string
      */
-    protected function generateDefaultExecutionTime($time, $precision = 0)
+    protected function generateDefaultExecutionTime($time, $precision = null)
     {
         if (!is_numeric($time)) {
             return $time;
+        }
+
+        $precision = $this->isValidPrecision($precision) ? $precision : self::TIME_PRECISION;
+
+        if (isset($this->options['time_precise']) && $this->isValidPrecision($this->options['time_precise'])) {
+            $precision = $this->options['time_precise'];
         }
 
         if ($precision === 0) {
             return floor($time) . 's';
         }
 
+        /*
+         * We don't want to round the last two digits as number_format does, so we increase
+         * precision by two and then we will cut the last two digits in the output.
+         */
         $time = number_format($time, $precision + 2, '.', '');
 
         return substr($time, 0, -2) . 's';
+    }
+
+    /**
+     * @param mixed $precision
+     * @return bool
+     */
+    protected function isValidPrecision($precision)
+    {
+        if (!is_int($precision)) {
+            return false;
+        }
+
+        return $precision >= 0 && $precision <= 12;
     }
 
     /**
@@ -771,7 +800,7 @@ class Benchmark
         }
 
         if ($this->isSilentMode() && array_key_exists('total_time', $result)) {
-            $result['total_time'] = $this->generateDefaultExecutionTime($result['total_time'], self::TIME_PRECISION);
+            $result['total_time'] = $this->generateDefaultExecutionTime($result['total_time']);
         }
 
         $updated = [];
@@ -834,6 +863,7 @@ Available Options:
   -b, --benchmarks <list>   Executes benchmarks from a comma separated list
   -l, --list                Prints the list of available benchmarks
   -i, --iterations <num>    Executes benchmarks with fixed number of iterations
+  --time-precision <num>    Use precision for time formatting (min 1, max 12, default 3)
   -v, --verbose             Prints verbose information during execution
   --debug                   Prints detailed information during execution
   --version                 Prints the version and exits

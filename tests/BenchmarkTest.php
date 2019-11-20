@@ -356,9 +356,49 @@ class BenchmarkTest extends TestCase
     public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs10()
     {
         $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
-        $result = $method->invokeArgs($this->bench, [42.7684543132782, 10]);
+        $result = $method->invokeArgs($this->bench, [2.7684543132782, 10]);
 
-        $this->assertEquals('42.7684543132s', $result);
+        $this->assertEquals('2.7684543132s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs12()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [2.7684543132782, 12]);
+
+        $this->assertEquals('2.768454313278s', $result);
+    }
+
+    public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $result = $method->invokeArgs($this->bench, [2.7684543132782, 13]);
+
+        $this->assertEquals('2.768s', $result);
+    }
+
+    public function testIsValidPrecisionReturnsExpectedWhenValidPrecision()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
+        $result = $method->invokeArgs($this->bench, [0]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidPrecisionReturnsExpectedWhenNotAnInteger()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
+        $result = $method->invokeArgs($this->bench, [null]);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidPrecisionReturnsExpectedWhenGreaterThan3()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
+        $result = $method->invokeArgs($this->bench, [14]);
+
+        $this->assertFalse($result);
     }
 
     public function testGetStatisticsReturnsFullStatisticsWhenEmptyKeys()
