@@ -27,7 +27,7 @@ class Filesystem extends AbstractBenchmark
     /**
      * @var int Processed data output precision (possible values are from 0 to 3).
      */
-    const PRECISION = 3;
+    const DATA_PRECISION = 3;
 
     /**
      * @var bool
@@ -268,7 +268,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function calculateSpeed($size, $time, $precision = self::PRECISION)
+    protected function calculateSpeed($size, $time, $precision = self::DATA_PRECISION)
     {
         if ($time == 0) {
             throw new \RuntimeException('The ' . __FUNCTION__ . ' time argument cannot be zero. Check argument value.');
@@ -284,7 +284,7 @@ class Filesystem extends AbstractBenchmark
      */
     protected function generateSizeForHumans($size, $precision = null)
     {
-        $precision = $this->isValidPrecision($precision) ? $precision : self::PRECISION;
+        $precision = $this->isValidPrecision($precision) ? $precision : self::DATA_PRECISION;
 
         // We don't want precision more than 3 because with thousandths it is meaningless
         if (isset($this->options['data_precise']) && $this->isValidPrecision($this->options['data_precise'])) {
@@ -322,7 +322,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function formatSize($size, $precision = self::PRECISION)
+    protected function formatSize($size, $precision = self::DATA_PRECISION)
     {
         if (!is_numeric($size)) {
             return $size;
