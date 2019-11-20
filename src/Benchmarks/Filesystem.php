@@ -32,7 +32,7 @@ class Filesystem extends AbstractBenchmark
     /**
      * @var bool
      */
-    const ROUNDING = true;
+    const DATA_ROUNDING = true;
 
     /**
      * @var int
@@ -332,7 +332,7 @@ class Filesystem extends AbstractBenchmark
             return (string)floor($size);
         }
 
-        $rounding = self::ROUNDING;
+        $rounding = self::DATA_ROUNDING;
 
         if (isset($this->options['rounding']) && is_bool($this->options['rounding'])) {
             $rounding = $this->options['rounding'];
