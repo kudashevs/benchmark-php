@@ -761,7 +761,7 @@ class BenchmarkTest extends TestCase
         $this->expectExceptionMessage($message);
 
         $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-           $method->invokeArgs($partialMock, [$arguments]);
+        $method->invokeArgs($partialMock, [$arguments]);
     }
 
     public function provideRequireValueConst()
@@ -769,7 +769,7 @@ class BenchmarkTest extends TestCase
         return array_reduce(Benchmark::REQUIRE_VALUE, function ($acc, $v) {
             $acc['When required value for option ' . $v . ' is missed'] = [
                 [$v => false],
-                'Option ' . $v . ' requires the value.'
+                'Option ' . $v . ' requires the value.',
             ];
 
             return $acc;
