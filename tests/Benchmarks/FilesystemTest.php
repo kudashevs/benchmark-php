@@ -418,6 +418,14 @@ class FilesystemTest extends TestCase
         ];
     }
 
+    public function testIsValidPrecisionReturnsExpectedWhenValidPrecision()
+    {
+        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
+        $result = $method->invokeArgs($this->bench, [0]);
+
+        $this->assertTrue($result);
+    }
+
     public function testIsValidPrecisionReturnsExpectedWhenNotAnInteger()
     {
         $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
