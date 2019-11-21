@@ -331,7 +331,7 @@ class Benchmark
             )) . 'or use -l for more information.' . PHP_EOL);
         }
 
-        return $benchmarks;
+        return array_flip($benchmarks);
     }
 
     /**
@@ -421,7 +421,7 @@ class Benchmark
      */
     protected function initBenchmarks()
     {
-        $initialized = !empty($this->options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, array_flip($this->options['benchmarks'])) : self::BENCHMARKS;
+        $initialized = !empty($this->options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, $this->options['benchmarks']) : self::BENCHMARKS;
         $benchmarks = [];
 
         foreach ($initialized as $name => $class) {
