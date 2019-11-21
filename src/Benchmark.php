@@ -622,7 +622,7 @@ class Benchmark
         $additionalInformation = array_intersect_key($statistics, array_flip($additionalKeys));
 
         $report = [
-            $name => $this->generateDefaultExecutionTime($statistics['exec_time']),
+            $name => $this->formatExecutionTime($statistics['exec_time']),
         ];
 
         $report = array_merge($report, $additionalInformation);
@@ -635,7 +635,7 @@ class Benchmark
      * @param int $precision
      * @return string
      */
-    protected function generateDefaultExecutionTime($time, $precision = null)
+    protected function formatExecutionTime($time, $precision = null)
     {
         if (!is_numeric($time)) {
             return $time;
@@ -800,7 +800,7 @@ class Benchmark
         }
 
         if ($this->isSilentMode() && array_key_exists('total_time', $result)) {
-            $result['total_time'] = $this->generateDefaultExecutionTime($result['total_time']);
+            $result['total_time'] = $this->formatExecutionTime($result['total_time']);
         }
 
         $updated = [];

@@ -305,73 +305,73 @@ class BenchmarkTest extends TestCase
         $this->assertArrayNotHasKey('some_time', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenString()
+    public function testFormatExecutionTimeReturnsExpectedWhenString()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, ['test']);
 
         $this->assertEquals('test', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs0()
+    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs0()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [1, 0]);
 
         $this->assertEquals('1s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs2()
+    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs2()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [1, 2]);
 
         $this->assertEquals('1.00s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs2()
+    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs2()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.729513, 2]);
 
         $this->assertEquals('2.72s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsWithoutRoundingWhenTimeAndPrecisionIs3()
+    public function testFormatExecutionTimeReturnsWithoutRoundingWhenTimeAndPrecisionIs3()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.729513, 3]);
 
         $this->assertEquals('2.729s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsWithTrailingZeroWhenTimeAndPrecisionIs3()
+    public function testFormatExecutionTimeReturnsWithTrailingZeroWhenTimeAndPrecisionIs3()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.720513, 3]);
 
         $this->assertEquals('2.720s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs10()
+    public function testFormatExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs10()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.7684543132782, 10]);
 
         $this->assertEquals('2.7684543132s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs12()
+    public function testFormatExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs12()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.7684543132782, 12]);
 
         $this->assertEquals('2.768454313278s', $result);
     }
 
-    public function testGenerateDefaultExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
+    public function testFormatExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultExecutionTime');
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.7684543132782, 13]);
 
         $this->assertEquals('2.768s', $result);
