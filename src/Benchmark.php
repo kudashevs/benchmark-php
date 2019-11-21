@@ -313,11 +313,11 @@ class Benchmark
 
         $benchmarks = explode(',', $value);
 
-        if (!empty($undefined = array_diff($benchmarks, self::BENCHMARKS))) {
+        if (!empty($unknown = array_diff($benchmarks, self::BENCHMARKS))) {
             $this->reporter->showBlock($this->getVersionString());
             $this->terminateWithMessage('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
-                $undefined
+                $unknown
             )) . 'or use -l for more information.' . PHP_EOL);
         }
 
