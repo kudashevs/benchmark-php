@@ -245,17 +245,19 @@ class Filesystem extends AbstractBenchmark
         $size = self::FILE_SIZE * $this->iterations;
 
         $summary = [
+            'read_time' => $this->statistics['read_time'],
             'read_speed' => $this->calculateSpeed($size, $this->statistics['read_time']),
+            'write_time' => $this->statistics['write_time'],
             'write_speed' => $this->calculateSpeed($size, $this->statistics['write_time']),
         ];
 
         if ($this->isVerboseMode() || $this->isDebugMode()) {
             $summary = [
                 'iterate' => $this->generatePluralizedCount($this->iterations, 'time'),
-                'read_speed' => $this->calculateSpeed($size, $this->statistics['read_time']),
                 'read_time' => $this->statistics['read_time'],
-                'write_speed' => $this->calculateSpeed($size, $this->statistics['write_time']),
+                'read_speed' => $this->calculateSpeed($size, $this->statistics['read_time']),
                 'write_time' => $this->statistics['write_time'],
+                'write_speed' => $this->calculateSpeed($size, $this->statistics['write_time']),
             ];
         }
 
