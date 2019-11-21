@@ -638,11 +638,11 @@ class Benchmark
      */
     protected function formatExecutionTimeBatch(array $data)
     {
-        array_walk($data, function (&$v, $k) {
+        foreach ($data as $k => $v) {
             if (substr($k, -5) === '_time') {
-                $v = $this->formatExecutionTime($v);
+                $data[$k] = $this->formatExecutionTime($v);
             }
-        });
+        }
 
         return $data;
     }
