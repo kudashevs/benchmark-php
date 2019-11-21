@@ -353,7 +353,7 @@ class BenchmarkTest extends TestCase
         $this->assertEquals('2.720s', $result);
     }
 
-    public function testFormatExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs10()
+    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs10()
     {
         $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.7684543132782, 10]);
@@ -361,7 +361,7 @@ class BenchmarkTest extends TestCase
         $this->assertEquals('2.7684543132s', $result);
     }
 
-    public function testFormatExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs12()
+    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs12()
     {
         $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.7684543132782, 12]);
@@ -369,7 +369,7 @@ class BenchmarkTest extends TestCase
         $this->assertEquals('2.768454313278s', $result);
     }
 
-    public function testFormatExecutionTimeReturnsWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
+    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
     {
         $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
         $result = $method->invokeArgs($this->bench, [2.7684543132782, 13]);
