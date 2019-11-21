@@ -15,8 +15,8 @@ trait HandlesFunctionsTrait
         foreach ($this->functions as $function) {
             $startTime = microtime(true);
 
-            foreach ($this->data as $i) {
-                $function($i);
+            foreach ($this->data as $value) {
+                $function($value);
             }
 
             $stopTime = microtime(true);
