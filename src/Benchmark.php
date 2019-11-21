@@ -2,7 +2,13 @@
 
 namespace BenchmarkPHP;
 
+use BenchmarkPHP\Benchmarks\Arrays;
+use BenchmarkPHP\Benchmarks\Floats;
+use BenchmarkPHP\Benchmarks\Objects;
+use BenchmarkPHP\Benchmarks\Strings;
 use BenchmarkPHP\Reporters\Reporter;
+use BenchmarkPHP\Benchmarks\Integers;
+use BenchmarkPHP\Benchmarks\Filesystem;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class Benchmark
@@ -25,13 +31,13 @@ class Benchmark
     /**
      * @var array
      */
-    const BENCHMARKS = [ // 'files', 'database', 'network'
-        'integers',
-        'floats',
-        'strings',
-        'arrays',
-        'objects',
-        'filesystem',
+    const BENCHMARKS = [ // 'bools', 'files', 'database', 'network'
+        'integers' => Integers::class,
+        'floats' => Floats::class,
+        'strings' => Strings::class,
+        'arrays' => Arrays::class,
+        'objects' => Objects::class,
+        'filesystem' => Filesystem::class,
     ];
 
     /**
@@ -313,7 +319,7 @@ class Benchmark
 
         $benchmarks = explode(',', $value);
 
-        if (!empty($unknown = array_diff($benchmarks, self::BENCHMARKS))) {
+        if (!empty($unknown = array_diff($benchmarks, array_flip(self::BENCHMARKS)))) {
             $this->reporter->showBlock($this->getVersionString());
             $this->terminateWithMessage('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
@@ -411,23 +417,19 @@ class Benchmark
      */
     protected function initBenchmarks()
     {
-        $initialized = !empty($this->options['benchmarks']) ? $this->options['benchmarks'] : self::BENCHMARKS;
+        $initialized = !empty($this->options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, array_flip($this->options['benchmarks'])) : self::BENCHMARKS;
         $benchmarks = [];
 
-        foreach ($initialized as $name) {
-            $class = '\\BenchmarkPHP\\Benchmarks\\' . ucfirst($name);
-
-            if (class_exists($class)) {
-                try {
-                    $instance = new $class($this->options);
-                } catch (\Exception $e) {
-                    $instance = [
-                        'fail' => 'instantiation',
-                        'message' => $e->getMessage(),
-                    ];
-                }
-                $benchmarks[$name] = $instance;
+        foreach ($initialized as $name => $class) {
+            try {
+                $instance = new $class($this->options);
+            } catch (\Exception $e) {
+                $instance = [
+                    'fail' => 'instantiation',
+                    'message' => $e->getMessage(),
+                ];
             }
+            $benchmarks[$name] = $instance;
         }
 
         return $benchmarks;
@@ -439,15 +441,7 @@ class Benchmark
      */
     protected function listBenchmarks($style = '')
     {
-        $benchmarks = [];
-
-        foreach (self::BENCHMARKS as $name) {
-            $class = '\\BenchmarkPHP\\Benchmarks\\' . ucfirst($name);
-
-            if (class_exists($class)) {
-                $benchmarks[] = $name;
-            }
-        }
+        $benchmarks = array_keys(self::BENCHMARKS);
 
         if ($style === 'header') {
             $benchmarks = array_merge(['exclude:Available ' . $this->generatePluralizedBenchmarkCount(count($benchmarks))], $benchmarks);
