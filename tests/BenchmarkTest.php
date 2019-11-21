@@ -377,6 +377,23 @@ class BenchmarkTest extends TestCase
         $this->assertEquals('2.768s', $result);
     }
 
+    public function testFormatExecutionTimeBatchReturns()
+    {
+        $statistics = [
+            'read_time' => 2.7684543132782,
+            'exec_time' => 3.15918564796448,
+            'untouchable' => 1.5,
+        ];
+
+        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTimeBatch');
+        $result = $method->invokeArgs($this->bench, [$statistics]);
+
+        $this->assertCount(3, $result);
+        $this->assertEquals('2.768s', $result['read_time']);
+        $this->assertEquals('3.159s', $result['exec_time']);
+        $this->assertEquals(1.5, $result['untouchable']);
+    }
+
     public function testIsValidPrecisionReturnsExpectedWhenValidPrecision()
     {
         $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');

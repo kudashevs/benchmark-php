@@ -618,6 +618,8 @@ class Benchmark
      */
     protected function generateDefaultReport($name, array $statistics)
     {
+        $statistics = $this->formatExecutionTimeBatch($statistics);
+
         $additionalKeys = ['read_time', 'read_speed', 'write_time', 'write_speed'];
         $additionalInformation = array_intersect_key($statistics, array_flip($additionalKeys));
 
@@ -628,6 +630,21 @@ class Benchmark
         $report = array_merge($report, $additionalInformation);
 
         return $report;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function formatExecutionTimeBatch(array $data)
+    {
+        array_walk($data, function (&$v, $k) {
+            if (substr($k, -5) === '_time') {
+                $v = $this->formatExecutionTime($v);
+            }
+        });
+
+        return $data;
     }
 
     /**
