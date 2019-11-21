@@ -618,7 +618,7 @@ class Benchmark
      */
     protected function generateDefaultReport($name, array $statistics)
     {
-        $additionalKeys = ['write_speed', 'read_speed'];
+        $additionalKeys = ['read_time', 'read_speed', 'write_time', 'write_speed'];
         $additionalInformation = array_intersect_key($statistics, array_flip($additionalKeys));
 
         $report = [
