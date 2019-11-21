@@ -119,6 +119,10 @@ class Benchmark
      */
     protected function initArguments(array $arguments)
     {
+        /**
+         * The first argument is always the name that was used to run the script.
+         * We don't want it that's why we remove the first element from the array.
+         */
         array_shift($arguments);
 
         $result = [];
