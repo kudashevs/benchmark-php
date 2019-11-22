@@ -42,9 +42,7 @@ class BenchmarkTest extends TestCase
         $arguments = [array_shift($_SERVER['argv'])];
 
         $partialMock = $this->getPartialMockWithSkippedConstructor();
-
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        $result = $method->invokeArgs($partialMock, [$arguments]);
+        $result = $this->runPrivateMethod($partialMock, 'initArguments', [$arguments]);
 
         $this->assertInternalType('array', $result);
         $this->assertEmpty($result);
@@ -60,9 +58,7 @@ class BenchmarkTest extends TestCase
         ];
 
         $partialMock = $this->getPartialMockWithSkippedConstructor();
-
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        $result = $method->invokeArgs($partialMock, [$arguments]);
+        $result = $this->runPrivateMethod($partialMock, 'initArguments', [$arguments]);
 
         $this->assertEquals($expected, $result);
     }
@@ -72,9 +68,7 @@ class BenchmarkTest extends TestCase
         $arguments = ['--verbose' => false];
 
         $partialMock = $this->getPartialMockWithSkippedConstructor();
-
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-        $result = $method->invokeArgs($partialMock, [$arguments]);
+        $result = $this->runPrivateMethod($partialMock, 'parseArguments', [$arguments]);
 
         $this->assertContains('verbose', $result);
     }
@@ -85,9 +79,7 @@ class BenchmarkTest extends TestCase
         $arguments = ['-l' => false, '--version' => false];
 
         $partialMock = $this->getPartialMockWithSkippedConstructor();
-
-        $method = $this->getPrivateMethod($partialMock, 'checkMutuallyExclusive');
-        $result = $method->invokeArgs($partialMock, [$key, $arguments]);
+        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyExclusive', [$key, $arguments]);
 
         $this->assertNull($result);
     }
@@ -98,9 +90,7 @@ class BenchmarkTest extends TestCase
         $arguments = ['-l' => false, '--version' => false];
 
         $partialMock = $this->getPartialMockWithSkippedConstructor();
-
-        $method = $this->getPrivateMethod($partialMock, 'checkMutuallyExclusive');
-        $result = $method->invokeArgs($partialMock, [$key, $arguments]);
+        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyExclusive', [$key, $arguments]);
 
         $this->assertNull($result);
     }
@@ -123,8 +113,7 @@ class BenchmarkTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Contains mutually exclusive options.');
-        $method = $this->getPrivateMethod($partialMock, 'checkMutuallyExclusive');
-        $result = $method->invokeArgs($partialMock, [$key, $arguments]);
+        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyExclusive', [$key, $arguments]);
 
         $this->assertTrue($result);
     }
@@ -134,8 +123,7 @@ class BenchmarkTest extends TestCase
         $argument = '-b';
         $value = 'integers,floats';
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsBenchmarkName');
-        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsBenchmarkName', [$argument, $value]);
 
         $this->assertInternalType('array', $result);
         $this->assertCount(2, $result);
@@ -147,8 +135,7 @@ class BenchmarkTest extends TestCase
         $argument = '-i';
         $value = 42;
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsIteration');
-        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsIteration', [$argument, $value]);
 
         $this->assertSame(42, $result);
     }
@@ -158,8 +145,7 @@ class BenchmarkTest extends TestCase
         $argument = '--precision';
         $value = 0;
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsPositiveInteger');
-        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsPositiveInteger', [$argument, $value]);
 
         $this->assertSame(0, $result);
     }
@@ -169,24 +155,21 @@ class BenchmarkTest extends TestCase
         $argument = '--temporary-file';
         $value = 'test.txt';
 
-        $method = $this->getPrivateMethod($this->bench, 'parseRequiredArgumentIsFilename');
-        $result = $method->invokeArgs($this->bench, [$argument, $value]);
+        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsFilename', [$argument, $value]);
 
         $this->assertSame('test.txt', $result);
     }
 
     public function testGeneratePrintableWithSpaceReturnsStringWhenValueIsPrintable()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePrintableWithSpace');
-        $result = $method->invokeArgs($this->bench, [42]);
+        $result = $this->runPrivateMethod($this->bench, 'generatePrintableWithSpace', [42]);
 
         $this->assertSame('42 ', $result);
     }
 
     public function testGeneratePrintableWithSpaceReturnsSpaceStringWhenValueIsNotPrintable()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePrintableWithSpace');
-        $result = $method->invokeArgs($this->bench, [[42]]);
+        $result = $this->runPrivateMethod($this->bench, 'generatePrintableWithSpace', [[42]]);
 
         $this->assertSame(' ', $result);
     }
@@ -195,8 +178,7 @@ class BenchmarkTest extends TestCase
     {
         $count = $this->countAbstractBenchmarkClasses();
 
-        $method = $this->getPrivateMethod($this->bench, 'initBenchmarks');
-        $benchmarks = $method->invoke($this->bench);
+        $benchmarks = $this->runPrivateMethod($this->bench, 'initBenchmarks');
 
         $this->assertInternalType('array', $benchmarks);
         $this->assertCount($count, $benchmarks);
@@ -207,8 +189,7 @@ class BenchmarkTest extends TestCase
         $options = ['verbose' => 'updated'];
 
         $this->setPrivateVariableValue($this->bench, 'options', $options);
-        $method = $this->getPrivateMethod($this->bench, 'initBenchmarks');
-        $result = $method->invoke($this->bench);
+        $result = $this->runPrivateMethod($this->bench, 'initBenchmarks');
 
         $instance = current($result);
         $this->assertInstanceOf(AbstractBenchmark::class, $instance);
@@ -219,8 +200,7 @@ class BenchmarkTest extends TestCase
     {
         $count = $this->countAbstractBenchmarkClasses();
 
-        $method = $this->getPrivateMethod($this->bench, 'listBenchmarks');
-        $benchmarks = $method->invoke($this->bench);
+        $benchmarks = $this->runPrivateMethod($this->bench, 'listBenchmarks');
 
         $this->assertNotEmpty($benchmarks);
         $this->assertContainsOnly('string', $benchmarks);
@@ -231,8 +211,7 @@ class BenchmarkTest extends TestCase
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
 
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
 
         $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStatistics(['started_at']));
     }
@@ -241,8 +220,7 @@ class BenchmarkTest extends TestCase
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
 
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
 
         $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStatistics(['stopped_at']));
     }
@@ -262,9 +240,7 @@ class BenchmarkTest extends TestCase
             ->willReturn([]);
 
         $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $mock]);
-
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
     }
 
     public function testBenchmarkCompletedUpdatesTotalTime()
@@ -275,18 +251,16 @@ class BenchmarkTest extends TestCase
         $stub->expects($this->once())
             ->method('result')
             ->willReturn(['exec_time' => 42]);
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
 
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
 
         $this->assertContains('42', $this->bench->getStatistics(['total_time']));
     }
 
     public function testGenerateDefaultReportReturnsExpectedWhenWithoutAdditionalInformation()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultReport');
-        $result = $method->invokeArgs($this->bench, ['test', ['exec_time' => 42]]);
+        $result = $this->runPrivateMethod($this->bench, 'generateDefaultReport', ['test', ['exec_time' => 42]]);
 
         $this->assertArrayHasKey('test', $result);
         $this->assertStringStartsWith('42', $result['test']);
@@ -294,8 +268,11 @@ class BenchmarkTest extends TestCase
 
     public function testGenerateDefaultReportReturnsExpectedWhenWithAdditionalInformation()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateDefaultReport');
-        $result = $method->invokeArgs($this->bench, ['test', ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8]]);
+        $result = $this->runPrivateMethod(
+            $this->bench,
+            'generateDefaultReport',
+            ['test', ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8]]
+        );
 
         $this->assertCount(3, $result);
         $this->assertArrayHasKey('test', $result);
@@ -307,72 +284,63 @@ class BenchmarkTest extends TestCase
 
     public function testFormatExecutionTimeReturnsExpectedWhenString()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, ['test']);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', ['test']);
 
         $this->assertEquals('test', $result);
     }
 
     public function testFormatExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs0()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [1, 0]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [1, 0]);
 
         $this->assertEquals('1s', $result);
     }
 
     public function testFormatExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs2()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [1, 2]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [1, 2]);
 
         $this->assertEquals('1.00s', $result);
     }
 
     public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs2()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [2.729513, 2]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [2.729513, 2]);
 
         $this->assertEquals('2.72s', $result);
     }
 
     public function testFormatExecutionTimeReturnsWithoutRoundingWhenTimeAndPrecisionIs3()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [2.729513, 3]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [2.729513, 3]);
 
         $this->assertEquals('2.729s', $result);
     }
 
     public function testFormatExecutionTimeReturnsWithTrailingZeroWhenTimeAndPrecisionIs3()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [2.720513, 3]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [2.720513, 3]);
 
         $this->assertEquals('2.720s', $result);
     }
 
     public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs10()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [2.7684543132782, 10]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [2.7684543132782, 10]);
 
         $this->assertEquals('2.7684543132s', $result);
     }
 
     public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs12()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [2.7684543132782, 12]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [2.7684543132782, 12]);
 
         $this->assertEquals('2.768454313278s', $result);
     }
 
     public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
     {
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTime');
-        $result = $method->invokeArgs($this->bench, [2.7684543132782, 13]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTime', [2.7684543132782, 13]);
 
         $this->assertEquals('2.768s', $result);
     }
@@ -385,8 +353,7 @@ class BenchmarkTest extends TestCase
             'untouchable' => 1.5,
         ];
 
-        $method = $this->getPrivateMethod($this->bench, 'formatExecutionTimeBatch');
-        $result = $method->invokeArgs($this->bench, [$statistics]);
+        $result = $this->runPrivateMethod($this->bench, 'formatExecutionTimeBatch', [$statistics]);
 
         $this->assertCount(3, $result);
         $this->assertEquals('2.768s', $result['read_time']);
@@ -396,24 +363,21 @@ class BenchmarkTest extends TestCase
 
     public function testIsValidPrecisionReturnsExpectedWhenValidPrecision()
     {
-        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
-        $result = $method->invokeArgs($this->bench, [0]);
+        $result = $this->runPrivateMethod($this->bench, 'isValidPrecision', [0]);
 
         $this->assertTrue($result);
     }
 
     public function testIsValidPrecisionReturnsExpectedWhenNotAnInteger()
     {
-        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
-        $result = $method->invokeArgs($this->bench, [null]);
+        $result = $this->runPrivateMethod($this->bench, 'isValidPrecision', [null]);
 
         $this->assertFalse($result);
     }
 
     public function testIsValidPrecisionReturnsExpectedWhenGreaterThan3()
     {
-        $method = $this->getPrivateMethod($this->bench, 'isValidPrecision');
-        $result = $method->invokeArgs($this->bench, [14]);
+        $result = $this->runPrivateMethod($this->bench, 'isValidPrecision', [14]);
 
         $this->assertFalse($result);
     }
@@ -474,8 +438,7 @@ class BenchmarkTest extends TestCase
     {
         $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
 
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
         $result = $this->bench->getBenchmarksSummary();
 
         $this->assertArrayHasKey('skip', $result);
@@ -492,8 +455,7 @@ class BenchmarkTest extends TestCase
         $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
         $result = $this->bench->getBenchmarksSummary();
 
         $this->assertContains('1', $result['done']);
@@ -505,8 +467,7 @@ class BenchmarkTest extends TestCase
         $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
-        $method = $this->getPrivateMethod($this->bench, 'handleBenchmarks');
-        $method->invoke($this->bench);
+        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
         $result = $this->bench->getBenchmarksSummary();
 
         $this->assertContains('0', $result['done']);
@@ -517,75 +478,75 @@ class BenchmarkTest extends TestCase
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false, 'verbose' => false]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isSilentMode');
+        $result = $this->runPrivateMethod($this->bench, 'isSilentMode');
 
-        $this->assertTrue($method->invoke($this->bench));
+        $this->assertTrue($result);
     }
 
     public function testIsSilentModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true, 'verbose' => false]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isSilentMode');
+        $result = $this->runPrivateMethod($this->bench, 'isSilentMode');
 
-        $this->assertFalse($method->invoke($this->bench));
+        $this->assertFalse($result);
     }
 
     public function testIsDebugModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isDebugMode');
+        $result = $this->runPrivateMethod($this->bench, 'isDebugMode');
 
-        $this->assertTrue($method->invoke($this->bench));
+        $this->assertTrue($result);
     }
 
     public function testIsDebugModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isDebugMode');
+        $result = $this->runPrivateMethod($this->bench, 'isDebugMode');
 
-        $this->assertFalse($method->invoke($this->bench));
+        $this->assertFalse($result);
     }
 
     public function testIsVerboseModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isVerboseMode');
+        $result = $this->runPrivateMethod($this->bench, 'isVerboseMode');
 
-        $this->assertTrue($method->invoke($this->bench));
+        $this->assertTrue($result);
     }
 
     public function testIsVerboseModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => false]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isVerboseMode');
+        $result = $this->runPrivateMethod($this->bench, 'isVerboseMode');
 
-        $this->assertFalse($method->invoke($this->bench));
+        $this->assertFalse($result);
     }
 
     public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenZeroResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount');
+        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount', [0]);
 
-        $this->assertEquals('0 benchmarks', $method->invokeArgs($this->bench, [0]));
+        $this->assertEquals('0 benchmarks', $result);
     }
 
     public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenOneResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount');
+        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount', [1]);
 
-        $this->assertEquals('1 benchmark', $method->invokeArgs($this->bench, [1]));
+        $this->assertEquals('1 benchmark', $result);
     }
 
     public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenThreeResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount');
+        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount', [3]);
 
-        $this->assertEquals('3 benchmarks', $method->invokeArgs($this->bench, [3]));
+        $this->assertEquals('3 benchmarks', $result);
     }
 
     public function testGetSystemInformationReturnsExpected() // refactor
@@ -629,8 +590,7 @@ class BenchmarkTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $method = $this->getPrivateMethod($partialMock, 'initArguments');
-        $method->invokeArgs($partialMock, [$arguments, $required]);
+        $this->runPrivateMethod($partialMock, 'initArguments', [$arguments, $required]);
     }
 
     public function provideInitArgumentsData()
@@ -681,8 +641,7 @@ class BenchmarkTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-        $method->invokeArgs($partialMock, [$arguments]);
+        $this->runPrivateMethod($partialMock, 'parseArguments', [$arguments]);
     }
 
     public function provideParseArgumentsData()
@@ -776,9 +735,7 @@ class BenchmarkTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-
-        $method = $this->getPrivateMethod($partialMock, 'parseArguments');
-        $method->invokeArgs($partialMock, [$arguments]);
+        $this->runPrivateMethod($partialMock, 'parseArguments', [$arguments]);
     }
 
     public function provideRequireValueConst()
