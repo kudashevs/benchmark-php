@@ -116,17 +116,16 @@ class CliReporterTest extends TestCase
 
     public function testFormatInputReturnsEmptyWhenWrongType()
     {
-        $method = $this->getPrivateMethod($this->reporter, 'formatInput');
+        $result = $this->runPrivateMethod($this->reporter, 'formatInput', [1]);
 
-        $this->assertEquals('' . PHP_EOL, $method->invokeArgs($this->reporter, [1]));
+        $this->assertEquals('' . PHP_EOL, $result);
     }
 
     public function testFormatInputReturnsExpectedWhenListStyledInput()
     {
         $input = ['first', 'second'];
 
-        $method = $this->getPrivateMethod($this->reporter, 'formatInput');
-        $result = $method->invokeArgs($this->reporter, [$input, 'list']);
+        $result = $this->runPrivateMethod($this->reporter, 'formatInput', [$input, 'list']);
 
         $this->assertStringStartsWith(CliReporter::LIST_BULLET, $result);
     }
@@ -136,17 +135,16 @@ class CliReporterTest extends TestCase
         $input = ['exclude:header', 'first', 'second'];
         $expected = 'header';
 
-        $method = $this->getPrivateMethod($this->reporter, 'formatInput');
-        $result = $method->invokeArgs($this->reporter, [$input, 'list']);
+        $result = $this->runPrivateMethod($this->reporter, 'formatInput', [$input, 'list']);
 
         $this->assertStringStartsWith($expected, $result);
     }
 
     public function testMakeCenteredReturnsEmptyWhenWrongType()
     {
-        $method = $this->getPrivateMethod($this->reporter, 'makeCentered');
+        $result = $this->runPrivateMethod($this->reporter, 'makeCentered', [1]);
 
-        $this->assertEquals(CliReporter::REPORT_WIDTH - 2, mb_strlen($method->invokeArgs($this->reporter, [1])));
+        $this->assertEquals(CliReporter::REPORT_WIDTH - 2, mb_strlen($result));
     }
 
     public function testMakeCenteredReturnsClippedWhenStringLargerThanWidth()
@@ -154,9 +152,9 @@ class CliReporterTest extends TestCase
         $string = str_repeat('string', CliReporter::REPORT_WIDTH);
         $expected = substr($string, 0, CliReporter::REPORT_WIDTH - 2);
 
-        $method = $this->getPrivateMethod($this->reporter, 'makeCentered');
+        $result = $this->runPrivateMethod($this->reporter, 'makeCentered', [$string]);
 
-        $this->assertEquals($expected, $method->invokeArgs($this->reporter, [$string]));
+        $this->assertEquals($expected, $result);
     }
 
     public function testMakeCenteredReturnsExpectedWhenStringIsOdd()
@@ -173,7 +171,8 @@ class CliReporterTest extends TestCase
 
         $expected = str_repeat(CliReporter::REPORT_SPACE, floor($half)) . $string . str_repeat(CliReporter::REPORT_SPACE, ceil($half));
 
-        $method = $this->getPrivateMethod($this->reporter, 'makeCentered');
-        $this->assertEquals($expected, $method->invokeArgs($this->reporter, [$string]));
+        $result = $this->runPrivateMethod($this->reporter, 'makeCentered', [$string]);
+
+        $this->assertEquals($expected, $result);
     }
 }
