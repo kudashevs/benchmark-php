@@ -7,6 +7,24 @@ trait TestHelpersTrait
     /**
      * @param object $obj
      * @param string $methodName
+     * @param array $args
+     * @throws \ReflectionException
+     * @return mixed
+     */
+    public function runPrivateMethod($obj, $methodName, array $args = [])
+    {
+        $method = $this->getPrivateMethod($obj, $methodName);
+
+        if (empty($args)) {
+            return $method->invoke($obj);
+        }
+
+        return $method->invokeArgs($obj, $args);
+    }
+
+    /**
+     * @param object $obj
+     * @param string $methodName
      * @throws \ReflectionException
      * @return \ReflectionMethod
      */
