@@ -24,10 +24,7 @@ class IntegersTest extends TestCase
     public function testConstructorThrowsExceptionWhenEmptyFunctions()
     {
         $this->expectException(\LogicException::class);
-
-        $method = $this->getPrivateMethod($this->bench, 'initFunctions');
-
-        $method->invokeArgs($this->bench, [[]]);
+        $this->runPrivateMethod($this->bench, 'initFunctions', [[]]);
     }
 
     /**
@@ -35,8 +32,7 @@ class IntegersTest extends TestCase
      */
     public function testGenerateTestDataDoesNotGenerateZero()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateTestData');
-        $data = $method->invoke($this->bench);
+        $data = $this->runPrivateMethod($this->bench, 'generateTestData');
 
         $this->assertCount($this->bench->getIterations(), $data);
         $this->assertNotContains(0, $data);
@@ -77,8 +73,7 @@ class IntegersTest extends TestCase
 
     public function testGenerateTestDataReturnsExpected()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generateTestData');
-        $data = $method->invoke($this->bench);
+        $data = $this->runPrivateMethod($this->bench, 'generateTestData');
 
         $this->assertCount($this->bench->getIterations(), $data);
         $this->assertInternalType('integer', $data[mt_rand(1, $this->bench->getIterations())]);

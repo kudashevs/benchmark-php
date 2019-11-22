@@ -47,56 +47,56 @@ class AbstractBenchmarkTest extends TestCase
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isDebugMode');
+        $result = $this->runPrivateMethod($this->bench, 'isDebugMode');
 
-        $this->assertTrue($method->invoke($this->bench));
+        $this->assertTrue($result);
     }
 
     public function testIsDebugModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isDebugMode');
+        $result = $this->runPrivateMethod($this->bench, 'isDebugMode');
 
-        $this->assertFalse($method->invoke($this->bench));
+        $this->assertFalse($result);
     }
 
     public function testIsVerboseModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isVerboseMode');
+        $result = $this->runPrivateMethod($this->bench, 'isVerboseMode');
 
-        $this->assertTrue($method->invoke($this->bench));
+        $this->assertTrue($result);
     }
 
     public function testIsVerboseModeReturnsExpectedWhenFalse()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => false]);
 
-        $method = $this->getPrivateMethod($this->bench, 'isVerboseMode');
+        $result = $this->runPrivateMethod($this->bench, 'isVerboseMode');
 
-        $this->assertFalse($method->invoke($this->bench));
+        $this->assertFalse($result);
     }
 
     public function testGeneratePluralizedCountReturnsExpectedWhenOneResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedCount', [1]);
 
-        $this->assertEquals('1 function', $method->invokeArgs($this->bench, [1]));
+        $this->assertEquals('1 function', $result);
     }
 
     public function testGeneratePluralizedCountReturnsExpectedWhenThreeResult()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedCount', [3]);
 
-        $this->assertEquals('3 functions', $method->invokeArgs($this->bench, [3]));
+        $this->assertEquals('3 functions', $result);
     }
 
     public function testGeneratePluralizedCountReturnsExpectedWhenFourResultAndTextWithExtraS()
     {
-        $method = $this->getPrivateMethod($this->bench, 'generatePluralizedCount');
+        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedCount', [4, 'tests']);
 
-        $this->assertEquals('4 tests', $method->invokeArgs($this->bench, [4, 'tests']));
+        $this->assertEquals('4 tests', $result);
     }
 }
