@@ -153,7 +153,7 @@ class BenchmarkTest extends TestCase
             ->getMock();
         $partialMock->expects($this->once())
             ->method('terminateWithMessage')
-            ->with($this->stringContains('mutually'))
+            ->with($this->stringContains('exclusive'))
             ->will($this->throwException(new \InvalidArgumentException('Contains mutually exclusive options.')));
 
         $this->expectException(\InvalidArgumentException::class);
