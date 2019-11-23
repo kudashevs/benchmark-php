@@ -44,6 +44,8 @@ class Benchmark
      * @var array
      */
     const REQUIRE_VALUE = [
+        '-e',
+        '--exclude',
         '-b',
         '--benchmarks',
         '-i',
@@ -204,6 +206,13 @@ class Benchmark
 
                     break;
 
+                case '-e':
+                case '--exclude':
+                    $this->checkMutuallyInclusive($argument, $arguments);
+                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
+
+                    break;
+
                 case '-b':
                 case '--benchmarks':
                     $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
@@ -277,6 +286,10 @@ class Benchmark
 
                     break;
             }
+        }
+
+        if (isset($options['benchmarks'], $options['excluded'])) {
+            $options['benchmarks'] = array_diff_key($options['benchmarks'], $options['excluded']);
         }
 
         return $options;
@@ -902,6 +915,7 @@ Usage:
 Available Options:
   -h, --help                Prints this usage information and exits
   -a, --all                 Executes all available benchmarks
+  -e, --exclude <list>      Exclude benchmarks (is used only with -a option)
   -b, --benchmarks <list>   Executes benchmarks from a comma separated list
   -l, --list                Prints the list of available benchmarks
   -i, --iterations <num>    Executes benchmarks with fixed number of iterations

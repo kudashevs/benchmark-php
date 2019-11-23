@@ -716,6 +716,18 @@ class BenchmarkTest extends TestCase
                 'wrong',
                 'Wrong options combination.',
             ],
+            'When exclude option lacks all option returns error message' => [
+                ['-v' => false, '-e' => 'integers'],
+                'terminateWithMessage',
+                'wrong',
+                'Wrong options combination.',
+            ],
+            'When exclude option\'s value contains undefined benchmark returns error message' => [
+                ['-a' => false, '-e' => 'test,integers,not_exist'],
+                'terminateWithMessage',
+                'test,not_exist',
+                'Wrong benchmarks names passed.',
+            ],
             'When benchmarks option\'s value is wrong returns error message' => [
                 ['-b' => false],
                 'terminateWithMessage',
@@ -785,14 +797,21 @@ class BenchmarkTest extends TestCase
 
     public function provideRequireValueConst()
     {
-        return array_reduce(Benchmark::REQUIRE_VALUE, function ($acc, $v) {
-            $acc['When required value for option ' . $v . ' is missed'] = [
-                [$v => false],
-                'Option ' . $v . ' requires the value.',
-            ];
+        $require = [];
+        $pickyOptions = [
+            '-e' => ['-a' => false, '-e' => false],
+            '--exclude' => ['-a' => false, '--exclude' => false],
+        ];
 
-            return $acc;
-        }, []);
+        foreach (Benchmark::REQUIRE_VALUE as $option) {
+            $arguments = array_key_exists($option, $pickyOptions) ? $pickyOptions[$option] : [$option => false];
+            $require['When required value for option ' . $option . ' is missed'] = [
+                $arguments,
+                'Option ' . $option . ' requires the value.',
+            ];
+        }
+
+        return $require;
     }
 
     /**
