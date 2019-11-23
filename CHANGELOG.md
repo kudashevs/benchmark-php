@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.1.0] - 2019-11-23
+### Added
+- Add exclude benchmark list option.
+- Add Filesystem returns read/write time.
+- Add formatExecutionTimeBatch (formats all output time).
+
+### Changed
+- Rearrange benchmarks internal representation format.
+- Update benchmarks initialization and processing.
+- Rearrange all tests to use runPrivateMethod helper.
+
 ## [1.0.0] - 2019-11-20
 ### Added
 - Add main a executable file (composer bin property)
