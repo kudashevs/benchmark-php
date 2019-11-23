@@ -200,6 +200,7 @@ class Benchmark
                 case '-a':
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
+                    $options['benchmarks'] = self::BENCHMARKS;
 
                     break;
 
