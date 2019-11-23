@@ -73,6 +73,51 @@ class BenchmarkTest extends TestCase
         $this->assertContains('verbose', $result);
     }
 
+    public function testCheckMutuallyInclusiveReturnsExpectedWhenNotInclusiveKey()
+    {
+        $key = '-v';
+        $arguments = ['-l' => false, '--version' => false];
+
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
+        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyInclusive', [$key, $arguments]);
+
+        $this->assertNull($result);
+    }
+
+    public function testCheckMutuallyInclusiveReturnsExpectedWhenArgumentsWithInclusive()
+    {
+        $key = '-e';
+        $arguments = ['-a' => false, '--version' => false];
+
+        $partialMock = $this->getPartialMockWithSkippedConstructor();
+        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyInclusive', [$key, $arguments]);
+
+        $this->assertNull($result);
+    }
+
+    public function testCheckMutuallyInclusiveReturnsExpectedWhenArgumentsWithoutInclusive()
+    {
+        $key = '-e';
+        $arguments = ['-l' => false, '--benchmarks' => false, '-b' => 42];
+
+        $reporter = $this->getMockBuilder(Reporter::class)
+            ->getMock();
+        $partialMock = $this->getMockBuilder(Benchmark::class)
+            ->setConstructorArgs([$reporter])
+            ->setMethods(['terminateWithMessage'])
+            ->getMock();
+        $partialMock->expects($this->once())
+            ->method('terminateWithMessage')
+            ->with($this->stringContains('inclusive'))
+            ->will($this->throwException(new \InvalidArgumentException('Contains mutually exclusive options.')));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Contains mutually exclusive options.');
+        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyInclusive', [$key, $arguments]);
+
+        $this->assertTrue($result);
+    }
+
     public function testCheckMutuallyExclusiveReturnsExpectedWhenNotExclusiveKey()
     {
         $key = '-v';

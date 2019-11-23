@@ -283,6 +283,32 @@ class Benchmark
     }
 
     /**
+     * @param $key
+     * @param array $arguments
+     * @return void
+     */
+    protected function checkMutuallyInclusive($key, array $arguments)
+    {
+        $include = [
+            '-e' => ['-a', '--all'],
+            '--exclude' => ['-a', '--all'],
+        ];
+
+        if (!array_key_exists($key, $include)) {
+            return;
+        }
+
+        if (array_intersect_key($arguments, array_flip($include[$key]))) {
+            return;
+        }
+
+        $require = implode(' or ', $include[$key]);
+
+        $this->reporter->showBlock($this->getVersionString());
+        $this->terminateWithMessage('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.' . PHP_EOL);
+    }
+
+    /**
      * @param string $key
      * @param array $arguments
      * @return void
