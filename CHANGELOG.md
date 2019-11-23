@@ -2,8 +2,8 @@
 
 ## [1.0.0] - 2019-11-20
 ### Added
-- Add main executable file (composer bin property)
-- Add execute all available option.
+- Add main a executable file (composer bin property)
+- Add all option to execute all available benchmarks.
 - Add time shortening in default mode.
 - Add Filesystem prefix, precision, rounding options.
 
