@@ -109,16 +109,16 @@ class CliReporter implements Reporter
             return '' . PHP_EOL;
         }
 
+        if (preg_match('/^(?:(?:e|exclude):)(.+)/Su', $string, $match)) {
+            return $match[1] . PHP_EOL;
+        }
+
         if ($style === 'center' || $style === 'centered') {
             $string = self::REPORT_COLUMN . $this->makeCentered($string) . self::REPORT_COLUMN;
         }
 
         if ($style === 'list') {
-            if (preg_match('/^(?:(?:e|exclude):)(.+)/Su', $string, $match)) {
-                $string = $match[1];
-            } else {
-                $string = self::LIST_BULLET . $string;
-            }
+            $string = self::LIST_BULLET . $string;
         }
 
         return $string . PHP_EOL;
