@@ -9,12 +9,20 @@ if (version_compare('5.6.0', PHP_VERSION, '>')) {
     exit(1);
 }
 
+$autoload = false;
 foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
     if (file_exists($file)) {
         require $file;
+        $autoload = true;
         break;
     }
 }
+
+if (!$autoload) {
+    fwrite(STDERR,'Benchmark PHP could not locate the autoloader' . PHP_EOL);
+    exit(1);
+}
+unset($autoload);
 
 $benchmark = new Benchmark(new CliReporter());
 $benchmark->run();

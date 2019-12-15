@@ -25,7 +25,7 @@ The main features provided by this application are:
 
 ## Installation
 
-You can install the package via composer:
+You should install the package via composer:
 ```
 composer require kudashevs/benchmark-php
 ```
