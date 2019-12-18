@@ -14,6 +14,7 @@ use BenchmarkPHP\Benchmarks\Arrays;
 use BenchmarkPHP\Benchmarks\Floats;
 use BenchmarkPHP\Benchmarks\Objects;
 use BenchmarkPHP\Benchmarks\Strings;
+use BenchmarkPHP\Informers\Informer;
 use BenchmarkPHP\Reporters\Reporter;
 use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Benchmarks\Filesystem;
@@ -114,7 +115,7 @@ class Benchmark
     {
         $this->reporter->showHeader($this->getFullTitle());
 
-        $this->reporter->showBlock($this->getSystemInformation());
+        $this->reporter->showBlock((new Informer())->getSystemInformation());
         $this->reporter->showSeparator();
 
         $this->handleBenchmarks();
@@ -129,7 +130,7 @@ class Benchmark
      */
     protected function initArguments(array $arguments)
     {
-        /**
+        /*
          * The first argument is always the name that was used to run the script.
          * We don't want it that's why we remove the first element from the array.
          */
@@ -959,39 +960,5 @@ EOT;
     protected function terminateWithMessage($message = '')
     {
         exit($message);
-    }
-
-    /**
-     * @return array
-     */
-    public function getSystemInformation()
-    {
-        $result = [
-            'Server' => $this->getHostInformation(),
-            'PHP version' => phpversion(),
-            'Zend version' => zend_version(),
-            'Platform' => $this->getPlatformInformation(),
-        ];
-
-        return $result;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getHostInformation()
-    {
-        $hostName = (($host = gethostname()) !== false) ? $host : '?';
-        $ipAddress = ($ip = gethostbyname($hostName)) ? $ip : '?';
-
-        return $hostName . '@' . $ipAddress;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getPlatformInformation()
-    {
-        return PHP_OS . ' (' . php_uname('m') . ')';
     }
 }

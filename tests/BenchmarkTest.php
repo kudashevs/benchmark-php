@@ -602,20 +602,6 @@ class BenchmarkTest extends TestCase
         $this->assertEquals('3 benchmarks', $result);
     }
 
-    public function testGetSystemInformationReturnsExpected() // refactor
-    {
-        $host = gethostname();
-        $version = PHP_VERSION;
-        $os = PHP_OS;
-        $platform = php_uname('m');
-
-        $information = $this->bench->getSystemInformation();
-        $this->assertContains($host, $information['Server']);
-        $this->assertContains($version, $information);
-        $this->assertContains($os, $information['Platform']);
-        $this->assertContains($platform, $information['Platform']);
-    }
-
     /**
      * Test exits benchmark.
      */
