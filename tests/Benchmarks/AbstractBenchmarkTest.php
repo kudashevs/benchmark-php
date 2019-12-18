@@ -19,7 +19,7 @@ class AbstractBenchmarkTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Integers $bench must implement AbstractBenchmark */
+    /** @var Integers $bench Class must extend AbstractBenchmark */
     protected $bench;
 
     protected function setUp()
@@ -34,7 +34,7 @@ class AbstractBenchmarkTest extends TestCase
     {
         $this->assertInstanceOf(AbstractBenchmark::class, $this->bench);
     }
-    
+
     /**
      * Exceptions.
      */
