@@ -19,18 +19,22 @@ class AbstractBenchmarkTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Integers $bench Must implement AbstractBenchmark */
+    /** @var Integers $bench must implement AbstractBenchmark */
     protected $bench;
 
     protected function setUp()
     {
         $this->bench = new Integers();
-
-        if (!$this->bench instanceof AbstractBenchmark) {
-            throw new \LogicException(get_class($this->bench) . ' doesn\'t extend AbstractBenchmark. Check setUp() method.');
-        }
     }
 
+    /**
+     * Mandatory test.
+     */
+    public function testInstanceImplementsCertainInterface()
+    {
+        $this->assertInstanceOf(AbstractBenchmark::class, $this->bench);
+    }
+    
     /**
      * Exceptions.
      */
