@@ -15,9 +15,9 @@ use BenchmarkPHP\Benchmarks\Floats;
 use BenchmarkPHP\Benchmarks\Objects;
 use BenchmarkPHP\Benchmarks\Strings;
 use BenchmarkPHP\Informers\Informer;
-use BenchmarkPHP\Reporters\Reporter;
 use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Benchmarks\Filesystem;
+use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class Benchmark
@@ -65,7 +65,7 @@ class Benchmark
     ];
 
     /**
-     * @var Reporter
+     * @var ReporterInterface
      */
     private $reporter;
 
@@ -96,9 +96,9 @@ class Benchmark
     /**
      * Create a new Benchmark instance.
      *
-     * @param Reporter $reporter
+     * @param ReporterInterface $reporter
      */
-    public function __construct(Reporter $reporter)
+    public function __construct(ReporterInterface $reporter)
     {
         $this->reporter = $reporter;
         $arguments = $this->initArguments($_SERVER['argv']);

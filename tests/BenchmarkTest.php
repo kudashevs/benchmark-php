@@ -12,8 +12,8 @@ namespace BenchmarkPHP\Tests;
 
 use BenchmarkPHP\Benchmark;
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Reporters\Reporter;
 use BenchmarkPHP\Benchmarks\Integers;
+use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
 
 class BenchmarkTest extends TestCase
@@ -28,8 +28,8 @@ class BenchmarkTest extends TestCase
         $_SERVER['argc'] = 2;
         $_SERVER['argv'] = [array_shift($_SERVER['argv']), '-a'];
 
-        /** @var Reporter|\PHPUnit_Framework_MockObject_MockObject $reporter */
-        $reporter = $this->getMockBuilder(Reporter::class)
+        /** @var ReporterInterface|\PHPUnit_Framework_MockObject_MockObject $reporter */
+        $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $this->bench = new Benchmark($reporter);
     }
@@ -108,7 +108,7 @@ class BenchmarkTest extends TestCase
         $key = '-e';
         $arguments = ['-l' => false, '--benchmarks' => false, '-b' => 42];
 
-        $reporter = $this->getMockBuilder(Reporter::class)
+        $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->setConstructorArgs([$reporter])
@@ -153,7 +153,7 @@ class BenchmarkTest extends TestCase
         $key = '-a';
         $arguments = ['-l' => false, '--benchmarks' => false, '-b' => 42];
 
-        $reporter = $this->getMockBuilder(Reporter::class)
+        $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->setConstructorArgs([$reporter])
@@ -616,7 +616,7 @@ class BenchmarkTest extends TestCase
      */
     public function testInitArgumentsExecutesTerminateMethod($arguments, $required, $verify, $message)
     {
-        $reporter = $this->getMockBuilder(Reporter::class)
+        $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->setConstructorArgs([$reporter])
@@ -667,7 +667,7 @@ class BenchmarkTest extends TestCase
      */
     public function testParseArgumentsExecutesTerminateMethod($arguments, $method, $verify, $message)
     {
-        $reporter = $this->getMockBuilder(Reporter::class)
+        $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->setConstructorArgs([$reporter])
@@ -773,7 +773,7 @@ class BenchmarkTest extends TestCase
      */
     public function testRequireValueConstContainsOnlyRequireValueOptions($arguments, $message)
     {
-        $reporter = $this->getMockBuilder(Reporter::class)
+        $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
             ->setConstructorArgs([$reporter])

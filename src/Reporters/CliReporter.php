@@ -10,7 +10,7 @@
 
 namespace BenchmarkPHP\Reporters;
 
-class CliReporter implements Reporter
+class CliReporter implements ReporterInterface
 {
     const REPORT_WIDTH = 32;
     const REPORT_ROW = '-';

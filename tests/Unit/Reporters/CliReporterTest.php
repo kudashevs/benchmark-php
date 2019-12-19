@@ -8,11 +8,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Reporters;
+namespace BenchmarkPHP\Tests\Unit\Reporters;
 
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Reporters\CliReporter;
 use BenchmarkPHP\Tests\TestHelpersTrait;
+use BenchmarkPHP\Reporters\ReporterInterface;
 
 class CliReporterTest extends TestCase
 {
@@ -24,6 +25,14 @@ class CliReporterTest extends TestCase
     protected function setUp()
     {
         $this->reporter = new CliReporter();
+    }
+
+    /**
+     * Mandatory tests.
+     */
+    public function testInstanceImplementsCertainInterface()
+    {
+        $this->assertInstanceOf(ReporterInterface::class, $this->reporter);
     }
 
     /**
@@ -120,67 +129,5 @@ class CliReporterTest extends TestCase
 
         $this->expectOutputRegex('/' . CliReporter::REPORT_ROW . '/');
         $this->assertEquals($expected, mb_strlen(trim($this->getActualOutput())));
-    }
-
-    public function testFormatInputReturnsEmptyWhenWrongType()
-    {
-        $result = $this->runPrivateMethod($this->reporter, 'formatInput', [1]);
-
-        $this->assertEquals('' . PHP_EOL, $result);
-    }
-
-    public function testFormatInputReturnsExpectedWhenListStyledInput()
-    {
-        $input = ['first', 'second'];
-
-        $result = $this->runPrivateMethod($this->reporter, 'formatInput', [$input, 'list']);
-
-        $this->assertStringStartsWith(CliReporter::LIST_BULLET, $result);
-    }
-
-    public function testFormatInputReturnsExpectedWhenListStyledInputContainsExclusion()
-    {
-        $input = ['exclude:header', 'first', 'second'];
-        $expected = 'header';
-
-        $result = $this->runPrivateMethod($this->reporter, 'formatInput', [$input, 'list']);
-
-        $this->assertStringStartsWith($expected, $result);
-    }
-
-    public function testMakeCenteredReturnsEmptyWhenWrongType()
-    {
-        $result = $this->runPrivateMethod($this->reporter, 'makeCentered', [1]);
-
-        $this->assertEquals(CliReporter::REPORT_WIDTH - 2, mb_strlen($result));
-    }
-
-    public function testMakeCenteredReturnsClippedWhenStringLargerThanWidth()
-    {
-        $string = str_repeat('string', CliReporter::REPORT_WIDTH);
-        $expected = substr($string, 0, CliReporter::REPORT_WIDTH - 2);
-
-        $result = $this->runPrivateMethod($this->reporter, 'makeCentered', [$string]);
-
-        $this->assertEquals($expected, $result);
-    }
-
-    public function testMakeCenteredReturnsExpectedWhenStringIsOdd()
-    {
-        $width = CliReporter::REPORT_WIDTH - 2;
-        if ($width % 2 === 0) {
-            $string = 'odd';
-        } else {
-            $string = 'even';
-        }
-
-        $length = mb_strlen($string);
-        $half = ($width - $length) / 2;
-
-        $expected = str_repeat(CliReporter::REPORT_SPACE, floor($half)) . $string . str_repeat(CliReporter::REPORT_SPACE, ceil($half));
-
-        $result = $this->runPrivateMethod($this->reporter, 'makeCentered', [$string]);
-
-        $this->assertEquals($expected, $result);
     }
 }

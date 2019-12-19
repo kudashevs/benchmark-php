@@ -10,7 +10,7 @@
 
 namespace BenchmarkPHP\Reporters;
 
-interface Reporter
+interface ReporterInterface
 {
     /**
      * @param string|array $data
