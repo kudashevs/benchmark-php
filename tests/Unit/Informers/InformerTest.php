@@ -17,7 +17,7 @@ use BenchmarkPHP\Informers\InformerInterface;
 class InformerTest extends TestCase
 {
     /**
-     * @var Informer $informer Class must implement InformerInterface
+     * @var Informer Class must implement InformerInterface
      */
     protected $informer;
 
@@ -27,7 +27,7 @@ class InformerTest extends TestCase
     }
 
     /**
-     * Mandatory test.
+     * Mandatory tests.
      */
     public function testInstanceImplementsCertainInterface()
     {
