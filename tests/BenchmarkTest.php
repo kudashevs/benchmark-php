@@ -12,6 +12,7 @@ namespace BenchmarkPHP\Tests;
 
 use BenchmarkPHP\Benchmark;
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Entries\Command;
 use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\AbstractBenchmark;
@@ -45,32 +46,6 @@ class BenchmarkTest extends TestCase
     /**
      * Functionality.
      */
-    public function testInitArgumentsReturnsEmptyArrayWhenOneArgument()
-    {
-        $arguments = [array_shift($_SERVER['argv'])];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'initArguments', [$arguments]);
-
-        $this->assertInternalType('array', $result);
-        $this->assertEmpty($result);
-    }
-
-    public function testInitArgumentsReturnsExpectedWhenMixedArguments()
-    {
-        $arguments = array_merge([array_shift($_SERVER['argv'])], ['-b', 'test', '-x', '--debug']);
-        $expected = [
-            '-b' => 'test',
-            '-x' => false,
-            '--debug' => false,
-        ];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'initArguments', [$arguments]);
-
-        $this->assertEquals($expected, $result);
-    }
-
     public function testParseArgumentsReturnsExpectedWhenArgumentIsAnOption()
     {
         $arguments = ['--verbose' => false];
@@ -607,57 +582,6 @@ class BenchmarkTest extends TestCase
      */
 
     /**
-     * @dataProvider provideInitArgumentsData
-     * @param array $arguments
-     * @param array $required
-     * @param string $verify
-     * @param string $message
-     * @throws \ReflectionException
-     */
-    public function testInitArgumentsExecutesTerminateMethod($arguments, $required, $verify, $message)
-    {
-        $reporter = $this->getMockBuilder(ReporterInterface::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
-            ->setMethods(['terminateWithMessage'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains($verify))
-            ->will($this->throwException(new \InvalidArgumentException($message)));
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage($message);
-        $this->runPrivateMethod($partialMock, 'initArguments', [$arguments, $required]);
-    }
-
-    public function provideInitArgumentsData()
-    {
-        return [
-            'When required value for option -b is missed' => [
-                array_merge($_SERVER['argv'], ['-b']),
-                ['-b'],
-                'empty',
-                'Passed value is empty.',
-            ],
-            'When required value for option -b looks like another option' => [
-                array_merge($_SERVER['argv'], ['-b', '-c']),
-                ['-b'],
-                'wrong',
-                'Passed value looks like option.',
-            ],
-            'When one of required values looks like another option' => [
-                array_merge($_SERVER['argv'], ['-c', 'path', '--benchmarks', '--debug']),
-                ['-c', '--benchmarks'],
-                'wrong',
-                'One of passed values looks like option.',
-            ],
-
-        ];
-    }
-
-    /**
      * @dataProvider provideParseArgumentsData
      * @param array $arguments
      * @param string $method
@@ -797,7 +721,7 @@ class BenchmarkTest extends TestCase
             '--exclude' => ['-a' => false, '--exclude' => false],
         ];
 
-        foreach (Benchmark::REQUIRE_VALUE as $option) {
+        foreach (Command::REQUIRE_VALUE_ARGUMENTS as $option) {
             $arguments = array_key_exists($option, $pickyOptions) ? $pickyOptions[$option] : [$option => false];
             $require['When required value for option ' . $option . ' is missed'] = [
                 $arguments,

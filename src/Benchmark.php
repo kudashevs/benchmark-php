@@ -10,6 +10,7 @@
 
 namespace BenchmarkPHP;
 
+use BenchmarkPHP\Entries\Command;
 use BenchmarkPHP\Benchmarks\Arrays;
 use BenchmarkPHP\Benchmarks\Floats;
 use BenchmarkPHP\Benchmarks\Objects;
@@ -50,21 +51,6 @@ class Benchmark
     ];
 
     /**
-     * @var array
-     */
-    const REQUIRE_VALUE = [
-        '-e',
-        '--exclude',
-        '-b',
-        '--benchmarks',
-        '-i',
-        '--iterations',
-        '--temporary-file',
-        '--time-precision',
-        '--data-precision',
-    ];
-
-    /**
      * @var ReporterInterface
      */
     private $reporter;
@@ -101,7 +87,7 @@ class Benchmark
     public function __construct(ReporterInterface $reporter)
     {
         $this->reporter = $reporter;
-        $arguments = $this->initArguments($_SERVER['argv']);
+        $arguments = call_user_func(new Command());
         $this->options = $this->parseArguments($arguments);
         $this->benchmarks = $this->initBenchmarks();
     }
@@ -122,68 +108,6 @@ class Benchmark
 
         $this->reporter->showBlock($this->getBenchmarksSummary());
         $this->reporter->showFooter($this->getExecutionSummary(['total_time']));
-    }
-
-    /**
-     * @param array $arguments
-     * @return array
-     */
-    protected function initArguments(array $arguments)
-    {
-        /*
-         * The first argument is always the name that was used to run the script.
-         * We don't want it that's why we remove the first element from the array.
-         */
-        array_shift($arguments);
-
-        $result = [];
-
-        if (empty($arguments)) {
-            return $result;
-        }
-
-        while ($argument = current($arguments)) {
-            $next = next($arguments);
-
-            if (in_array($argument, self::REQUIRE_VALUE, true)) {
-                $this->checkRequiredArgumentHasValue($argument, $next);
-                $this->checkRequiredArgumentNotAnOption($argument, $next);
-                $result[$argument] = $next;
-                next($arguments);
-
-                continue;
-            }
-
-            $result[$argument] = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param string $argument
-     * @param mixed $value
-     * @return void
-     */
-    protected function checkRequiredArgumentHasValue($argument, $value)
-    {
-        if ($value === false) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
-        }
-    }
-
-    /**
-     * @param string $argument
-     * @param mixed $value
-     * @return void
-     */
-    protected function checkRequiredArgumentNotAnOption($argument, $value)
-    {
-        if (strpos($value, '-') === 0) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
     }
 
     /**
@@ -381,6 +305,19 @@ class Benchmark
         }
 
         return array_flip($benchmarks);
+    }
+
+    /**
+     * @param string $argument
+     * @param mixed $value
+     * @return void
+     */
+    protected function checkRequiredArgumentNotAnOption($argument, $value) // remove
+    {
+        if (strpos($value, '-') === 0) {
+            $this->reporter->showBlock($this->getVersionString());
+            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
     }
 
     /**
