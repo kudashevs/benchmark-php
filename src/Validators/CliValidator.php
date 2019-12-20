@@ -10,11 +10,19 @@
 
 namespace BenchmarkPHP\Validators;
 
-use BenchmarkPHP\Benchmark;
+use BenchmarkPHP\Application;
+use BenchmarkPHP\Exceptions\ValidationException;
 
 class CliValidator implements ValidatorInterface
 {
-    public function validate($data)
+    /**
+     * @param array $benchmarks
+     */
+    public function __construct(array $benchmarks)
+    {
+    }
+
+    public function validate(array $data)
     {
         return $this->initArguments($data);
     }
@@ -25,25 +33,18 @@ class CliValidator implements ValidatorInterface
      */
     protected function initArguments(array $arguments)
     {
-        /*
-         * todo remove (we suppose to get clean arguments array)
-         * The first argument is always the name that was used to run the script.
-         * We don't want it that's why we remove the first element from the array.
-         */
-        array_shift($arguments);
-
         $result = [];
 
         if (empty($arguments)) {
-            return $result;
+            return $result; // todo ['help action', options]
         }
 
         while ($argument = current($arguments)) {
             $next = next($arguments);
 
-            if (in_array($argument, Benchmark::REQUIRE_VALUE_ARGUMENTS, true)) {
+            if (in_array($argument, Application::REQUIRE_VALUE_ARGUMENTS, true)) {
                 $this->checkRequiredArgumentHasValue($argument, $next);
-                $this->checkRequiredArgumentNotAnOption($argument, $next);
+                $this->checkRequiredArgumentIsCorrect($argument, $next);
                 $result[$argument] = $next;
                 next($arguments);
 
@@ -59,30 +60,28 @@ class CliValidator implements ValidatorInterface
     /**
      * @param string $argument
      * @param mixed $value
+     * @throws ValidationException
      * @return void
      */
     protected function checkRequiredArgumentHasValue($argument, $value)
     {
         if ($value === false) {
-            //$this->reporter->showBlock($this->getVersionString()); // todo update
-            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
+            throw new ValidationException('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
         }
     }
 
     /**
      * @param string $argument
      * @param mixed $value
+     * @throws ValidationException
      * @return void
      */
-    protected function checkRequiredArgumentNotAnOption($argument, $value)
+    protected function checkRequiredArgumentIsCorrect($argument, $value)
     {
         if (strpos($value, '-') === 0) {
-            //$this->reporter->showBlock($this->getVersionString()); // todo update
-            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new ValidationException('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
     }
-
-    // todo move to responsibility
 
     /**
      * @param mixed $value

@@ -10,9 +10,11 @@
 
 namespace BenchmarkPHP\Tests\Unit\Validators;
 
+use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Validators\CliValidator;
 use BenchmarkPHP\Validators\ValidatorInterface;
+use BenchmarkPHP\Exceptions\ValidationException;
 
 class CliValidatorTest extends TestCase
 {
@@ -24,7 +26,7 @@ class CliValidatorTest extends TestCase
         $_SERVER['argc'] = 2;
         $_SERVER['argv'] = [array_shift($_SERVER['argv']), '-a'];
 
-        $this->validator = new CliValidator();
+        $this->validator = new CliValidator([]);
     }
 
     /**
@@ -38,6 +40,26 @@ class CliValidatorTest extends TestCase
     /**
      * Exceptions.
      */
+    public function testValidateThrowExceptionWhenRequiredArgumentDoesntHaveValue()
+    {
+        $require = current(Application::REQUIRE_VALUE_ARGUMENTS);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Empty value');
+
+        $this->validator->validate([$require]);
+    }
+
+    public function testValidateThrowExceptionWhenRequiredArgumentIsLikeAnOption()
+    {
+        $require = current(Application::REQUIRE_VALUE_ARGUMENTS);
+        $value = '-c';
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Wrong value ' . $value);
+
+        $this->validator->validate([$require, $value]);
+    }
 
     /**
      * Corner cases.
