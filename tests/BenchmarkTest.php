@@ -12,10 +12,9 @@ namespace BenchmarkPHP\Tests;
 
 use BenchmarkPHP\Benchmark;
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Entries\Command;
-use BenchmarkPHP\Benchmarks\Integers;
 use BenchmarkPHP\Reporters\ReporterInterface;
-use BenchmarkPHP\Benchmarks\AbstractBenchmark;
+use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
+use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class BenchmarkTest extends TestCase
 {
@@ -26,13 +25,13 @@ class BenchmarkTest extends TestCase
 
     protected function setUp()
     {
-        $_SERVER['argc'] = 2;
-        $_SERVER['argv'] = [array_shift($_SERVER['argv']), '-a'];
+        $_SERVER['argc'] = 1;
+        $_SERVER['argv'] = ['-a'];
 
         /** @var ReporterInterface|\PHPUnit_Framework_MockObject_MockObject $reporter */
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
-        $this->bench = new Benchmark($reporter);
+        $this->bench = new Benchmark($_SERVER['argv'], $reporter);
     }
 
     /**
@@ -86,7 +85,7 @@ class BenchmarkTest extends TestCase
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
+            ->setConstructorArgs([['remove'], $reporter]) // todo remove
             ->setMethods(['terminateWithMessage'])
             ->getMock();
         $partialMock->expects($this->once())
@@ -131,7 +130,7 @@ class BenchmarkTest extends TestCase
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
         $partialMock = $this->getMockBuilder(Benchmark::class)
-            ->setConstructorArgs([$reporter])
+            ->setConstructorArgs([['remove'], $reporter]) // todo remove
             ->setMethods(['terminateWithMessage'])
             ->getMock();
         $partialMock->expects($this->once())
@@ -222,17 +221,6 @@ class BenchmarkTest extends TestCase
         $instance = current($result);
         $this->assertInstanceOf(AbstractBenchmark::class, $instance);
         $this->assertEquals($options, $instance->getOptions());
-    }
-
-    public function testListBenchmarksReturnsExpected()
-    {
-        $count = $this->countAbstractBenchmarkClasses();
-
-        $benchmarks = $this->runPrivateMethod($this->bench, 'listBenchmarks');
-
-        $this->assertNotEmpty($benchmarks);
-        $this->assertContainsOnly('string', $benchmarks);
-        $this->assertCount($count, $benchmarks);
     }
 
     public function testHandleBenchmarksExecutesBeforeHandle()
@@ -721,7 +709,7 @@ class BenchmarkTest extends TestCase
             '--exclude' => ['-a' => false, '--exclude' => false],
         ];
 
-        foreach (Command::REQUIRE_VALUE_ARGUMENTS as $option) {
+        foreach (Benchmark::REQUIRE_VALUE_ARGUMENTS as $option) {
             $arguments = array_key_exists($option, $pickyOptions) ? $pickyOptions[$option] : [$option => false];
             $require['When required value for option ' . $option . ' is missed'] = [
                 $arguments,

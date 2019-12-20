@@ -10,16 +10,11 @@
 
 namespace BenchmarkPHP;
 
-use BenchmarkPHP\Entries\Command;
-use BenchmarkPHP\Benchmarks\Arrays;
-use BenchmarkPHP\Benchmarks\Floats;
-use BenchmarkPHP\Benchmarks\Objects;
-use BenchmarkPHP\Benchmarks\Strings;
 use BenchmarkPHP\Informers\Informer;
-use BenchmarkPHP\Benchmarks\Integers;
-use BenchmarkPHP\Benchmarks\Filesystem;
+use BenchmarkPHP\Benchmarks\Benchmarks;
+use BenchmarkPHP\Validators\CliValidator;
 use BenchmarkPHP\Reporters\ReporterInterface;
-use BenchmarkPHP\Benchmarks\AbstractBenchmark;
+use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class Benchmark
 {
@@ -41,13 +36,16 @@ class Benchmark
     /**
      * @var array
      */
-    const BENCHMARKS = [ // 'bools', 'files', 'database', 'network'
-        'integers' => Integers::class,
-        'floats' => Floats::class,
-        'strings' => Strings::class,
-        'arrays' => Arrays::class,
-        'objects' => Objects::class,
-        'filesystem' => Filesystem::class,
+    const REQUIRE_VALUE_ARGUMENTS = [
+        '-e',
+        '--exclude',
+        '-b',
+        '--benchmarks',
+        '-i',
+        '--iterations',
+        '--temporary-file',
+        '--time-precision',
+        '--data-precision',
     ];
 
     /**
@@ -82,14 +80,24 @@ class Benchmark
     /**
      * Create a new Benchmark instance.
      *
+     * @param array $arguments
      * @param ReporterInterface $reporter
      */
-    public function __construct(ReporterInterface $reporter)
+    public function __construct(array $arguments, ReporterInterface $reporter)
     {
         $this->reporter = $reporter;
-        $arguments = call_user_func(new Command());
+        $arguments = (new CliValidator())->validate($arguments);
         $this->options = $this->parseArguments($arguments);
         $this->benchmarks = $this->initBenchmarks();
+    }
+
+    private function init()
+    {
+        // init function?
+        // set reporter
+        // try/catch get action, options
+        // get informer
+        // get benchmark
     }
 
     /**
@@ -135,7 +143,7 @@ class Benchmark
                 case '-a':
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
-                    $options['benchmarks'] = self::BENCHMARKS;
+                    $options['benchmarks'] = Benchmarks::BENCHMARKS;
 
                     break;
 
@@ -296,7 +304,7 @@ class Benchmark
 
         $benchmarks = explode(',', $value);
 
-        if (!empty($unknown = array_diff($benchmarks, array_flip(self::BENCHMARKS)))) {
+        if (!empty($unknown = array_diff($benchmarks, array_flip(Benchmarks::BENCHMARKS)))) {
             $this->reporter->showBlock($this->getVersionString());
             $this->terminateWithMessage('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
@@ -407,22 +415,9 @@ class Benchmark
      */
     protected function initBenchmarks()
     {
-        $initialized = !empty($this->options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, $this->options['benchmarks']) : self::BENCHMARKS;
-        $benchmarks = [];
+        //$initialized = !empty($this->options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, $this->options['benchmarks']) : self::BENCHMARKS; // todo realize partial get
 
-        foreach ($initialized as $name => $class) {
-            try {
-                $instance = new $class($this->options);
-            } catch (\Exception $e) {
-                $instance = [
-                    'fail' => 'instantiation',
-                    'message' => $e->getMessage(),
-                ];
-            }
-            $benchmarks[$name] = $instance;
-        }
-
-        return $benchmarks;
+        return (new Benchmarks())->getInstantiated($this->options);
     }
 
     /**
@@ -451,7 +446,7 @@ class Benchmark
 
         // @var AbstractBenchmark|string $benchmark
         foreach ($this->benchmarks as $name => $benchmark) {
-            if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) {
+            if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) { // todo: move logic inside
                 $this->benchmarkSkipped($name, $benchmark);
 
                 continue;
