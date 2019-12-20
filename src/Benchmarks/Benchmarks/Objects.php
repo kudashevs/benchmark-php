@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Benchmarks;
+namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 class Objects extends AbstractBenchmark
 {
@@ -23,13 +23,13 @@ class Objects extends AbstractBenchmark
         'get_object_vars',
         'get_object_vars',
         'is_object',
-        'BenchmarkPHP\Benchmarks\Objects\getPublic',
-        'BenchmarkPHP\Benchmarks\Objects\setPublic',
-        'BenchmarkPHP\Benchmarks\Objects\getProtected',
-        'BenchmarkPHP\Benchmarks\Objects\setProtected',
-        'BenchmarkPHP\Benchmarks\Objects\getPrivate',
-        'BenchmarkPHP\Benchmarks\Objects\setPrivate',
-        'BenchmarkPHP\Benchmarks\Objects\castToArray',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\getPublic',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\setPublic',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\getProtected',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\setProtected',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\getPrivate',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\setPrivate',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Objects\castToArray',
     ];
 
     /**
@@ -115,9 +115,9 @@ class Dummy
     }
 }
 
-namespace BenchmarkPHP\Benchmarks\Objects;
+namespace BenchmarkPHP\Benchmarks\Benchmarks\Objects;
 
-use BenchmarkPHP\Benchmarks\Dummy;
+use BenchmarkPHP\Benchmarks\Benchmarks\Dummy;
 
 function getPublic(Dummy $object)
 {

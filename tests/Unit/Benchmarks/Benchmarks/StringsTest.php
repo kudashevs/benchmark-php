@@ -8,22 +8,22 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Benchmarks;
+namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Benchmarks\Floats;
 use BenchmarkPHP\Tests\TestHelpersTrait;
+use BenchmarkPHP\Benchmarks\Benchmarks\Strings;
 
-class FloatsTest extends TestCase
+class StringsTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Floats */
+    /** @var Strings */
     private $bench;
 
     protected function setUp()
     {
-        $this->bench = new Floats(['testing' => true]);
+        $this->bench = new Strings(['testing' => true]);
     }
 
     /**
@@ -38,13 +38,6 @@ class FloatsTest extends TestCase
     /**
      * Corner cases.
      */
-    public function testGenerateTestDataDoesNotGenerateZero()
-    {
-        $data = $this->runPrivateMethod($this->bench, 'generateTestData');
-
-        $this->assertCount($this->bench->getIterations(), $data);
-        $this->assertNotContains(0, $data);
-    }
 
     /**
      * Functionality.
@@ -84,6 +77,6 @@ class FloatsTest extends TestCase
         $data = $this->runPrivateMethod($this->bench, 'generateTestData');
 
         $this->assertCount($this->bench->getIterations(), $data);
-        $this->assertInternalType('float', $data[mt_rand(1, $this->bench->getIterations())]);
+        $this->assertInternalType('string', $data[mt_rand(1, $this->bench->getIterations())]);
     }
 }

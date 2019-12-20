@@ -8,11 +8,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Benchmarks;
+namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Benchmarks\Filesystem;
 use BenchmarkPHP\Tests\TestHelpersTrait;
+use BenchmarkPHP\Benchmarks\Benchmarks\Filesystem;
 
 class FilesystemTest extends TestCase
 {

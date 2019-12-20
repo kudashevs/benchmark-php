@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Benchmarks;
+namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 class Integers extends AbstractBenchmark
 {
@@ -23,17 +23,17 @@ class Integers extends AbstractBenchmark
         'dechex',
         'decoct',
         'is_int',
-        'BenchmarkPHP\Benchmarks\Integers\inc',
-        'BenchmarkPHP\Benchmarks\Integers\dec',
-        'BenchmarkPHP\Benchmarks\Integers\addition',
-        'BenchmarkPHP\Benchmarks\Integers\subtraction',
-        'BenchmarkPHP\Benchmarks\Integers\multiplication',
-        'BenchmarkPHP\Benchmarks\Integers\division',
-        'BenchmarkPHP\Benchmarks\Integers\castToBool',
-        'BenchmarkPHP\Benchmarks\Integers\castToFloat',
-        'BenchmarkPHP\Benchmarks\Integers\castToString',
-        'BenchmarkPHP\Benchmarks\Integers\castToArray',
-        'BenchmarkPHP\Benchmarks\Integers\castToObject',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\inc',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\dec',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\addition',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\subtraction',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\multiplication',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\division',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\castToBool',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\castToFloat',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\castToString',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\castToArray',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Integers\castToObject',
     ];
 
     /**
@@ -74,7 +74,7 @@ class Integers extends AbstractBenchmark
     }
 }
 
-namespace BenchmarkPHP\Benchmarks\Integers;
+namespace BenchmarkPHP\Benchmarks\Benchmarks\Integers;
 
 function inc($num)
 {

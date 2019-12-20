@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Benchmarks;
+namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 class Filesystem extends AbstractBenchmark
 {

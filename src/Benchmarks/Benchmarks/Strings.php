@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Benchmarks;
+namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 class Strings extends AbstractBenchmark
 {
@@ -44,11 +44,11 @@ class Strings extends AbstractBenchmark
         'trim',
         'ucfirst',
         'ucwords',
-        'BenchmarkPHP\Benchmarks\Strings\castToBool',
-        'BenchmarkPHP\Benchmarks\Strings\castToInteger',
-        'BenchmarkPHP\Benchmarks\Strings\castToFloat',
-        'BenchmarkPHP\Benchmarks\Strings\castToArray',
-        'BenchmarkPHP\Benchmarks\Strings\castToObject',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Strings\castToBool',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Strings\castToInteger',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Strings\castToFloat',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Strings\castToArray',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Strings\castToObject',
     ];
 
     /**
@@ -89,7 +89,7 @@ class Strings extends AbstractBenchmark
     }
 }
 
-namespace BenchmarkPHP\Benchmarks\Strings;
+namespace BenchmarkPHP\Benchmarks\Benchmarks\Strings;
 
 function castToBool($string)
 {

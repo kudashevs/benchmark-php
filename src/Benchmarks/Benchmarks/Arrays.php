@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Benchmarks;
+namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 class Arrays extends AbstractBenchmark
 {
@@ -42,10 +42,10 @@ class Arrays extends AbstractBenchmark
         'rsort',
         'shuffle',
         'sort',
-        'BenchmarkPHP\Benchmarks\Arrays\castToBool',
-        'BenchmarkPHP\Benchmarks\Arrays\castToInteger',
-        'BenchmarkPHP\Benchmarks\Arrays\castToFloat',
-        'BenchmarkPHP\Benchmarks\Arrays\castToObject',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Arrays\castToBool',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Arrays\castToInteger',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Arrays\castToFloat',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Arrays\castToObject',
     ];
 
     /**
@@ -103,7 +103,7 @@ class Arrays extends AbstractBenchmark
     }
 }
 
-namespace BenchmarkPHP\Benchmarks\Arrays;
+namespace BenchmarkPHP\Benchmarks\Benchmarks\Arrays;
 
 function castToBool($array)
 {

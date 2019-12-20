@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Benchmarks;
+namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 class Floats extends AbstractBenchmark
 {
@@ -33,17 +33,17 @@ class Floats extends AbstractBenchmark
         'sin',
         'sqrt',
         'tan',
-        'BenchmarkPHP\Benchmarks\Floats\inc',
-        'BenchmarkPHP\Benchmarks\Floats\dec',
-        'BenchmarkPHP\Benchmarks\Floats\addition',
-        'BenchmarkPHP\Benchmarks\Floats\subtraction',
-        'BenchmarkPHP\Benchmarks\Floats\multiplication',
-        'BenchmarkPHP\Benchmarks\Floats\division',
-        'BenchmarkPHP\Benchmarks\Floats\castToBool',
-        'BenchmarkPHP\Benchmarks\Floats\castToInteger',
-        'BenchmarkPHP\Benchmarks\Floats\castToString',
-        'BenchmarkPHP\Benchmarks\Floats\castToArray',
-        'BenchmarkPHP\Benchmarks\Floats\castToObject',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\inc',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\dec',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\addition',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\subtraction',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\multiplication',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\division',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\castToBool',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\castToInteger',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\castToString',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\castToArray',
+        'BenchmarkPHP\Benchmarks\Benchmarks\Floats\castToObject',
     ];
 
     /**
@@ -84,7 +84,7 @@ class Floats extends AbstractBenchmark
     }
 }
 
-namespace BenchmarkPHP\Benchmarks\Floats;
+namespace BenchmarkPHP\Benchmarks\Benchmarks\Floats;
 
 function inc($num)
 {

@@ -8,22 +8,22 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Benchmarks;
+namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Benchmarks\Arrays;
 use BenchmarkPHP\Tests\TestHelpersTrait;
+use BenchmarkPHP\Benchmarks\Benchmarks\Objects;
 
-class ArraysTest extends TestCase
+class ObjectsTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Arrays */
+    /** @var Objects */
     private $bench;
 
     protected function setUp()
     {
-        $this->bench = new Arrays(['testing' => true]);
+        $this->bench = new Objects(['testing' => true]);
     }
 
     /**
@@ -77,6 +77,6 @@ class ArraysTest extends TestCase
         $data = $this->runPrivateMethod($this->bench, 'generateTestData');
 
         $this->assertCount($this->bench->getIterations(), $data);
-        $this->assertInternalType('array', $data[mt_rand(1, $this->bench->getIterations())]);
+        $this->assertInternalType('object', $data[mt_rand(1, $this->bench->getIterations())]);
     }
 }
