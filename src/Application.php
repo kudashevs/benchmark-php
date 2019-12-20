@@ -16,7 +16,7 @@ use BenchmarkPHP\Validators\CliValidator;
 use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
-class Benchmark
+class Application
 {
     /**
      * @var string
@@ -86,7 +86,7 @@ class Benchmark
     public function __construct(array $arguments, ReporterInterface $reporter)
     {
         $this->reporter = $reporter;
-        $arguments = (new CliValidator())->validate($arguments);
+        $arguments = (new CliValidator([]))->validate($arguments);
         $this->options = $this->parseArguments($arguments);
         $this->benchmarks = $this->initBenchmarks();
     }
@@ -860,7 +860,6 @@ Available Options:
   -b, --benchmarks <list>   Executes benchmarks from a comma separated list
   -l, --list                Prints the list of available benchmarks
   -i, --iterations <num>    Executes benchmarks with fixed number of iterations
-  --time-precision <num>    Use precision for time formatting (min 1, max 12, default 3)
   -v, --verbose             Prints verbose information during execution
   --debug                   Prints detailed information during execution
   --version                 Prints the version and exits

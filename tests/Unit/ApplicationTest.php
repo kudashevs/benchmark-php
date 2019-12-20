@@ -8,19 +8,20 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests;
+namespace BenchmarkPHP\Tests\Unit;
 
-use BenchmarkPHP\Benchmark;
+use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
-class BenchmarkTest extends TestCase
+class ApplicationTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Benchmark */
+    /** @var Application */
     private $bench;
 
     protected function setUp()
@@ -31,7 +32,7 @@ class BenchmarkTest extends TestCase
         /** @var ReporterInterface|\PHPUnit_Framework_MockObject_MockObject $reporter */
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
-        $this->bench = new Benchmark($_SERVER['argv'], $reporter);
+        $this->bench = new Application($_SERVER['argv'], $reporter);
     }
 
     /**
@@ -84,7 +85,7 @@ class BenchmarkTest extends TestCase
 
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
+        $partialMock = $this->getMockBuilder(Application::class)
             ->setConstructorArgs([['remove'], $reporter]) // todo remove
             ->setMethods(['terminateWithMessage'])
             ->getMock();
@@ -129,7 +130,7 @@ class BenchmarkTest extends TestCase
 
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
-        $partialMock = $this->getMockBuilder(Benchmark::class)
+        $partialMock = $this->getMockBuilder(Application::class)
             ->setConstructorArgs([['remove'], $reporter]) // todo remove
             ->setMethods(['terminateWithMessage'])
             ->getMock();
@@ -229,7 +230,7 @@ class BenchmarkTest extends TestCase
 
         $this->runPrivateMethod($this->bench, 'handleBenchmarks');
 
-        $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStatistics(['started_at']));
+        $this->assertContains(date(Application::DATE_FORMAT), $this->bench->getStatistics(['started_at']));
     }
 
     public function testHandleBenchmarksExecutesAfterHandle()
@@ -238,7 +239,7 @@ class BenchmarkTest extends TestCase
 
         $this->runPrivateMethod($this->bench, 'handleBenchmarks');
 
-        $this->assertContains(date(Benchmark::DATE_FORMAT), $this->bench->getStatistics(['stopped_at']));
+        $this->assertContains(date(Application::DATE_FORMAT), $this->bench->getStatistics(['stopped_at']));
     }
 
     public function testHandleBenchmarksExecutesContractMethodsOnBenchmark()
@@ -709,7 +710,7 @@ class BenchmarkTest extends TestCase
             '--exclude' => ['-a' => false, '--exclude' => false],
         ];
 
-        foreach (Benchmark::REQUIRE_VALUE_ARGUMENTS as $option) {
+        foreach (Application::REQUIRE_VALUE_ARGUMENTS as $option) {
             $arguments = array_key_exists($option, $pickyOptions) ? $pickyOptions[$option] : [$option => false];
             $require['When required value for option ' . $option . ' is missed'] = [
                 $arguments,
@@ -725,11 +726,11 @@ class BenchmarkTest extends TestCase
      */
 
     /**
-     * @return Benchmark|\PHPUnit_Framework_MockObject_MockObject
+     * @return Application|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getPartialMockWithSkippedConstructor()
     {
-        return $this->getMockBuilder(Benchmark::class)
+        return $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
