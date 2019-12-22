@@ -11,28 +11,50 @@
 namespace BenchmarkPHP\Arguments;
 
 use BenchmarkPHP\Application;
-use BenchmarkPHP\Exceptions\ValidationException;
+use BenchmarkPHP\Benchmarks\Benchmarks;
+use BenchmarkPHP\Exceptions\EmptyArgumentException;
+use BenchmarkPHP\Exceptions\WrongArgumentException;
+use BenchmarkPHP\Exceptions\UnknownArgumentException;
 
 class CliHandler implements ArgumentsHandlerInterface
 {
-    public function validate(array $data)
-    {
-        $arguments = $this->initArguments($data);
+    /**
+     * @var Benchmarks
+     */
+    private $benchmarks;
 
-        return $arguments;
+    public function __construct()
+    {
+        $this->benchmarks = new Benchmarks();
     }
 
     /**
-     * @param array $arguments
+     * Parses arguments and returns [$action, $options] array.
+     *
+     * @param array $data
+     * @throws EmptyArgumentException|WrongArgumentException|UnknownArgumentException
      * @return array
-     * @throws ValidationException
+     */
+    public function parse(array $data)
+    {
+        $arguments = $this->initArguments($data);
+
+        return $this->parseArguments($arguments);
+    }
+
+    /**
+     * Checks for empty arguments and required values.
+     *
+     * @param array $arguments
+     * @throws EmptyArgumentException|WrongArgumentException
+     * @return array
      */
     protected function initArguments(array $arguments)
     {
         $result = [];
 
         if (empty($arguments)) {
-            return $result; // todo ['help action', options]
+            return $result;
         }
 
         while ($argument = current($arguments)) {
@@ -56,61 +78,154 @@ class CliHandler implements ArgumentsHandlerInterface
     /**
      * @param string $argument
      * @param mixed $value
-     * @throws ValidationException
+     * @throws EmptyArgumentException
      * @return void
      */
-    protected function checkRequiredArgumentHasValue($argument, $value)
+    private function checkRequiredArgumentHasValue($argument, $value)
     {
         if ($value === false) {
-            throw new ValidationException('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
+            throw new EmptyArgumentException('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
         }
     }
 
     /**
      * @param string $argument
      * @param mixed $value
-     * @throws ValidationException
+     * @throws WrongArgumentException
      * @return void
      */
-    protected function checkRequiredArgumentIsCorrect($argument, $value)
+    private function checkRequiredArgumentIsCorrect($argument, $value)
     {
         if (strpos($value, '-') === 0) {
-            throw new ValidationException('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
     }
 
     /**
-     * @param $key
+     * Parses and validates arguments depending on they types and returns [$action, $options] array.
+     *
      * @param array $arguments
-     * @return void
+     * @throws WrongArgumentException|UnknownArgumentException
      */
-    protected function checkMutuallyInclusive($key, array $arguments)
+    protected function parseArguments(array $arguments)
     {
-        $include = [
-            '-e' => ['-a', '--all'],
-            '--exclude' => ['-a', '--all'],
-        ];
-
-        if (!array_key_exists($key, $include)) {
-            return;
+        if (empty($arguments)) {
+            return ['default', []];
         }
 
-        if (array_intersect_key($arguments, array_flip($include[$key]))) {
-            return;
+        $action = 'default';
+        $options = [];
+
+        foreach ($arguments as $argument => $value) {
+            switch ($argument) {
+                case '-h':
+                case '--help':
+                    $action = 'help';
+
+                    break;
+
+                case '-a':
+                case '--all':
+                    $this->checkMutuallyExclusive($argument, $arguments);
+                    $action = 'run';
+                    $options['benchmarks'] = $this->benchmarks->getBenchmarks();
+
+                    break;
+
+                case '-e':
+                case '--exclude':
+                    $this->checkMutuallyInclusive($argument, $arguments);
+                    $action = 'run';
+                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
+
+                    break;
+
+                case '-b':
+                case '--benchmarks':
+                    $action = 'run';
+                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
+
+                    break;
+
+                case '-l':
+                case '--list':
+                    $action = 'list'; // todo return list?
+
+                    break;
+
+                case '-i':
+                case '--iterations':
+                    $options['iterations'] = $this->parseRequiredArgumentIsIteration($argument, $value);
+
+                    break;
+
+                case '--time-precision':
+                    $options['time_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
+
+                    break;
+
+                case '-v':
+                case '--verbose':
+                    $options['verbose'] = true;
+
+                    break;
+
+                case '--debug':
+                    $options['debug'] = true;
+
+                    break;
+
+                case '--version':
+                    $action = 'version';
+
+                    break;
+
+                case '--decimal-prefix':
+                    $options['prefix'] = 'decimal';
+
+                    break;
+
+                case '--binary-prefix':
+                    $options['prefix'] = 'binary';
+
+                    break;
+
+                case '--data-precision':
+                    $options['data_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
+
+                    break;
+
+                case '--disable-rounding':
+                    $options['rounding'] = false;
+
+                    break;
+
+                case '--temporary-file':
+                    $options['file'] = $this->parseRequiredArgumentIsFilename($argument, $value);
+
+                    break;
+
+                default:
+                    throw new UnknownArgumentException('Unknown option ' . $argument . PHP_EOL);
+
+                    break;
+            }
         }
 
-        $require = implode(' or ', $include[$key]);
+        if (isset($options['benchmarks'], $options['excluded'])) { // todo refactor initialize first
+            $options['benchmarks'] = array_diff_key($options['benchmarks'], $options['excluded']);
+        }
 
-        $this->reporter->showBlock($this->getVersionString());
-        $this->terminateWithMessage('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.' . PHP_EOL);
+        return ['action' => $action, 'options' => $options];
     }
 
     /**
      * @param string $key
      * @param array $arguments
+     * @throws WrongArgumentException
      * @return void
      */
-    protected function checkMutuallyExclusive($key, array $arguments)
+    private function checkMutuallyExclusive($key, array $arguments)
     {
         $exclude = [
             '-a' => ['-b', '--benchmarks'],
@@ -127,15 +242,126 @@ class CliHandler implements ArgumentsHandlerInterface
 
         $exclusive = implode(',', array_keys($exclusive));
 
-        $this->reporter->showBlock($this->getVersionString());
-        $this->terminateWithMessage('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.' . PHP_EOL);
+        throw new WrongArgumentException('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.' . PHP_EOL);
+    }
+
+    /**
+     * @param string $key
+     * @param array $arguments
+     * @throws WrongArgumentException
+     * @return void
+     */
+    private function checkMutuallyInclusive($key, array $arguments)
+    {
+        $include = [
+            '-e' => ['-a', '--all'],
+            '--exclude' => ['-a', '--all'],
+        ];
+
+        if (!array_key_exists($key, $include)) {
+            return;
+        }
+
+        if (array_intersect_key($arguments, array_flip($include[$key]))) {
+            return;
+        }
+
+        $require = implode(' or ', $include[$key]);
+
+        throw new WrongArgumentException('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.' . PHP_EOL);
+    }
+
+    /**
+     * @param string $argument
+     * @param string $value
+     * @throws WrongArgumentException
+     * @return array
+     */
+    private function parseRequiredArgumentIsBenchmarkName($argument, $value)
+    {
+        if (empty($value) || !is_string($value)) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires a benchmark name. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        $this->checkRequiredArgumentIsCorrect($argument, $value);
+
+        $benchmarks = explode(',', $value);
+
+        if (!empty($unknown = array_diff($benchmarks, $this->benchmarks->getBenchmarksNames()))) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
+                ',',
+                $unknown
+                )) . 'or use -l for more information.' . PHP_EOL);
+        }
+
+        return array_flip($benchmarks);
+    }
+
+    /**
+     * @param string $argument
+     * @param int|float $value
+     * @throws WrongArgumentException
+     * @return int
+     */
+    private function parseRequiredArgumentIsIteration($argument, $value)
+    {
+        $minIterations = 1;
+        $maxIterations = 100000000;
+
+        if ($value === '' || !is_numeric($value)) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires a number of iterations. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        $iterations = (int)$value;
+
+        if ($iterations < $minIterations || $iterations > $maxIterations) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        return $iterations;
+    }
+
+    /**
+     * @param string $argument
+     * @param int|float $value
+     * @throws WrongArgumentException
+     * @return int
+     */
+    private function parseRequiredArgumentIsPositiveInteger($argument, $value)
+    {
+        if ($value === '' || !is_numeric($value)) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires a numeric value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        $value = (int)$value;
+
+        if ($value < 0) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires a positive numeric. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param string $argument
+     * @param string $value
+     * @throws WrongArgumentException
+     * @return string
+     */
+    private function parseRequiredArgumentIsFilename($argument, $value)
+    {
+        if (empty($value) || !is_string($value)) {
+            throw new WrongArgumentException('Option ' . $argument . ' requires a filename. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+        }
+
+        return $value;
     }
 
     /**
      * @param mixed $value
      * @return string
      */
-    protected function generatePrintableWithSpace($value)
+    private function generatePrintableWithSpace($value)
     {
         return $this->generatePrintable($value) . ' ';
     }
@@ -144,7 +370,7 @@ class CliHandler implements ArgumentsHandlerInterface
      * @param mixed $value
      * @return string
      */
-    protected function generatePrintable($value)
+    private function generatePrintable($value)
     {
         return is_scalar($value) ? (string)$value : '';
     }
