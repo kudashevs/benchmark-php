@@ -65,7 +65,7 @@ class Benchmarks
     /**
      * @return array
      */
-    public function listBenchmarks()
+    public function getBenchmarksNames()
     {
         return array_keys(self::BENCHMARKS);
     }

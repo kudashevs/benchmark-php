@@ -57,11 +57,11 @@ class BenchmarksTest extends TestCase
         $this->assertCount($count, $benchmarks);
     }
 
-    public function testListBenchmarksReturnsExpected()
+    public function testGetBenchmarksNamesReturnsExpected()
     {
         $count = count(Benchmarks::BENCHMARKS);
 
-        $benchmarks = $this->benchmarks->listBenchmarks();
+        $benchmarks = $this->benchmarks->getBenchmarksNames();
 
         $this->assertNotEmpty($benchmarks);
         $this->assertFalse(is_a(current($benchmarks), AbstractBenchmark::class, true));
