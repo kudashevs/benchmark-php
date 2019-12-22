@@ -8,28 +8,24 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Validators;
+namespace BenchmarkPHP\Arguments;
 
 use BenchmarkPHP\Application;
 use BenchmarkPHP\Exceptions\ValidationException;
 
-class CliValidator implements ValidatorInterface
+class CliHandler implements ArgumentsHandlerInterface
 {
-    /**
-     * @param array $benchmarks
-     */
-    public function __construct(array $benchmarks)
-    {
-    }
-
     public function validate(array $data)
     {
-        return $this->initArguments($data);
+        $arguments = $this->initArguments($data);
+
+        return $arguments;
     }
 
     /**
      * @param array $arguments
      * @return array
+     * @throws ValidationException
      */
     protected function initArguments(array $arguments)
     {
@@ -81,6 +77,58 @@ class CliValidator implements ValidatorInterface
         if (strpos($value, '-') === 0) {
             throw new ValidationException('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
         }
+    }
+
+    /**
+     * @param $key
+     * @param array $arguments
+     * @return void
+     */
+    protected function checkMutuallyInclusive($key, array $arguments)
+    {
+        $include = [
+            '-e' => ['-a', '--all'],
+            '--exclude' => ['-a', '--all'],
+        ];
+
+        if (!array_key_exists($key, $include)) {
+            return;
+        }
+
+        if (array_intersect_key($arguments, array_flip($include[$key]))) {
+            return;
+        }
+
+        $require = implode(' or ', $include[$key]);
+
+        $this->reporter->showBlock($this->getVersionString());
+        $this->terminateWithMessage('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.' . PHP_EOL);
+    }
+
+    /**
+     * @param string $key
+     * @param array $arguments
+     * @return void
+     */
+    protected function checkMutuallyExclusive($key, array $arguments)
+    {
+        $exclude = [
+            '-a' => ['-b', '--benchmarks'],
+            '--all' => ['-b', '--benchmarks'],
+        ];
+
+        if (!array_key_exists($key, $exclude)) {
+            return;
+        }
+
+        if (!$exclusive = array_intersect_key($arguments, array_flip($exclude[$key]))) {
+            return;
+        }
+
+        $exclusive = implode(',', array_keys($exclusive));
+
+        $this->reporter->showBlock($this->getVersionString());
+        $this->terminateWithMessage('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.' . PHP_EOL);
     }
 
     /**

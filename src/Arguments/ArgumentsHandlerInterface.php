@@ -8,13 +8,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Validators;
+namespace BenchmarkPHP\Arguments;
 
-interface ValidatorInterface
+interface ArgumentsHandlerInterface
 {
     /**
-     * @param mixed $data
+     * @param array $data
      * @return mixed
      */
-    public function validate($data);
+    public function validate(array $data);
 }

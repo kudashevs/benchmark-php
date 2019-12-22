@@ -8,17 +8,17 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Unit\Validators;
+namespace BenchmarkPHP\Tests\Unit\Arguments;
 
 use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Validators\CliValidator;
-use BenchmarkPHP\Validators\ValidatorInterface;
+use BenchmarkPHP\Arguments\CliHandler;
+use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
 use BenchmarkPHP\Exceptions\ValidationException;
 
 class CliValidatorTest extends TestCase
 {
-    /** @var CliValidator */
+    /** @var CliHandler */
     private $validator;
 
     protected function setUp()
@@ -26,7 +26,7 @@ class CliValidatorTest extends TestCase
         $_SERVER['argc'] = 2;
         $_SERVER['argv'] = [array_shift($_SERVER['argv']), '-a'];
 
-        $this->validator = new CliValidator([]);
+        $this->validator = new CliHandler([]);
     }
 
     /**
@@ -34,7 +34,7 @@ class CliValidatorTest extends TestCase
      */
     public function testInstanceImplementsCertainInterface()
     {
-        $this->assertInstanceOf(ValidatorInterface::class, $this->validator);
+        $this->assertInstanceOf(ArgumentsHandlerInterface::class, $this->validator);
     }
 
     /**
