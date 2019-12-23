@@ -12,9 +12,11 @@ namespace BenchmarkPHP\Tests\Unit;
 
 use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Arguments\CliHandler;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
+use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class ApplicationTest extends TestCase
@@ -29,10 +31,12 @@ class ApplicationTest extends TestCase
         $_SERVER['argc'] = 1;
         $_SERVER['argv'] = ['-a'];
 
+        /** @var ArgumentsHandlerInterface|\PHPUnit_Framework_MockObject_MockObject $handler */
+        $handler = new CliHandler([]); // todo remove
         /** @var ReporterInterface|\PHPUnit_Framework_MockObject_MockObject $reporter */
         $reporter = $this->getMockBuilder(ReporterInterface::class)
             ->getMock();
-        $this->bench = new Application($_SERVER['argv'], $reporter);
+        $this->bench = new Application($_SERVER['argv'], $handler, $reporter);
     }
 
     /**
@@ -46,162 +50,6 @@ class ApplicationTest extends TestCase
     /**
      * Functionality.
      */
-    public function testParseArgumentsReturnsExpectedWhenArgumentIsAnOption()
-    {
-        $arguments = ['--verbose' => false];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'parseArguments', [$arguments]);
-
-        $this->assertContains('verbose', $result);
-    }
-
-    public function testCheckMutuallyInclusiveReturnsExpectedWhenNotInclusiveKey()
-    {
-        $key = '-v';
-        $arguments = ['-l' => false, '--version' => false];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyInclusive', [$key, $arguments]);
-
-        $this->assertNull($result);
-    }
-
-    public function testCheckMutuallyInclusiveReturnsExpectedWhenArgumentsWithInclusive()
-    {
-        $key = '-e';
-        $arguments = ['-a' => false, '--version' => false];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyInclusive', [$key, $arguments]);
-
-        $this->assertNull($result);
-    }
-
-    public function testCheckMutuallyInclusiveReturnsExpectedWhenArgumentsWithoutInclusive()
-    {
-        $key = '-e';
-        $arguments = ['-l' => false, '--benchmarks' => false, '-b' => 42];
-
-        $reporter = $this->getMockBuilder(ReporterInterface::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Application::class)
-            ->setConstructorArgs([['remove'], $reporter]) // todo remove
-            ->setMethods(['terminateWithMessage'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains('inclusive'))
-            ->will($this->throwException(new \InvalidArgumentException('Contains mutually exclusive options.')));
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Contains mutually exclusive options.');
-        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyInclusive', [$key, $arguments]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testCheckMutuallyExclusiveReturnsExpectedWhenNotExclusiveKey()
-    {
-        $key = '-v';
-        $arguments = ['-l' => false, '--version' => false];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyExclusive', [$key, $arguments]);
-
-        $this->assertNull($result);
-    }
-
-    public function testCheckMutuallyExclusiveReturnsExpectedWhenArgumentsWithoutExclusive()
-    {
-        $key = '-a';
-        $arguments = ['-l' => false, '--version' => false];
-
-        $partialMock = $this->getPartialMockWithSkippedConstructor();
-        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyExclusive', [$key, $arguments]);
-
-        $this->assertNull($result);
-    }
-
-    public function testCheckMutuallyExclusiveReturnsExpectedWhenArgumentsWithExclusive()
-    {
-        $key = '-a';
-        $arguments = ['-l' => false, '--benchmarks' => false, '-b' => 42];
-
-        $reporter = $this->getMockBuilder(ReporterInterface::class)
-            ->getMock();
-        $partialMock = $this->getMockBuilder(Application::class)
-            ->setConstructorArgs([['remove'], $reporter]) // todo remove
-            ->setMethods(['terminateWithMessage'])
-            ->getMock();
-        $partialMock->expects($this->once())
-            ->method('terminateWithMessage')
-            ->with($this->stringContains('exclusive'))
-            ->will($this->throwException(new \InvalidArgumentException('Contains mutually exclusive options.')));
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Contains mutually exclusive options.');
-        $result = $this->runPrivateMethod($partialMock, 'checkMutuallyExclusive', [$key, $arguments]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testParseRequiredArgumentIsBenchmarkNameReturnsExpectedWhenTwoExistedBenchmarksInValue()
-    {
-        $argument = '-b';
-        $value = 'integers,floats';
-
-        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsBenchmarkName', [$argument, $value]);
-
-        $this->assertInternalType('array', $result);
-        $this->assertCount(2, $result);
-        $this->assertContains('floats', $result);
-    }
-
-    public function testParseRequiredArgumentIsIterationReturnsExpectedWhenIteration()
-    {
-        $argument = '-i';
-        $value = 42;
-
-        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsIteration', [$argument, $value]);
-
-        $this->assertSame(42, $result);
-    }
-
-    public function testParseRequiredArgumentIsPositiveIntegerReturnsExpectedWhenPositiveInteger()
-    {
-        $argument = '--precision';
-        $value = 0;
-
-        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsPositiveInteger', [$argument, $value]);
-
-        $this->assertSame(0, $result);
-    }
-
-    public function testParseRequiredArgumentIsFilenameReturnsExpectedWhenCorrectFilename()
-    {
-        $argument = '--temporary-file';
-        $value = 'test.txt';
-
-        $result = $this->runPrivateMethod($this->bench, 'parseRequiredArgumentIsFilename', [$argument, $value]);
-
-        $this->assertSame('test.txt', $result);
-    }
-
-    public function testGeneratePrintableWithSpaceReturnsStringWhenValueIsPrintable()
-    {
-        $result = $this->runPrivateMethod($this->bench, 'generatePrintableWithSpace', [42]);
-
-        $this->assertSame('42 ', $result);
-    }
-
-    public function testGeneratePrintableWithSpaceReturnsSpaceStringWhenValueIsNotPrintable()
-    {
-        $result = $this->runPrivateMethod($this->bench, 'generatePrintableWithSpace', [[42]]);
-
-        $this->assertSame(' ', $result);
-    }
-
     public function testInitBenchmarksReturnsExpected()
     {
         $count = $this->countAbstractBenchmarkClasses();
@@ -217,7 +65,7 @@ class ApplicationTest extends TestCase
         $options = ['verbose' => 'updated'];
 
         $this->setPrivateVariableValue($this->bench, 'options', $options);
-        $result = $this->runPrivateMethod($this->bench, 'initBenchmarks');
+        $result = $this->runPrivateMethod($this->bench, 'initBenchmarks', [$options]);
 
         $instance = current($result);
         $this->assertInstanceOf(AbstractBenchmark::class, $instance);

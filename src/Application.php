@@ -12,8 +12,8 @@ namespace BenchmarkPHP;
 
 use BenchmarkPHP\Informers\Informer;
 use BenchmarkPHP\Benchmarks\Benchmarks;
-use BenchmarkPHP\Validators\CliValidator;
 use BenchmarkPHP\Reporters\ReporterInterface;
+use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class Application
@@ -81,14 +81,37 @@ class Application
      * Create a new Benchmark instance.
      *
      * @param array $arguments
+     * @param ArgumentsHandlerInterface $handler
      * @param ReporterInterface $reporter
      */
-    public function __construct(array $arguments, ReporterInterface $reporter)
+    public function __construct(array $arguments, ArgumentsHandlerInterface $handler, ReporterInterface $reporter)
     {
         $this->reporter = $reporter;
-        $arguments = (new CliValidator([]))->validate($arguments);
-        $this->options = $this->parseArguments($arguments);
-        $this->benchmarks = $this->initBenchmarks();
+
+        $this->options = $this->parseArguments($arguments, $handler, $reporter);
+        $this->benchmarks = $this->initBenchmarks($this->options); // todo move to action
+        //var_dump($this->options);die(); // todo remove
+
+        //$this->run(); // todo remove
+    }
+
+    /**
+     * @param array $arguments
+     * @param ArgumentsHandlerInterface $handler
+     * @param ReporterInterface $reporter
+     * @return mixed
+     */
+    private function parseArguments(array $arguments, ArgumentsHandlerInterface $handler, ReporterInterface $reporter)
+    {
+        try {
+            $options = $handler->parse($arguments);
+        } catch (\Exception $e) {
+            $reporter->showBlock($this->getVersionString());
+
+            $this->terminateWithMessage($e->getMessage()); // todo unbind from realisation (CLI)
+        }
+
+        return $options;
     }
 
     private function init()
@@ -109,7 +132,7 @@ class Application
     {
         $this->reporter->showHeader($this->getFullTitle());
 
-        $this->reporter->showBlock((new Informer())->getSystemInformation());
+        $this->reporter->showBlock($this->informer->getSystemInformation());
         $this->reporter->showSeparator();
 
         $this->handleBenchmarks();
@@ -119,320 +142,12 @@ class Application
     }
 
     /**
-     * @param array $arguments
-     * @return array Return array of options
-     */
-    protected function parseArguments(array $arguments)
-    {
-        if (empty($arguments)) {
-            $this->reporter->showBlock($this->getHelp());
-            $this->terminateWithCode(0);
-        }
-
-        $options = [];
-
-        foreach ($arguments as $argument => $value) {
-            switch ($argument) {
-                case '-h':
-                case '--help':
-                    $this->reporter->showBlock($this->getHelp());
-                    $this->terminateWithCode(0);
-
-                    break;
-
-                case '-a':
-                case '--all':
-                    $this->checkMutuallyExclusive($argument, $arguments);
-                    $options['benchmarks'] = Benchmarks::BENCHMARKS;
-
-                    break;
-
-                case '-e':
-                case '--exclude':
-                    $this->checkMutuallyInclusive($argument, $arguments);
-                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
-
-                    break;
-
-                case '-b':
-                case '--benchmarks':
-                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
-
-                    break;
-
-                case '-l':
-                case '--list':
-                    $this->reporter->showBlock($this->getVersionString());
-                    $this->reporter->showBlock($this->listBenchmarks('header'), 'list');
-                    $this->terminateWithCode(0);
-
-                    break;
-
-                case '-i':
-                case '--iterations':
-                    $options['iterations'] = $this->parseRequiredArgumentIsIteration($argument, $value);
-
-                    break;
-
-                case '--time-precision':
-                    $options['time_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
-
-                    break;
-
-                case '-v':
-                case '--verbose':
-                    $options['verbose'] = true;
-
-                    break;
-
-                case '--debug':
-                    $options['debug'] = true;
-
-                    break;
-
-                case '--version':
-                    $this->reporter->showBlock($this->getVersionString());
-                    $this->terminateWithCode(0);
-
-                    break;
-
-                case '--decimal-prefix':
-                    $options['prefix'] = 'decimal';
-
-                    break;
-
-                case '--binary-prefix':
-                    $options['prefix'] = 'binary';
-
-                    break;
-
-                case '--data-precision':
-                    $options['data_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
-
-                    break;
-
-                case '--disable-rounding':
-                    $options['rounding'] = false;
-
-                    break;
-
-                case '--temporary-file':
-                    $options['file'] = $this->parseRequiredArgumentIsFilename($argument, $value);
-
-                    break;
-
-                default:
-                    $this->reporter->showBlock($this->getVersionString());
-                    $this->terminateWithMessage('Unknown option ' . $argument . PHP_EOL);
-
-                    break;
-            }
-        }
-
-        if (isset($options['benchmarks'], $options['excluded'])) {
-            $options['benchmarks'] = array_diff_key($options['benchmarks'], $options['excluded']);
-        }
-
-        return $options;
-    }
-
-    /**
-     * @param $key
-     * @param array $arguments
-     * @return void
-     */
-    protected function checkMutuallyInclusive($key, array $arguments)
-    {
-        $include = [
-            '-e' => ['-a', '--all'],
-            '--exclude' => ['-a', '--all'],
-        ];
-
-        if (!array_key_exists($key, $include)) {
-            return;
-        }
-
-        if (array_intersect_key($arguments, array_flip($include[$key]))) {
-            return;
-        }
-
-        $require = implode(' or ', $include[$key]);
-
-        $this->reporter->showBlock($this->getVersionString());
-        $this->terminateWithMessage('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.' . PHP_EOL);
-    }
-
-    /**
-     * @param string $key
-     * @param array $arguments
-     * @return void
-     */
-    protected function checkMutuallyExclusive($key, array $arguments)
-    {
-        $exclude = [
-            '-a' => ['-b', '--benchmarks'],
-            '--all' => ['-b', '--benchmarks'],
-        ];
-
-        if (!array_key_exists($key, $exclude)) {
-            return;
-        }
-
-        if (!$exclusive = array_intersect_key($arguments, array_flip($exclude[$key]))) {
-            return;
-        }
-
-        $exclusive = implode(',', array_keys($exclusive));
-
-        $this->reporter->showBlock($this->getVersionString());
-        $this->terminateWithMessage('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.' . PHP_EOL);
-    }
-
-    /**
-     * @param string $argument
-     * @param string $value
+     * @param array $options
      * @return array
      */
-    protected function parseRequiredArgumentIsBenchmarkName($argument, $value)
+    protected function initBenchmarks(array $options = [])
     {
-        if (empty($value) || !is_string($value)) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a benchmark name. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-
-        $this->checkRequiredArgumentNotAnOption($argument, $value);
-
-        $benchmarks = explode(',', $value);
-
-        if (!empty($unknown = array_diff($benchmarks, array_flip(Benchmarks::BENCHMARKS)))) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
-                ',',
-                $unknown
-            )) . 'or use -l for more information.' . PHP_EOL);
-        }
-
-        return array_flip($benchmarks);
-    }
-
-    /**
-     * @param string $argument
-     * @param mixed $value
-     * @return void
-     */
-    protected function checkRequiredArgumentNotAnOption($argument, $value) // remove
-    {
-        if (strpos($value, '-') === 0) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-    }
-
-    /**
-     * @param string $argument
-     * @param int|float $value
-     * @return int
-     */
-    protected function parseRequiredArgumentIsIteration($argument, $value)
-    {
-        $minIterations = 1;
-        $maxIterations = 100000000;
-
-        if ($value === '' || !is_numeric($value)) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a number of iterations. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-
-        $iterations = (int)$value;
-
-        if ($iterations < $minIterations || $iterations > $maxIterations) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-
-        return $iterations;
-    }
-
-    /**
-     * @param string $argument
-     * @param int|float $value
-     * @return int
-     */
-    protected function parseRequiredArgumentIsPositiveInteger($argument, $value)
-    {
-        if ($value === '' || !is_numeric($value)) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a numeric value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-
-        $value = (int)$value;
-
-        if ($value < 0) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a positive numeric. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param string $argument
-     * @param string $value
-     * @return string
-     */
-    protected function parseRequiredArgumentIsFilename($argument, $value)
-    {
-        if (empty($value) || !is_string($value)) {
-            $this->reporter->showBlock($this->getVersionString());
-            $this->terminateWithMessage('Option ' . $argument . ' requires a filename. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
-        }
-
-        $this->checkRequiredArgumentNotAnOption($argument, $value);
-
-        return $value;
-    }
-
-    /**
-     * @param mixed $value
-     * @return string
-     */
-    protected function generatePrintableWithSpace($value)
-    {
-        return $this->generatePrintable($value) . ' ';
-    }
-
-    /**
-     * @param mixed $value
-     * @return string
-     */
-    protected function generatePrintable($value)
-    {
-        return is_scalar($value) ? (string)$value : '';
-    }
-
-    /**
-     * @return array
-     */
-    protected function initBenchmarks()
-    {
-        //$initialized = !empty($this->options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, $this->options['benchmarks']) : self::BENCHMARKS; // todo realize partial get
-
-        return (new Benchmarks())->getInstantiated($this->options);
-    }
-
-    /**
-     * @param string $style
-     * @return array
-     */
-    protected function listBenchmarks($style = '')
-    {
-        $benchmarks = array_keys(self::BENCHMARKS);
-
-        if ($style === 'header') {
-            $benchmarks = array_merge(['exclude:Available ' . $this->generatePluralizedBenchmarkCount(count($benchmarks))], $benchmarks);
-        }
-
-        return $benchmarks;
+        return $this->benchmark->getInstantiated($options);
     }
 
     /**
