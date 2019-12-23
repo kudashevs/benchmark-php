@@ -35,7 +35,7 @@ class BenchmarksTest extends TestCase
     /**
      * Functionality.
      */
-    public function testGetInstantiatedReturnsExpected()
+    public function testGetInstantiatedReturnsExpectedWhenEmptyOptions()
     {
         $count = count(Benchmarks::BENCHMARKS);
 
@@ -44,6 +44,17 @@ class BenchmarksTest extends TestCase
         $this->assertNotEmpty($benchmarks);
         $this->assertTrue(is_a(current($benchmarks), AbstractBenchmark::class));
         $this->assertCount($count, $benchmarks);
+    }
+
+    public function testGetInstatiatedReturnsExpectedWhenBenchmarksIncludeNotExist()
+    {
+        $options['benchmarks'] = ['integers' => 0, 'floats' => 1, 'not_exist' => 2];
+
+        $benchmarks = $this->benchmarks->getInstantiated($options);
+
+        $this->assertNotEmpty($benchmarks);
+        $this->assertCount(2, $benchmarks);
+        $this->assertFalse(array_key_exists('not_exist', $benchmarks));
     }
 
     public function testGetBenchmarksReturnsExpected()

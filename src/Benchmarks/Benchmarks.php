@@ -37,9 +37,10 @@ class Benchmarks
      */
     public function getInstantiated(array $options = [])
     {
+        $requested = !empty($options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, $options['benchmarks']) : self::BENCHMARKS;
         $benchmarks = [];
 
-        foreach (self::BENCHMARKS as $name => $class) {
+        foreach ($requested as $name => $class) {
             try {
                 $instance = new $class($options);
             } catch (\Exception $e) {
