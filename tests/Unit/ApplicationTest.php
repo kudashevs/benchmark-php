@@ -301,42 +301,17 @@ class ApplicationTest extends TestCase
 
     public function testGetBenchmarksSummaryReturnsExpectedWhenEmptyBenchmarks()
     {
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
+        $fake_statistics = [
+            'completed' => 0,
+            'skipped' => 0,
+            'total_time' => 0,
+        ];
 
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
+        $this->setPrivateVariableValue($this->bench, 'statistics', $fake_statistics);
+
         $result = $this->bench->getBenchmarksSummary();
 
         $this->assertArrayHasKey('skip', $result);
-    }
-
-    public function testGetBenchmarksSummaryReturnsExpectedWhenOneCompletedBenchmark()
-    {
-        $stub = $this->getMockBuilder(Integers::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $stub->expects($this->once())
-            ->method('result')
-            ->willReturn([]);
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
-        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
-
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
-        $result = $this->bench->getBenchmarksSummary();
-
-        $this->assertContains('1', $result['done']);
-    }
-
-    public function testGetBenchmarksSummaryReturnsExpectedWhenSkippedBenchmark()
-    {
-        $skipped = ['test' => 'skipped'];
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', [$skipped]);
-        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
-
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
-        $result = $this->bench->getBenchmarksSummary();
-
-        $this->assertContains('0', $result['done']);
-        $this->assertContains('1', $result['skip']);
     }
 
     public function testIsSilentModeReturnsExpectedWhenTrue()

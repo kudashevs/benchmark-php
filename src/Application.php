@@ -416,7 +416,7 @@ class Application
      */
     protected function hasBenchmarks()
     {
-        return isset($this->benchmarks) && count($this->benchmarks) > 0;
+        return $this->hasCompletedBenchmarks() || $this->hasSkippedBenchmarks();
     }
 
     /**
@@ -424,7 +424,7 @@ class Application
      */
     protected function hasCompletedBenchmarks()
     {
-        return isset($this->statistics['completed']) && ($this->statistics['completed'] > 0);
+        return $this->statistics['completed'] > 0;
     }
 
     /**
@@ -432,7 +432,7 @@ class Application
      */
     protected function hasSkippedBenchmarks()
     {
-        return isset($this->statistics['skipped']) && ($this->statistics['skipped'] > 0);
+        return $this->statistics['skipped'] > 0;
     }
 
     /**
@@ -449,7 +449,7 @@ class Application
     public function getBenchmarksSummary()
     {
         if (!$this->hasBenchmarks()) {
-            return ['skip' => 'no benchmarks were found'];
+            return ['skip' => 'no benchmarks were executed'];
         }
 
         if ($this->isSilentMode()) {
