@@ -126,15 +126,6 @@ class Application
         return $options;
     }
 
-    private function init()
-    {
-        // init function?
-        // set reporter
-        // try/catch get action, options
-        // get informer
-        // get benchmark
-    }
-
     /**
      * Aggregate and print data.
      *
