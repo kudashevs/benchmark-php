@@ -54,17 +54,27 @@ class Application
     private $reporter;
 
     /**
+     * @var Benchmarks
+     */
+    private $benchmark;
+
+    /**
+     * @var Informer
+     */
+    private $informer;
+
+    /**
+     * @var array
+     */
+    private $benchmarks = [];
+
+    /**
      * @var array
      */
     private $options = [
         'debug' => false,
         'verbose' => false,
     ];
-
-    /**
-     * @var array
-     */
-    private $benchmarks = [];
 
     /**
      * @var array
@@ -86,6 +96,8 @@ class Application
      */
     public function __construct(array $arguments, ArgumentsHandlerInterface $handler, ReporterInterface $reporter)
     {
+        $this->informer = new Informer();
+        $this->benchmark = new Benchmarks();
         $this->reporter = $reporter;
 
         $this->options = $this->parseArguments($arguments, $handler, $reporter);
