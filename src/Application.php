@@ -548,17 +548,17 @@ class Application
     /**
      * @return string
      */
-    public function getFullTitle()
+    protected function getVersion()
     {
-        return 'Benchmark PHP ' . $this->getVersion();
+        return self::VERSION;
     }
 
     /**
      * @return string
      */
-    protected function getVersion()
+    public function getFullTitle()
     {
-        return self::VERSION;
+        return 'Benchmark PHP ' . $this->getVersion();
     }
 
     /**
