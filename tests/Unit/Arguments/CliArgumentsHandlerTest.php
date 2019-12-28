@@ -12,7 +12,7 @@ namespace BenchmarkPHP\Tests\Unit\Arguments;
 
 use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Arguments\CliHandler;
+use BenchmarkPHP\Arguments\CliArgumentsHandler;
 use BenchmarkPHP\Exceptions\EmptyArgumentException;
 use BenchmarkPHP\Exceptions\WrongArgumentException;
 use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
@@ -20,7 +20,7 @@ use BenchmarkPHP\Exceptions\UnknownArgumentException;
 
 class CliHandlerTest extends TestCase
 {
-    /** @var CliHandler */
+    /** @var CliArgumentsHandler */
     private $handler;
 
     protected function setUp()
@@ -28,7 +28,7 @@ class CliHandlerTest extends TestCase
         $_SERVER['argc'] = 2;
         $_SERVER['argv'] = [array_shift($_SERVER['argv']), '-a'];
 
-        $this->handler = new CliHandler();
+        $this->handler = new CliArgumentsHandler();
     }
 
     /**

@@ -106,6 +106,7 @@ class CliHandler implements ArgumentsHandlerInterface
      *
      * @param array $arguments
      * @throws WrongArgumentException|UnknownArgumentException
+     * @return array
      */
     protected function parseArguments(array $arguments)
     {
@@ -128,7 +129,7 @@ class CliHandler implements ArgumentsHandlerInterface
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
                     $action = 'run';
-                    $options['benchmarks'] = $this->benchmarks->getBenchmarks();
+                    $options['benchmarks'] = $this->benchmarks->getBenchmarks(); // todo move get benchmarks to application
 
                     break;
 
@@ -136,14 +137,14 @@ class CliHandler implements ArgumentsHandlerInterface
                 case '--exclude':
                     $this->checkMutuallyInclusive($argument, $arguments);
                     $action = 'run';
-                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
+                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value); // todo move get benchmarks to application
 
                     break;
 
                 case '-b':
                 case '--benchmarks':
                     $action = 'run';
-                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
+                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value); // todo move get benchmarks to application
 
                     break;
 
