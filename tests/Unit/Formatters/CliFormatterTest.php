@@ -11,20 +11,20 @@
 namespace BenchmarkPHP\Tests\Unit\Reporters;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Reporters\CliReporter;
+use BenchmarkPHP\Reporters\CliFormatter;
 use BenchmarkPHP\Tests\TestHelpersTrait;
-use BenchmarkPHP\Reporters\ReporterInterface;
+use BenchmarkPHP\Reporters\FormatterInterface;
 
-class CliReporterTest extends TestCase
+class CliFormatterTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var CliReporter */
+    /** @var CliFormatter */
     private $reporter;
 
     protected function setUp()
     {
-        $this->reporter = new CliReporter();
+        $this->reporter = new CliFormatter();
     }
 
     /**
@@ -32,7 +32,7 @@ class CliReporterTest extends TestCase
      */
     public function testInstanceImplementsCertainInterface()
     {
-        $this->assertInstanceOf(ReporterInterface::class, $this->reporter);
+        $this->assertInstanceOf(FormatterInterface::class, $this->reporter);
     }
 
     /**
@@ -88,9 +88,9 @@ class CliReporterTest extends TestCase
         $this->reporter->showHeader($data);
 
         $this->expectOutputRegex('/' . $data['version'] . '/');
-        $this->assertContains(CliReporter::REPORT_ROW, $this->getActualOutput());
-        $this->assertContains(CliReporter::REPORT_COLUMN, $this->getActualOutput());
-        $this->assertContains(CliReporter::REPORT_SPACE, $this->getActualOutput());
+        $this->assertContains(CliFormatter::REPORT_ROW, $this->getActualOutput());
+        $this->assertContains(CliFormatter::REPORT_COLUMN, $this->getActualOutput());
+        $this->assertContains(CliFormatter::REPORT_SPACE, $this->getActualOutput());
     }
 
     public function testShowFooterReturnsExpected()
@@ -103,8 +103,8 @@ class CliReporterTest extends TestCase
         $this->reporter->showFooter($data);
 
         $this->expectOutputRegex('/' . $expected . '/');
-        $this->assertContains(CliReporter::REPORT_ROW, $this->getActualOutput());
-        $this->assertNotContains(CliReporter::REPORT_COLUMN, $this->getActualOutput());
+        $this->assertContains(CliFormatter::REPORT_ROW, $this->getActualOutput());
+        $this->assertNotContains(CliFormatter::REPORT_COLUMN, $this->getActualOutput());
     }
 
     public function testShowBlockReturnsExpected()
@@ -117,17 +117,17 @@ class CliReporterTest extends TestCase
         $this->reporter->showBlock($data);
 
         $this->expectOutputString($expected);
-        $this->assertNotContains(CliReporter::REPORT_ROW, $this->getActualOutput());
-        $this->assertNotContains(CliReporter::REPORT_COLUMN, $this->getActualOutput());
+        $this->assertNotContains(CliFormatter::REPORT_ROW, $this->getActualOutput());
+        $this->assertNotContains(CliFormatter::REPORT_COLUMN, $this->getActualOutput());
     }
 
     public function testShowSeparatorReturnsExpected()
     {
-        $expected = CliReporter::REPORT_WIDTH;
+        $expected = CliFormatter::REPORT_WIDTH;
 
         $this->reporter->showSeparator();
 
-        $this->expectOutputRegex('/' . CliReporter::REPORT_ROW . '/');
+        $this->expectOutputRegex('/' . CliFormatter::REPORT_ROW . '/');
         $this->assertEquals($expected, mb_strlen(trim($this->getActualOutput())));
     }
 }
