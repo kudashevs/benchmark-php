@@ -84,7 +84,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
     private function checkRequiredArgumentHasValue($argument, $value)
     {
         if ($value === false) {
-            throw new EmptyArgumentException('Option ' . $argument . ' requires some value. Empty value is passed.' . PHP_EOL);
+            throw new EmptyArgumentException('Option ' . $argument . ' requires some value. Empty value is passed.');
         }
     }
 
@@ -97,7 +97,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
     private function checkRequiredArgumentIsCorrect($argument, $value)
     {
         if (strpos($value, '-') === 0) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires some value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
     }
 
@@ -207,7 +207,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
                     break;
 
                 default:
-                    throw new UnknownArgumentException('Unknown option ' . $argument . PHP_EOL);
+                    throw new UnknownArgumentException('Unknown option ' . $argument . '');
 
                     break;
             }
@@ -243,7 +243,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
         $exclusive = implode(',', array_keys($exclusive));
 
-        throw new WrongArgumentException('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.' . PHP_EOL);
+        throw new WrongArgumentException('Option ' . $key . ' is mutually exclusive with ' . $exclusive . '. Wrong arguments are passed.');
     }
 
     /**
@@ -269,7 +269,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
         $require = implode(' or ', $include[$key]);
 
-        throw new WrongArgumentException('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.' . PHP_EOL);
+        throw new WrongArgumentException('Option ' . $key . ' is mutually inclusive with ' . $require . '. Wrong arguments are passed.');
     }
 
     /**
@@ -281,7 +281,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
     private function parseRequiredArgumentIsBenchmarkName($argument, $value)
     {
         if (empty($value) || !is_string($value)) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires a benchmark name. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires a benchmark name. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         $this->checkRequiredArgumentIsCorrect($argument, $value);
@@ -292,7 +292,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
             throw new WrongArgumentException('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
                 $unknown
-                )) . 'or use -l for more information.' . PHP_EOL);
+                )) . 'or use -l for more information.');
         }
 
         return array_flip($benchmarks);
@@ -310,13 +310,13 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
         $maxIterations = 100000000;
 
         if ($value === '' || !is_numeric($value)) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires a number of iterations. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires a number of iterations. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         $iterations = (int)$value;
 
         if ($iterations < $minIterations || $iterations > $maxIterations) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires the value between ' . $minIterations . ' and ' . $maxIterations . '. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         return $iterations;
@@ -331,13 +331,13 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
     private function parseRequiredArgumentIsPositiveInteger($argument, $value)
     {
         if ($value === '' || !is_numeric($value)) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires a numeric value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires a numeric value. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         $value = (int)$value;
 
         if ($value < 0) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires a positive numeric. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires a positive numeric. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         return $value;
@@ -352,7 +352,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
     private function parseRequiredArgumentIsFilename($argument, $value)
     {
         if (empty($value) || !is_string($value)) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires a filename. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.' . PHP_EOL);
+            throw new WrongArgumentException('Option ' . $argument . ' requires a filename. Empty or wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         return $value;
