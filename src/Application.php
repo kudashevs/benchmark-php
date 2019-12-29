@@ -11,8 +11,12 @@
 namespace BenchmarkPHP;
 
 use BenchmarkPHP\Informers\Informer;
+use BenchmarkPHP\Input\InputInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks;
-use BenchmarkPHP\Reporters\ReporterInterface;
+use BenchmarkPHP\Output\OutputInterface;
+use BenchmarkPHP\Formatters\CliFormatter;
+use BenchmarkPHP\Arguments\CliArgumentsHandler;
+use BenchmarkPHP\Formatters\FormatterInterface;
 use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
@@ -49,9 +53,14 @@ class Application
     ];
 
     /**
-     * @var ReporterInterface
+     * @var OutputInterface
      */
-    private $reporter;
+    private $output;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $formatter;
 
     /**
      * @var Benchmarks
@@ -118,9 +127,11 @@ class Application
         try {
             $options = $handler->parse($arguments);
         } catch (\Exception $e) {
-            $reporter->showBlock($this->getVersionString());
+            $this->output->writeln($this->getFullVersion());
+            $this->output->writeln('');
+            $this->output->write($e->getMessage());
 
-            $this->terminateWithMessage($e->getMessage()); // todo unbind from realisation (CLI)
+            $this->output->terminateOnError(1); // todo error code from exception
         }
 
         return $options;
@@ -133,15 +144,15 @@ class Application
      */
     public function run()
     {
-        $this->reporter->showHeader($this->getFullTitle());
+        $this->formatter->header($this->getFullVersion());
 
-        $this->reporter->showBlock($this->informer->getSystemInformation());
-        $this->reporter->showSeparator();
+        $this->formatter->block($this->informer->getSystemInformation());
+        $this->formatter->separator();
 
         $this->handleBenchmarks();
 
-        $this->reporter->showBlock($this->getBenchmarksSummary());
-        $this->reporter->showFooter($this->getExecutionSummary(['total_time']));
+        $this->formatter->block($this->getBenchmarksSummary());
+        $this->formatter->footer($this->getExecutionSummary(['total_time']));
     }
 
     /**
@@ -254,10 +265,10 @@ class Application
             $data = array_merge($data, $debug);
         }
 
-        $this->reporter->showBlock($data);
+        $this->formatter->block($data);
 
         if (!$this->isSilentMode()) {
-            $this->reporter->showSeparator();
+            $this->formatter->separator();
         }
     }
 
@@ -292,10 +303,10 @@ class Application
             $data = array_replace($data, $statistics);
         }
 
-        $this->reporter->showBlock($data);
+        $this->formatter->block($data);
 
         if (!$this->isSilentMode()) {
-            $this->reporter->showSeparator();
+            $this->formatter->separator();
         }
     }
 
