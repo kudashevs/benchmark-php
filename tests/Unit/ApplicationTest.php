@@ -368,27 +368,6 @@ class ApplicationTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenZeroResult()
-    {
-        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount', [0]);
-
-        $this->assertEquals('0 benchmarks', $result);
-    }
-
-    public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenOneResult()
-    {
-        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount', [1]);
-
-        $this->assertEquals('1 benchmark', $result);
-    }
-
-    public function testGeneratePluralizedBenchmarkCountReturnsExpectedWhenThreeResult()
-    {
-        $result = $this->runPrivateMethod($this->bench, 'generatePluralizedBenchmarkCount', [3]);
-
-        $this->assertEquals('3 benchmarks', $result);
-    }
-
     /**
      * Test exits benchmark.
      */

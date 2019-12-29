@@ -474,10 +474,10 @@ class Application
 
         list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
 
-        $summary = ['done' => $this->generatePluralizedBenchmarkCount($completed) . ' completed'];
+        $summary = ['done' => $this->generatePluralized($completed, 'benchmark') . ' completed'];
 
         if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
-            $summary = array_merge($summary, ['skip' => $this->generatePluralizedBenchmarkCount($skipped) . ' skipped']);
+            $summary = array_merge($summary, ['skip' => $this->generatePluralized($skipped, 'benchmark') . ' skipped']);
         }
 
         return $summary;
@@ -545,11 +545,14 @@ class Application
 
     /**
      * @param int $count
+     * @param string $text
      * @return string
      */
-    protected function generatePluralizedBenchmarkCount($count)
+    protected function generatePluralized($count, $text)
     {
-        return ($count === 1) ? $count . ' benchmark' : $count . ' benchmarks';
+        $text = trim($text);
+
+        return ($count === 1) ? $count . ' ' . $text : $count . ' ' . $text . 's';  // todo add -es for -s ending words
     }
 
     /**
