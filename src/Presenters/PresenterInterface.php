@@ -45,13 +45,17 @@ interface PresenterInterface
     public function separator();
 
     /**
+     * If we want to execute some code after successful execution.
+     *
      * @return mixed
      */
-    public function success();
+    public function onSuccess();
 
     /**
+     * If we want to execute some code after critical error.
+     *
      * @param mixed $data
      * @return mixed
      */
-    public function error($data);
+    public function onError($data);
 }

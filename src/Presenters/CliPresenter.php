@@ -116,7 +116,7 @@ class CliPresenter implements PresenterInterface
     /**
      * @return void
      */
-    public function success()
+    public function onSuccess()
     {
         $this->output->terminateOnSuccess();
     }
@@ -125,7 +125,7 @@ class CliPresenter implements PresenterInterface
      * @param int $code
      * @return void
      */
-    public function error($code)
+    public function onError($code)
     {
         $this->output->terminateOnError($code);
     }
