@@ -8,62 +8,126 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Formatters;
+namespace BenchmarkPHP\Presenters;
 
-class CliFormatter implements FormatterInterface
+use BenchmarkPHP\Output\OutputInterface;
+
+class CliPresenter implements PresenterInterface
 {
+    /**
+     * @var string
+     */
+    const NEW_LINE = PHP_EOL;
+
+    /**
+     * @var int
+     */
     const REPORT_WIDTH = 32;
+
+    /**
+     * @var string
+     */
     const REPORT_ROW = '-';
+
+    /**
+     * @var string
+     */
     const REPORT_COLUMN = '|';
+
+    /**
+     * @var string
+     */
     const REPORT_SPACE = ' ';
+
+    /**
+     * @var string
+     */
     const LIST_BULLET = ' - ';
+
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    public function __construct(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    /**
+     * @param string $data
+     * @return void
+     */
+    public function version($data)
+    {
+        $result = $data . self::NEW_LINE . self::NEW_LINE;
+
+        $this->output->write($result);
+    }
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return void
      */
     public function header($data, $style = '')
     {
         $result = '';
 
-        $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+        $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . self::NEW_LINE;
         $result .= $this->formatInput($data, 'center');
-        $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+        $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . self::NEW_LINE;
 
-        return $result;
+        $this->output->write($result);
     }
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return void
      */
     public function footer($data, $style = '')
     {
         $result = '';
-        $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+        $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . self::NEW_LINE;
         $result .= $this->formatInput($data);
 
-        return $result;
+        $this->output->write($result);
     }
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return void
      */
     public function block($data, $style = '')
     {
-        return $this->formatInput($data, $style);
+        $this->output->write($this->formatInput($data, $style));
     }
 
     /**
-     * @return string
+     * @return void
      */
     public function separator()
     {
-        return str_repeat(self::REPORT_ROW, self::REPORT_WIDTH);
+        $this->output->write(str_repeat(self::REPORT_ROW, self::REPORT_WIDTH));
+    }
+
+    /**
+     * @return void
+     */
+    public function success()
+    {
+        $this->output->terminateOnSuccess();
+    }
+
+    /**
+     * @param int $code
+     * @return void
+     */
+    public function error($code)
+    {
+        $this->output->terminateOnError($code);
     }
 
     /**
@@ -74,7 +138,7 @@ class CliFormatter implements FormatterInterface
     protected function formatInput($data, $style = '')
     {
         if (!is_string($data) && !is_array($data)) {
-            return '' . PHP_EOL;
+            return '' . self::NEW_LINE;
         }
 
         if (is_array($data)) {
@@ -114,11 +178,11 @@ class CliFormatter implements FormatterInterface
     protected function formatString($string, $style = '')
     {
         if (!is_string($string)) {
-            return '' . PHP_EOL;
+            return '' . self::NEW_LINE;
         }
 
         if (preg_match('/^(?:(?:e|exclude):)(.+)/Su', $string, $match)) {
-            return $match[1] . PHP_EOL;
+            return $match[1] . self::NEW_LINE;
         }
 
         if ($style === 'center' || $style === 'centered') {
@@ -129,7 +193,7 @@ class CliFormatter implements FormatterInterface
             $string = self::LIST_BULLET . $string;
         }
 
-        return $string . PHP_EOL;
+        return $string . self::NEW_LINE;
     }
 
     /**

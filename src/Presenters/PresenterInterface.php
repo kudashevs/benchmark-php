@@ -8,37 +8,50 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Formatters;
+namespace BenchmarkPHP\Presenters;
 
-interface FormatterInterface
+interface PresenterInterface
 {
     /**
-     * @param string|array $data
-     * @param string $style
+     * @param string $data
      * @return mixed
      */
-    public function header($data, $style = '');
+    public function version($data);
 
     /**
      * @param string|array $data
      * @param string $style
      * @return mixed
      */
-    public function footer($data, $style = '');
+    public function header($data, $style = ''); // todo remove $style
 
     /**
      * @param string|array $data
      * @param string $style
      * @return mixed
      */
-    public function block($data, $style = '');
+    public function footer($data, $style = ''); // todo remove $style
+
+    /**
+     * @param string|array $data
+     * @param string $style
+     * @return mixed
+     */
+    public function block($data, $style = ''); // todo remove $style
 
     /**
      * @return mixed
      */
     public function separator();
 
+    /**
+     * @return mixed
+     */
     public function success();
 
-    public function error();
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
+    public function error($data);
 }

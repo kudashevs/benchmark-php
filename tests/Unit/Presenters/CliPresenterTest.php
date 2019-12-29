@@ -8,23 +8,27 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Unit\Formatters;
+namespace BenchmarkPHP\Tests\Unit\Presenters;
 
 use PHPUnit\Framework\TestCase;
+use BenchmarkPHP\Output\OutputInterface;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Presenters\CliPresenter;
 use BenchmarkPHP\Presenters\PresenterInterface;
 
-class CliFormatterTest extends TestCase
+class CliPresenterTest extends TestCase
 {
     use TestHelpersTrait;
 
     /** @var CliPresenter */
-    private $reporter;
+    private $presenter;
 
     protected function setUp()
     {
-        $this->reporter = new CliPresenter();
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $stub */
+        $stub = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
+        $this->presenter = new CliPresenter($stub);
     }
 
     /**
@@ -32,7 +36,7 @@ class CliFormatterTest extends TestCase
      */
     public function testInstanceImplementsCertainInterface()
     {
-        $this->assertInstanceOf(PresenterInterface::class, $this->reporter);
+        $this->assertInstanceOf(PresenterInterface::class, $this->presenter);
     }
 
     /**
@@ -46,88 +50,44 @@ class CliFormatterTest extends TestCase
     /**
      * Functionality.
      */
-    public function testShowBlockReturnsExpectedWhenString()
+
+    /**
+     * @param string $method
+     * @param mixed $input
+     * @param string $expected
+     * @dataProvider provideOutputInterfaceMethods
+     */
+    public function testOutputInterfaceMethodsBehavesExpected($method, $input, $expected)
     {
-        $input = 'version';
-        $expected = $input . PHP_EOL;
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $mock */
+        $mock = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
+        $mock->expects($this->once())
+            ->method('write')
+            ->with($this->stringContains($expected));
 
-        $result = $this->reporter->block($input);
+        $presenter = new CliPresenter($mock);
 
-        $this->assertContains($expected, $result);
+        $presenter->$method($input);
     }
 
-    public function testShowBlockReturnsExpectedWhenIndexedArray()
+    /**
+     * @return array
+     */
+    public function provideOutputInterfaceMethods()
     {
-        $input = ['first', 'second'];
-        $expected = 'first' . PHP_EOL . 'second' . PHP_EOL;
-
-        $result = $this->reporter->block($input);
-
-        $this->assertContains($expected, $result);
-    }
-
-    public function testShowBlockReturnsExpectedWhenAssociativeArray()
-    {
-        $input = [
-            'first' => 0.12345,
-            'second' => 'test',
+        return [
+            'version with string' => ['version', 'version 1.0.0', 'version 1.0.0'],
+            'header with string' => ['header', 'test head', 'test head'],
+            'header with indexed array' => ['header', ['1.1.0'], '1.1.0'],
+            'header with assoc array' => ['header', ['version' => '1.2.0'], '1.2.0'],
+            'footer with string' => ['footer', 'test foot', 'test foot'],
+            'footer with indexed array' => ['footer', ['1.1.0'], '1.1.0'],
+            'footer with assoc array' => ['footer', ['version' => '1.2.0'], '1.2.0'],
+            'block with string' => ['block', 'test block', 'test block'],
+            'block with indexed array' => ['block', ['1.1.0'], '1.1.0'],
+            'block with assoc array' => ['block', ['version' => '1.2.0'], '1.2.0'],
+            'separator contains' => ['separator', null, CliPresenter::REPORT_ROW],
         ];
-        $expected = 'first: 0.12345' . PHP_EOL . 'second: test' . PHP_EOL;
-
-        $result = $this->reporter->block($input);
-
-        $this->assertContains($expected, $result);
-    }
-
-    public function testShowHeaderReturnsExpected()
-    {
-        $data = [
-            'version' => '1.0.0',
-        ];
-
-        $result = $this->reporter->header($data);
-
-        $this->assertRegExp('/' . $data['version'] . '/', $result);
-        $this->assertContains(CliPresenter::REPORT_ROW, $result);
-        $this->assertContains(CliPresenter::REPORT_COLUMN, $result);
-        $this->assertContains(CliPresenter::REPORT_SPACE, $result);
-    }
-
-    public function testShowFooterReturnsExpected()
-    {
-        $data = [
-            'stat' => 0.12345,
-        ];
-        $expected = 'stat: 0.12345';
-
-        $result = $this->reporter->footer($data);
-
-        $this->assertRegExp('/' . $expected . '/', $result);
-        $this->assertContains(CliPresenter::REPORT_ROW, $result);
-        $this->assertNotContains(CliPresenter::REPORT_COLUMN, $result);
-    }
-
-    public function testShowBlockReturnsExpected()
-    {
-        $data = [
-            'stat' => 0.12345,
-        ];
-        $expected = 'stat: 0.12345' . PHP_EOL;
-
-        $result = $this->reporter->block($data);
-
-        $this->assertContains($expected, $result);
-        $this->assertNotContains(CliPresenter::REPORT_ROW, $result);
-        $this->assertNotContains(CliPresenter::REPORT_COLUMN, $result);
-    }
-
-    public function testShowSeparatorReturnsExpected()
-    {
-        $expected = CliPresenter::REPORT_WIDTH;
-
-        $result = $this->reporter->separator();
-
-        $this->assertRegExp('/' . CliPresenter::REPORT_ROW . '/', $result);
-        $this->assertEquals($expected, mb_strlen(trim($result)));
     }
 }
