@@ -63,7 +63,7 @@ class CliFormatter implements FormatterInterface
      */
     public function separator()
     {
-        return str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+        return str_repeat(self::REPORT_ROW, self::REPORT_WIDTH);
     }
 
     /**

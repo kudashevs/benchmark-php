@@ -15,26 +15,30 @@ interface FormatterInterface
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return mixed
      */
     public function header($data, $style = '');
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return mixed
      */
     public function footer($data, $style = '');
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string
+     * @return mixed
      */
     public function block($data, $style = '');
 
     /**
-     * @return string
+     * @return mixed
      */
     public function separator();
+
+    public function success();
+
+    public function error();
 }
