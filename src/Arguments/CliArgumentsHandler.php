@@ -128,7 +128,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
                 case '-a':
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
-                    $action = 'run';
+                    $action = 'handle';
                     $options['benchmarks'] = $this->benchmarks->getBenchmarks(); // todo move get benchmarks to application
 
                     break;
@@ -136,14 +136,14 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
                 case '-e':
                 case '--exclude':
                     $this->checkMutuallyInclusive($argument, $arguments);
-                    $action = 'run';
+                    $action = 'handle';
                     $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value); // todo move get benchmarks to application
 
                     break;
 
                 case '-b':
                 case '--benchmarks':
-                    $action = 'run';
+                    $action = 'handle';
                     $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value); // todo move get benchmarks to application
 
                     break;
