@@ -110,7 +110,7 @@ class CliPresenter implements PresenterInterface
      */
     public function separator()
     {
-        $this->output->write(str_repeat(self::REPORT_ROW, self::REPORT_WIDTH));
+        $this->output->write(str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . self::NEW_LINE);
     }
 
     /**
