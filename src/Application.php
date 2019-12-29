@@ -25,6 +25,11 @@ class Application
     /**
      * @var string
      */
+    const NAME = 'Benchmark PHP';
+
+    /**
+     * @var string
+     */
     const VERSION = '1.1.0';
 
     /**
@@ -550,7 +555,7 @@ class Application
     /**
      * @return string
      */
-    protected function getVersion()
+    public function getVersion()
     {
         return self::VERSION;
     }
@@ -558,17 +563,9 @@ class Application
     /**
      * @return string
      */
-    public function getFullTitle()
+    public function getFullVersion()
     {
-        return 'Benchmark PHP ' . $this->getVersion();
-    }
-
-    /**
-     * @return string
-     */
-    protected function getVersionString()
-    {
-        return $this->getFullTitle() . PHP_EOL;
+        return self::NAME . ' ' . $this->getVersion();
     }
 
     /**
@@ -577,7 +574,7 @@ class Application
     public function getHelp()
     {
         $message = '';
-        $message .= $this->getFullTitle() . str_repeat(PHP_EOL, 2);
+        $message .= $this->getFullVersion() . str_repeat(PHP_EOL, 2);
         $message .= <<<EOT
 Usage:
   benchmark-php [options]
