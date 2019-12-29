@@ -25,11 +25,6 @@ class CliOutput implements OutputInterface
     const STANDARD_ERROR = STDERR;
 
     /**
-     * @var string
-     */
-    const NEW_LINE = PHP_EOL;
-
-    /**
      * @param string $data
      * @return void
      */
@@ -42,27 +37,9 @@ class CliOutput implements OutputInterface
      * @param string $data
      * @return void
      */
-    public function writeln($data)
-    {
-        $this->write($data . self::NEW_LINE);
-    }
-
-    /**
-     * @param string $data
-     * @return void
-     */
     public function error($data)
     {
         $this->writeRaw(self::STANDARD_ERROR, $data);
-    }
-
-    /**
-     * @param string $data
-     * @return void
-     */
-    public function errorln($data)
-    {
-        $this->error($data . self::NEW_LINE);
     }
 
     /**

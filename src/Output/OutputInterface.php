@@ -22,19 +22,7 @@ interface OutputInterface
      * @param string $data
      * @return mixed
      */
-    public function writeln($data);
-
-    /**
-     * @param string $data
-     * @return mixed
-     */
     public function error($data);
-
-    /**
-     * @param string $data
-     * @return mixed
-     */
-    public function errorln($data);
 
     /**
      * @return void
