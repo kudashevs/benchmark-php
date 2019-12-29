@@ -52,7 +52,8 @@ class ApplicationTest extends TestCase
      */
     public function testInitBenchmarksReturnsExpected()
     {
-        $count = $this->countAbstractBenchmarkClasses();
+        $benchmarks = (new Benchmarks())->getBenchmarks();
+        $count = count($benchmarks);
 
         $benchmarks = $this->runPrivateMethod($this->bench, 'initBenchmarks');
 
@@ -521,39 +522,5 @@ class ApplicationTest extends TestCase
         }
 
         return $require;
-    }
-
-    /**
-     * Helpers.
-     */
-
-    /**
-     * @return Application|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getPartialMockWithSkippedConstructor()
-    {
-        return $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-    }
-
-    /**
-     * @return int|null
-     */
-    private function countAbstractBenchmarkClasses()
-    {
-        $count = null;
-        // count declared classes only with specific namespace
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, AbstractBenchmark::class) && strpos(
-                $class,
-                'BenchmarkPHP\Benchmarks\\'
-            ) !== false) {
-                ++$count;
-            }
-        }
-
-        return $count;
     }
 }
