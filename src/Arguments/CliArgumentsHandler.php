@@ -16,7 +16,7 @@ use BenchmarkPHP\Exceptions\EmptyArgumentException;
 use BenchmarkPHP\Exceptions\WrongArgumentException;
 use BenchmarkPHP\Exceptions\UnknownArgumentException;
 
-class CliHandler implements ArgumentsHandlerInterface
+class CliArgumentsHandler implements ArgumentsHandlerInterface
 {
     /**
      * @var Benchmarks

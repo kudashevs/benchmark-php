@@ -18,7 +18,7 @@ use BenchmarkPHP\Exceptions\WrongArgumentException;
 use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
 use BenchmarkPHP\Exceptions\UnknownArgumentException;
 
-class CliHandlerTest extends TestCase
+class CliArgumentsHandlerTest extends TestCase
 {
     /** @var CliArgumentsHandler */
     private $handler;
