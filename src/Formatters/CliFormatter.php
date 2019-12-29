@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Reporters;
+namespace BenchmarkPHP\Formatters;
 
 class CliFormatter implements FormatterInterface
 {
@@ -21,9 +21,9 @@ class CliFormatter implements FormatterInterface
     /**
      * @param string|array $data
      * @param string $style
-     * @return void
+     * @return string
      */
-    public function showHeader($data, $style = '')
+    public function header($data, $style = '')
     {
         $result = '';
 
@@ -31,39 +31,39 @@ class CliFormatter implements FormatterInterface
         $result .= $this->formatInput($data, 'center');
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
 
-        echo $result;
+        return $result;
     }
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return void
+     * @return string
      */
-    public function showFooter($data, $style = '')
+    public function footer($data, $style = '')
     {
         $result = '';
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
         $result .= $this->formatInput($data);
 
-        echo $result;
+        return $result;
     }
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return void
+     * @return string
      */
-    public function showBlock($data, $style = '')
+    public function block($data, $style = '')
     {
-        echo $this->formatInput($data, $style);
+        return $this->formatInput($data, $style);
     }
 
     /**
-     * @return void
+     * @return string
      */
-    public function showSeparator()
+    public function separator()
     {
-        echo str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
+        return str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . PHP_EOL;
     }
 
     /**

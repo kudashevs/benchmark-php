@@ -8,33 +8,33 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Reporters;
+namespace BenchmarkPHP\Formatters;
 
 interface FormatterInterface
 {
     /**
      * @param string|array $data
      * @param string $style
-     * @return string|void
+     * @return string
      */
-    public function showHeader($data, $style = '');
+    public function header($data, $style = '');
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string|void
+     * @return string
      */
-    public function showFooter($data, $style = '');
+    public function footer($data, $style = '');
 
     /**
      * @param string|array $data
      * @param string $style
-     * @return string|void
+     * @return string
      */
-    public function showBlock($data, $style = '');
+    public function block($data, $style = '');
 
     /**
-     * @return string|void
+     * @return string
      */
-    public function showSeparator();
+    public function separator();
 }

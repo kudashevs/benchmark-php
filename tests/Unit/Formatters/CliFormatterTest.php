@@ -8,12 +8,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Unit\Reporters;
+namespace BenchmarkPHP\Tests\Unit\Formatters;
 
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Reporters\CliFormatter;
 use BenchmarkPHP\Tests\TestHelpersTrait;
-use BenchmarkPHP\Reporters\FormatterInterface;
+use BenchmarkPHP\Formatters\CliFormatter;
+use BenchmarkPHP\Formatters\FormatterInterface;
 
 class CliFormatterTest extends TestCase
 {
@@ -51,9 +51,9 @@ class CliFormatterTest extends TestCase
         $input = 'version';
         $expected = $input . PHP_EOL;
 
-        $this->reporter->showBlock($input);
+        $result = $this->reporter->block($input);
 
-        $this->expectOutputString($expected);
+        $this->assertContains($expected, $result);
     }
 
     public function testShowBlockReturnsExpectedWhenIndexedArray()
@@ -61,9 +61,9 @@ class CliFormatterTest extends TestCase
         $input = ['first', 'second'];
         $expected = 'first' . PHP_EOL . 'second' . PHP_EOL;
 
-        $this->reporter->showBlock($input);
+        $result = $this->reporter->block($input);
 
-        $this->expectOutputString($expected);
+        $this->assertContains($expected, $result);
     }
 
     public function testShowBlockReturnsExpectedWhenAssociativeArray()
@@ -74,9 +74,9 @@ class CliFormatterTest extends TestCase
         ];
         $expected = 'first: 0.12345' . PHP_EOL . 'second: test' . PHP_EOL;
 
-        $this->reporter->showBlock($input);
+        $result = $this->reporter->block($input);
 
-        $this->expectOutputString($expected);
+        $this->assertContains($expected, $result);
     }
 
     public function testShowHeaderReturnsExpected()
@@ -85,12 +85,12 @@ class CliFormatterTest extends TestCase
             'version' => '1.0.0',
         ];
 
-        $this->reporter->showHeader($data);
+        $result = $this->reporter->header($data);
 
-        $this->expectOutputRegex('/' . $data['version'] . '/');
-        $this->assertContains(CliFormatter::REPORT_ROW, $this->getActualOutput());
-        $this->assertContains(CliFormatter::REPORT_COLUMN, $this->getActualOutput());
-        $this->assertContains(CliFormatter::REPORT_SPACE, $this->getActualOutput());
+        $this->assertRegExp('/' . $data['version'] . '/', $result);
+        $this->assertContains(CliFormatter::REPORT_ROW, $result);
+        $this->assertContains(CliFormatter::REPORT_COLUMN, $result);
+        $this->assertContains(CliFormatter::REPORT_SPACE, $result);
     }
 
     public function testShowFooterReturnsExpected()
@@ -100,11 +100,11 @@ class CliFormatterTest extends TestCase
         ];
         $expected = 'stat: 0.12345';
 
-        $this->reporter->showFooter($data);
+        $result = $this->reporter->footer($data);
 
-        $this->expectOutputRegex('/' . $expected . '/');
-        $this->assertContains(CliFormatter::REPORT_ROW, $this->getActualOutput());
-        $this->assertNotContains(CliFormatter::REPORT_COLUMN, $this->getActualOutput());
+        $this->assertRegExp('/' . $expected . '/', $result);
+        $this->assertContains(CliFormatter::REPORT_ROW, $result);
+        $this->assertNotContains(CliFormatter::REPORT_COLUMN, $result);
     }
 
     public function testShowBlockReturnsExpected()
@@ -114,20 +114,20 @@ class CliFormatterTest extends TestCase
         ];
         $expected = 'stat: 0.12345' . PHP_EOL;
 
-        $this->reporter->showBlock($data);
+        $result = $this->reporter->block($data);
 
-        $this->expectOutputString($expected);
-        $this->assertNotContains(CliFormatter::REPORT_ROW, $this->getActualOutput());
-        $this->assertNotContains(CliFormatter::REPORT_COLUMN, $this->getActualOutput());
+        $this->assertContains($expected, $result);
+        $this->assertNotContains(CliFormatter::REPORT_ROW, $result);
+        $this->assertNotContains(CliFormatter::REPORT_COLUMN, $result);
     }
 
     public function testShowSeparatorReturnsExpected()
     {
         $expected = CliFormatter::REPORT_WIDTH;
 
-        $this->reporter->showSeparator();
+        $result = $this->reporter->separator();
 
-        $this->expectOutputRegex('/' . CliFormatter::REPORT_ROW . '/');
-        $this->assertEquals($expected, mb_strlen(trim($this->getActualOutput())));
+        $this->assertRegExp('/' . CliFormatter::REPORT_ROW . '/', $result);
+        $this->assertEquals($expected, mb_strlen(trim($result)));
     }
 }
