@@ -46,6 +46,17 @@ class BenchmarksTest extends TestCase
         $this->assertCount($count, $benchmarks);
     }
 
+    public function testGetInstantiatedPassesOptionsToBenchmarkInstance()
+    {
+        $options = ['verbose' => 'updated'];
+
+        $benchmarks = $this->repository->getInstantiated($options);
+
+        $instance = current($benchmarks);
+        $this->assertInstanceOf(AbstractBenchmark::class, $instance);
+        $this->assertEquals($options, $instance->getOptions());
+    }
+
     public function testGetInstatiatedReturnsExpectedWhenBenchmarksIncludeNotExist()
     {
         $options['benchmarks'] = ['integers' => 0, 'floats' => 1, 'not_exist' => 2];

@@ -18,7 +18,6 @@ use BenchmarkPHP\Output\OutputInterface;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
 use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
-use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class ApplicationTest extends TestCase
 {
@@ -67,18 +66,6 @@ class ApplicationTest extends TestCase
 
         $this->assertInternalType('array', $benchmarks);
         $this->assertCount($count, $benchmarks);
-    }
-
-    public function testInitBenchmarksPassesOptionsToBenchmarkInstance()
-    {
-        $options = ['verbose' => 'updated'];
-
-        $this->setPrivateVariableValue($this->bench, 'options', $options);
-        $result = $this->runPrivateMethod($this->bench, 'initBenchmarks', [$options]);
-
-        $instance = current($result);
-        $this->assertInstanceOf(AbstractBenchmark::class, $instance);
-        $this->assertEquals($options, $instance->getOptions());
     }
 
     public function testHandleBenchmarksExecutesBeforeHandle()
