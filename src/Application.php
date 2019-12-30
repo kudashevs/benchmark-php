@@ -614,22 +614,4 @@ EOT;
 
         return $message;
     }
-
-    /**
-     * @param int $code
-     * @return void
-     */
-    protected function terminateWithCode($code = 0)
-    {
-        exit($code);
-    }
-
-    /**
-     * @param string $message
-     * @return void
-     */
-    protected function terminateWithMessage($message = '')
-    {
-        exit($message);
-    }
 }
