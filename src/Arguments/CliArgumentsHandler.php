@@ -10,7 +10,6 @@
 
 namespace BenchmarkPHP\Arguments;
 
-use BenchmarkPHP\Application;
 use BenchmarkPHP\Benchmarks\Benchmarks;
 use BenchmarkPHP\Exceptions\EmptyArgumentException;
 use BenchmarkPHP\Exceptions\WrongArgumentException;
@@ -60,7 +59,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
         while ($argument = current($arguments)) {
             $next = next($arguments);
 
-            if (in_array($argument, Application::REQUIRE_VALUE_ARGUMENTS, true)) {
+            if (in_array($argument, self::REQUIRE_VALUE_ARGUMENTS, true)) {
                 $this->checkRequiredArgumentHasValue($argument, $next);
                 $this->checkRequiredArgumentIsCorrect($argument, $next);
                 $result[$argument] = $next;
@@ -137,14 +136,14 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
                 case '--exclude':
                     $this->checkMutuallyInclusive($argument, $arguments);
                     $action = 'handle';
-                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value); // todo move get benchmarks to application
+                    $options['excluded'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
 
                     break;
 
                 case '-b':
                 case '--benchmarks':
                     $action = 'handle';
-                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value); // todo move get benchmarks to application
+                    $options['benchmarks'] = $this->parseRequiredArgumentIsBenchmarkName($argument, $value);
 
                     break;
 

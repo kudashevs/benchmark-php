@@ -44,7 +44,7 @@ class CliArgumentsHandlerTest extends TestCase
      */
     public function testHandleThrowExceptionWhenRequiredArgumentDoesntHaveValue()
     {
-        $require = current(Application::REQUIRE_VALUE_ARGUMENTS);
+        $require = current(CliArgumentsHandler::REQUIRE_VALUE_ARGUMENTS);
 
         $this->expectException(EmptyArgumentException::class);
         $this->expectExceptionMessage('Empty value');
@@ -54,7 +54,7 @@ class CliArgumentsHandlerTest extends TestCase
 
     public function testHandleThrowExceptionWhenRequiredArgumentIsLikeAnOption()
     {
-        $require = current(Application::REQUIRE_VALUE_ARGUMENTS);
+        $require = current(CliArgumentsHandler::REQUIRE_VALUE_ARGUMENTS);
         $value = '-c';
 
         $this->expectException(WrongArgumentException::class);

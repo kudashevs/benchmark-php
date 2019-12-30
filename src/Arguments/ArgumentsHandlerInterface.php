@@ -13,6 +13,21 @@ namespace BenchmarkPHP\Arguments;
 interface ArgumentsHandlerInterface
 {
     /**
+     * @var array
+     */
+    const REQUIRE_VALUE_ARGUMENTS = [
+        '-e',
+        '--exclude',
+        '-b',
+        '--benchmarks',
+        '-i',
+        '--iterations',
+        '--temporary-file',
+        '--time-precision',
+        '--data-precision',
+    ];
+
+    /**
      * @param array $data
      * @return mixed
      */

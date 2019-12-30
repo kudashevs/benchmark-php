@@ -42,21 +42,6 @@ class Application
     const TIME_PRECISION = 3;
 
     /**
-     * @var array
-     */
-    const REQUIRE_VALUE_ARGUMENTS = [
-        '-e',
-        '--exclude',
-        '-b',
-        '--benchmarks',
-        '-i',
-        '--iterations',
-        '--temporary-file',
-        '--time-precision',
-        '--data-precision',
-    ];
-
-    /**
      * @var string
      */
     private $action = 'default';
