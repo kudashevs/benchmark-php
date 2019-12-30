@@ -20,11 +20,11 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
     /**
      * @var Benchmarks
      */
-    private $benchmarks;
+    private $repository;
 
     public function __construct()
     {
-        $this->benchmarks = new Benchmarks();
+        $this->repository = new Benchmarks();
     }
 
     /**
@@ -128,7 +128,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
                     $action = 'handle';
-                    $options['benchmarks'] = $this->benchmarks->getBenchmarks(); // todo move get benchmarks to application
+                    $options['benchmarks'] = $this->repository->getBenchmarks();
 
                     break;
 
@@ -149,7 +149,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
                 case '-l':
                 case '--list':
-                    $action = 'list'; // todo return list?
+                    $action = 'list';
 
                     break;
 
@@ -287,7 +287,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
         $benchmarks = explode(',', $value);
 
-        if (!empty($unknown = array_diff($benchmarks, $this->benchmarks->getBenchmarksNames()))) {
+        if (!empty($unknown = array_diff($benchmarks, $this->repository->getBenchmarksNames()))) {
             throw new WrongArgumentException('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
                 $unknown
