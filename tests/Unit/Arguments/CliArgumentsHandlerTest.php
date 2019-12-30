@@ -162,7 +162,7 @@ class CliArgumentsHandlerTest extends TestCase
      */
     public function testHandleReturnsExpectedWhenEmptyArguments()
     {
-        $expected = ['default', []];
+        $expected = ['action' => '', 'options' => []];
 
         $result = $this->handler->parse([]);
 

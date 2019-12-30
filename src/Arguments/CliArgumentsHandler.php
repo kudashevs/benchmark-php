@@ -110,12 +110,12 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
      */
     protected function parseArguments(array $arguments)
     {
-        if (empty($arguments)) {
-            return ['default', []];
-        }
-
-        $action = 'default';
+        $action = '';
         $options = [];
+
+        if (empty($arguments)) {
+            return ['action' => $action, 'options' => $options];
+        }
 
         foreach ($arguments as $argument => $value) {
             switch ($argument) {
