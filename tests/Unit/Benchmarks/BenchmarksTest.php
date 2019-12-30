@@ -17,11 +17,11 @@ use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 class BenchmarksTest extends TestCase
 {
     /** @var Benchmarks */
-    private $benchmarks;
+    private $repository;
 
     protected function setUp()
     {
-        $this->benchmarks = new Benchmarks();
+        $this->repository = new Benchmarks();
     }
 
     /**
@@ -39,7 +39,7 @@ class BenchmarksTest extends TestCase
     {
         $count = count(Benchmarks::BENCHMARKS);
 
-        $benchmarks = $this->benchmarks->getInstantiated();
+        $benchmarks = $this->repository->getInstantiated();
 
         $this->assertNotEmpty($benchmarks);
         $this->assertTrue(is_a(current($benchmarks), AbstractBenchmark::class));
@@ -50,7 +50,7 @@ class BenchmarksTest extends TestCase
     {
         $options['benchmarks'] = ['integers' => 0, 'floats' => 1, 'not_exist' => 2];
 
-        $benchmarks = $this->benchmarks->getInstantiated($options);
+        $benchmarks = $this->repository->getInstantiated($options);
 
         $this->assertNotEmpty($benchmarks);
         $this->assertCount(2, $benchmarks);
@@ -61,7 +61,7 @@ class BenchmarksTest extends TestCase
     {
         $count = count(Benchmarks::BENCHMARKS);
 
-        $benchmarks = $this->benchmarks->getBenchmarks();
+        $benchmarks = $this->repository->getBenchmarks();
 
         $this->assertNotEmpty($benchmarks);
         $this->assertTrue(is_a(current($benchmarks), AbstractBenchmark::class, true));
@@ -72,7 +72,7 @@ class BenchmarksTest extends TestCase
     {
         $count = count(Benchmarks::BENCHMARKS);
 
-        $benchmarks = $this->benchmarks->getBenchmarksNames();
+        $benchmarks = $this->repository->getBenchmarksNames();
 
         $this->assertNotEmpty($benchmarks);
         $this->assertFalse(is_a(current($benchmarks), AbstractBenchmark::class, true));
