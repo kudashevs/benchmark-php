@@ -25,11 +25,15 @@ interface OutputInterface
     public function error($data);
 
     /**
+     * Makes some cleanup and terminates script after successful execution.
+     *
      * @return void
      */
     public function terminateOnSuccess();
 
     /**
+     * Makes some cleanup and terminates script after critical error.
+     *
      * @param int $code
      * @return void
      */
