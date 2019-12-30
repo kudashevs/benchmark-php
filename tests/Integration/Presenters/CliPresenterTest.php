@@ -58,7 +58,7 @@ class CliPresenterTest extends TestCase
         $this->presenter->version($input);
     }
 
-    public function testShowHeaderReturnsExpected()
+    public function testHeaderReturnsExpected()
     {
         $data = [
             'version' => '1.0.0',
@@ -74,7 +74,7 @@ class CliPresenterTest extends TestCase
         $this->assertContains(CliPresenter::REPORT_SPACE, $result);
     }
 
-    public function testShowFooterReturnsExpected()
+    public function testFooterReturnsExpected()
     {
         $data = [
             'stat' => 0.12345,
@@ -90,7 +90,7 @@ class CliPresenterTest extends TestCase
         $this->assertNotContains(CliPresenter::REPORT_COLUMN, $result);
     }
 
-    public function testShowBlockReturnsExpectedWhenString()
+    public function testBlockReturnsExpectedWhenString()
     {
         $input = 'version';
         $expected = $input . CliPresenter::NEW_LINE;
@@ -99,7 +99,7 @@ class CliPresenterTest extends TestCase
         $this->presenter->block($input);
     }
 
-    public function testShowBlockReturnsExpectedWhenIndexedArray()
+    public function testBlockReturnsExpectedWhenIndexedArray()
     {
         $input = ['first', 'second'];
         $expected = 'first' . CliPresenter::NEW_LINE . 'second' . CliPresenter::NEW_LINE;
@@ -108,7 +108,7 @@ class CliPresenterTest extends TestCase
         $this->presenter->block($input);
     }
 
-    public function testShowBlockReturnsExpectedWhenAssociativeArray()
+    public function testBlockReturnsExpectedWhenAssociativeArray()
     {
         $input = [
             'first' => 0.12345,
@@ -120,7 +120,25 @@ class CliPresenterTest extends TestCase
         $this->presenter->block($input);
     }
 
-    public function testShowBlockReturnsExpected()
+    public function testListingReturnsExpectedWhenString()
+    {
+        $input = 'listing';
+        $expected = CliPresenter::LIST_BULLET . $input . CliPresenter::NEW_LINE;
+
+        $this->expectOutputString($expected);
+        $this->presenter->listing($input);
+    }
+
+    public function testListingReturnsExpectedWhenIndexedArray()
+    {
+        $input = ['first', 'second'];
+        $expected = CliPresenter::LIST_BULLET . 'first' . CliPresenter::NEW_LINE . CliPresenter::LIST_BULLET . 'second' . CliPresenter::NEW_LINE;
+
+        $this->expectOutputString($expected);
+        $this->presenter->listing($input);
+    }
+
+    public function testBlockReturnsExpected()
     {
         $data = [
             'stat' => 0.12345,
@@ -136,7 +154,7 @@ class CliPresenterTest extends TestCase
         $this->assertNotContains(CliPresenter::REPORT_COLUMN, $result);
     }
 
-    public function testShowSeparatorReturnsExpected()
+    public function testSeparatorReturnsExpected()
     {
         $expected = CliPresenter::REPORT_WIDTH;
 
