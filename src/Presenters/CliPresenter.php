@@ -181,10 +181,6 @@ class CliPresenter implements PresenterInterface
             return '' . self::NEW_LINE;
         }
 
-        if (preg_match('/^(?:(?:e|exclude):)(.+)/Su', $string, $match)) {
-            return $match[1] . self::NEW_LINE;
-        }
-
         if ($style === 'center' || $style === 'centered') {
             $string = self::REPORT_COLUMN . $this->makeCentered($string) . self::REPORT_COLUMN;
         }
