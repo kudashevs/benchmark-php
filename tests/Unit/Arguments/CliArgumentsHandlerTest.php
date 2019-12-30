@@ -175,7 +175,7 @@ class CliArgumentsHandlerTest extends TestCase
 
         $result = $this->handler->parse($arguments);
 
-        $this->assertTrue($this->array_key_exists_recursive('verbose', $result));
+        $this->assertArrayHasKey('verbose', $result['options']);
     }
 
     public function testHandleReturnsExpectedWhenArgumentIsALongOption()
@@ -184,7 +184,7 @@ class CliArgumentsHandlerTest extends TestCase
 
         $result = $this->handler->parse($arguments);
 
-        $this->assertTrue($this->array_key_exists_recursive('debug', $result));
+        $this->assertArrayHasKey('debug', $result['options']);
     }
 
     public function testHandleReturnsExpectedWhenArgumentIsACompoundOption()
@@ -193,7 +193,7 @@ class CliArgumentsHandlerTest extends TestCase
 
         $result = $this->handler->parse($arguments);
 
-        $this->assertTrue($this->array_key_exists_recursive('prefix', $result));
+        $this->assertArrayHasKey('prefix', $result['options']);
     }
 
     public function testHandleReturnsExpectedWhenArgumentsAreCorrectBenchmarksNames()
@@ -202,8 +202,8 @@ class CliArgumentsHandlerTest extends TestCase
 
         $result = $this->handler->parse($arguments);
 
-        $this->assertTrue($this->array_key_exists_recursive('integers', $result));
-        $this->assertTrue($this->array_key_exists_recursive('floats', $result));
+        $this->assertNotNull($this->dereference_key_recursive('integers', $result));
+        $this->assertNotNull($this->dereference_key_recursive('floats', $result));
     }
 
     public function testHandleReturnsExpectedWhenArgumentsAreCorrectIteration()
@@ -212,7 +212,7 @@ class CliArgumentsHandlerTest extends TestCase
 
         $result = $this->handler->parse($arguments);
 
-        $this->assertTrue($this->array_key_exists_recursive('iterations', $result)); // todo check value too
+        $this->assertEquals(42, $this->dereference_key_recursive('iterations', $result));
     }
 
     public function testHandleReturnsExpectedWhenArgumentsAreCorrectFilename()
@@ -221,7 +221,7 @@ class CliArgumentsHandlerTest extends TestCase
 
         $result = $this->handler->parse($arguments);
 
-        $this->assertTrue($this->array_key_exists_recursive('file', $result)); // todo check value too
+        $this->assertEquals('test.txt', $this->dereference_key_recursive('file', $result));
     }
 
     /**
@@ -261,9 +261,9 @@ class CliArgumentsHandlerTest extends TestCase
     /**
      * @param mixed $key
      * @param array $array
-     * @return bool
+     * @return mixed
      */
-    private function array_key_exists_recursive($key, array $array)
+    private function dereference_key_recursive($key, array $array)
     {
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveArrayIterator($array),
@@ -272,10 +272,10 @@ class CliArgumentsHandlerTest extends TestCase
 
         foreach ($iterator as $k => $v) {
             if ($k === $key) {
-                return true;
+                return $v;
             }
         }
 
-        return false;
+        return null;
     }
 }
