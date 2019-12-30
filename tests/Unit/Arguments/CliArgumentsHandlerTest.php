@@ -10,7 +10,6 @@
 
 namespace BenchmarkPHP\Tests\Unit\Arguments;
 
-use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Arguments\CliArgumentsHandler;
 use BenchmarkPHP\Exceptions\EmptyArgumentException;
@@ -222,6 +221,28 @@ class CliArgumentsHandlerTest extends TestCase
         $result = $this->handler->parse($arguments);
 
         $this->assertEquals('test.txt', $this->dereference_key_recursive('file', $result));
+    }
+
+    public function testHandleReturnsExpectedWhenSomeBenchmarksAreExcludedInStrictOrder()
+    {
+        $arguments = ['-a', '-e', 'integers,arrays'];
+
+        $result = $this->handler->parse($arguments);
+
+        $this->assertArrayNotHasKey('integers', $result['options']['benchmarks']);
+        $this->assertNotNull($this->dereference_key_recursive('floats', $result));
+        $this->assertArrayNotHasKey('arrays', $result['options']['benchmarks']);
+    }
+
+    public function testHandleReturnsExpectedWhenSomeBenchmarksAreExcludedNonStrictOrder()
+    {
+        $arguments = ['-e', 'integers,arrays', '-a'];
+
+        $result = $this->handler->parse($arguments);
+
+        $this->assertArrayNotHasKey('integers', $result['options']['benchmarks']);
+        $this->assertNotNull($this->dereference_key_recursive('floats', $result));
+        $this->assertArrayNotHasKey('arrays', $result['options']['benchmarks']);
     }
 
     /**
