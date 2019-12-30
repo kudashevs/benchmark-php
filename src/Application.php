@@ -588,7 +588,6 @@ class Application
     public function getHelp()
     {
         $message = '';
-        $message .= $this->getFullVersion() . str_repeat(PHP_EOL, 2);
         $message .= <<<EOT
 Usage:
   benchmark-php [options]
