@@ -106,7 +106,8 @@ class ApplicationTest extends TestCase
 
     public function testGenerateDefaultReportReturnsExpectedWhenWithoutAdditionalInformation()
     {
-        $result = $this->runPrivateMethod($this->app, 'generateDefaultReport', ['test', ['exec_time' => 42]]);
+        $withoutAdditionalInformation = ['exec_time' => 42];
+        $result = $this->runPrivateMethod($this->app, 'generateDefaultReport', ['test', $withoutAdditionalInformation]);
 
         $this->assertArrayHasKey('test', $result);
         $this->assertStringStartsWith('42', $result['test']);
@@ -114,11 +115,8 @@ class ApplicationTest extends TestCase
 
     public function testGenerateDefaultReportReturnsExpectedWhenWithAdditionalInformation()
     {
-        $result = $this->runPrivateMethod(
-            $this->app,
-            'generateDefaultReport',
-            ['test', ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8]]
-        );
+        $withAdditionalInformation = ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8];
+        $result = $this->runPrivateMethod($this->app, 'generateDefaultReport', ['test', $withAdditionalInformation]);
 
         $this->assertCount(3, $result);
         $this->assertArrayHasKey('test', $result);
@@ -128,67 +126,32 @@ class ApplicationTest extends TestCase
         $this->assertArrayNotHasKey('some_time', $result);
     }
 
-    public function testFormatExecutionTimeReturnsExpectedWhenString()
+    /**
+     * @param array $input
+     * @param string $expected
+     * @throws \ReflectionException
+     * @dataProvider provideFormatExecution
+     */
+    public function testFormatExecutionTimeReturnsExpected(array $input, $expected)
     {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', ['test']);
+        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', $input);
 
-        $this->assertEquals('test', $result);
+        $this->assertEquals($expected, $result);
     }
 
-    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs0()
+    public function provideFormatExecution()
     {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [1, 0]);
-
-        $this->assertEquals('1s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsIntAndPrecisionIs2()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [1, 2]);
-
-        $this->assertEquals('1.00s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs2()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [2.729513, 2]);
-
-        $this->assertEquals('2.72s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsWithoutRoundingWhenTimeAndPrecisionIs3()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [2.729513, 3]);
-
-        $this->assertEquals('2.729s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsWithTrailingZeroWhenTimeAndPrecisionIs3()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [2.720513, 3]);
-
-        $this->assertEquals('2.720s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs10()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [2.7684543132782, 10]);
-
-        $this->assertEquals('2.7684543132s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs12()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [2.7684543132782, 12]);
-
-        $this->assertEquals('2.768454313278s', $result);
-    }
-
-    public function testFormatExecutionTimeReturnsExpectedWhenTimeIsFloatAndPrecisionIs13OutOfBoundary()
-    {
-        $result = $this->runPrivateMethod($this->app, 'formatExecutionTime', [2.7684543132782, 13]);
-
-        $this->assertEquals('2.768s', $result);
+        return [
+            'When input is string' => [['test'], 'test'],
+            'When is int and precision 0' => [[1, 0], '1s'],
+            'When is int and precision 2' => [[1, 2], '1.00s'],
+            'When is float and precision 2' => [[2.729513, 2], '2.72s'],
+            'When is float and precision 3 with rounding' => [[2.729513, 3], '2.729s'],
+            'When is float and precision 3 with trailing zero' => [[2.720513, 3, 3], '2.720s'],
+            'When is float and precision 11' => [[2.7684543132782, 11], '2.76845431327s'],
+            'When is float and precision 12' => [[2.7684543132782, 12], '2.768454313278s'],
+            'When is float and precision 13 to default length' => [[2.7684543132782, 13], '2.768s'],
+        ];
     }
 
     public function testFormatExecutionTimeBatchReturns()
@@ -207,25 +170,29 @@ class ApplicationTest extends TestCase
         $this->assertEquals(1.5, $result['untouchable']);
     }
 
-    public function testIsValidPrecisionReturnsExpectedWhenValidPrecision()
+    /**
+     * @param array $input
+     * @param bool $expected
+     * @throws \ReflectionException
+     * @dataProvider provideIsValidPrecision
+     */
+    public function testIsValidPrecisionReturnsExpected(array $input, $expected)
     {
-        $result = $this->runPrivateMethod($this->app, 'isValidPrecision', [0]);
+        $result = $this->runPrivateMethod($this->app, 'isValidPrecision', $input);
 
-        $this->assertTrue($result);
+        $this->assertSame($expected, $result);
     }
 
-    public function testIsValidPrecisionReturnsExpectedWhenNotAnInteger()
+    public function provideIsValidPrecision()
     {
-        $result = $this->runPrivateMethod($this->app, 'isValidPrecision', [null]);
+        return [
+            'When less than valid' => [[-1], false],
+            'When min valid precision' => [[0], true],
+            'When max valid precision' => [[12], true],
+            'When more than valid' => [[13], false],
+            'When not an integer' => [[null], false],
 
-        $this->assertFalse($result);
-    }
-
-    public function testIsValidPrecisionReturnsExpectedWhenGreaterThan3()
-    {
-        $result = $this->runPrivateMethod($this->app, 'isValidPrecision', [14]);
-
-        $this->assertFalse($result);
+        ];
     }
 
     public function testGetStatisticsReturnsFullStatisticsWhenEmptyKeys()
@@ -254,12 +221,21 @@ class ApplicationTest extends TestCase
 
     public function testGetStatisticsReturnsExpectedResultOrder()
     {
+        /**
+         * Here we fake private variable to be sure in internal data.
+         */
+        $fake_statistics = [
+            'completed' => 0,
+            'skipped' => 0,
+        ];
+
+        $this->setPrivateVariableValue($this->app, 'statistics', $fake_statistics);
+
         $orderCompletedFirst = [
             'completed' => 0,
             'skipped' => 0,
         ];
 
-        $this->setPrivateVariableValue($this->app, 'statistics', $orderCompletedFirst);
         $this->assertSame($orderCompletedFirst, $this->app->getStatistics(['completed', 'skipped']));
 
         $orderSkippedFirst = [
@@ -267,8 +243,7 @@ class ApplicationTest extends TestCase
             'completed' => 0,
         ];
 
-        $this->setPrivateVariableValue($this->app, 'statistics', $orderSkippedFirst);
-        $this->assertSame($orderCompletedFirst, $this->app->getStatistics(['completed', 'skipped']));
+        $this->assertSame($orderSkippedFirst, $this->app->getStatistics(['skipped', 'completed']));
     }
 
     public function testGetStatisticsForHumans()
@@ -282,6 +257,9 @@ class ApplicationTest extends TestCase
 
     public function testGetBenchmarksSummaryReturnsExpectedWhenEmptyBenchmarks()
     {
+        /**
+         * Here we fake private variable to be sure in internal data.
+         */
         $fake_statistics = [
             'completed' => 0,
             'skipped' => 0,
