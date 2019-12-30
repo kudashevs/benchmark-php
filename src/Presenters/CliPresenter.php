@@ -70,7 +70,7 @@ class CliPresenter implements PresenterInterface
      * @param string $style
      * @return void
      */
-    public function header($data, $style = '')
+    public function header($data)
     {
         $result = '';
 
@@ -86,7 +86,7 @@ class CliPresenter implements PresenterInterface
      * @param string $style
      * @return void
      */
-    public function footer($data, $style = '')
+    public function footer($data)
     {
         $result = '';
         $result .= str_repeat(self::REPORT_ROW, self::REPORT_WIDTH) . self::NEW_LINE;
@@ -97,12 +97,11 @@ class CliPresenter implements PresenterInterface
 
     /**
      * @param string|array $data
-     * @param string $style
      * @return void
      */
-    public function block($data, $style = '')
+    public function block($data)
     {
-        $this->output->write($this->formatInput($data, $style));
+        $this->output->write($this->formatInput($data));
     }
 
     /**

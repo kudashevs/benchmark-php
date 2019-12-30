@@ -23,21 +23,21 @@ interface PresenterInterface
      * @param string $style
      * @return mixed
      */
-    public function header($data, $style = ''); // todo remove $style
+    public function header($data);
 
     /**
      * @param string|array $data
      * @param string $style
      * @return mixed
      */
-    public function footer($data, $style = ''); // todo remove $style
+    public function footer($data);
 
     /**
      * @param string|array $data
      * @param string $style
      * @return mixed
      */
-    public function block($data, $style = ''); // todo remove $style
+    public function block($data);
 
     /**
      * @return mixed
