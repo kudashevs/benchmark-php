@@ -14,10 +14,9 @@ use BenchmarkPHP\Informers\Informer;
 use BenchmarkPHP\Input\InputInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks;
 use BenchmarkPHP\Output\OutputInterface;
-use BenchmarkPHP\Formatters\CliFormatter;
-use BenchmarkPHP\Arguments\CliArgumentsHandler;
-use BenchmarkPHP\Formatters\FormatterInterface;
-use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
+use BenchmarkPHP\Presenters\PresenterFactory;
+use BenchmarkPHP\Presenters\PresenterInterface;
+use BenchmarkPHP\Arguments\ArgumentsHandlerFactory;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class Application
@@ -58,29 +57,9 @@ class Application
     ];
 
     /**
-     * @var OutputInterface
+     * @var string
      */
-    private $output;
-
-    /**
-     * @var FormatterInterface
-     */
-    private $formatter;
-
-    /**
-     * @var Benchmarks
-     */
-    private $benchmark;
-
-    /**
-     * @var Informer
-     */
-    private $informer;
-
-    /**
-     * @var array
-     */
-    private $benchmarks = [];
+    private $action = 'default';
 
     /**
      * @var array
@@ -89,6 +68,26 @@ class Application
         'debug' => false,
         'verbose' => false,
     ];
+
+    /**
+     * @var PresenterInterface
+     */
+    private $presenter;
+
+    /**
+     * @var Informer
+     */
+    private $informer;
+
+    /**
+     * @var Benchmarks
+     */
+    private $repository;
+
+    /**
+     * @var array
+     */
+    private $benchmarks = [];
 
     /**
      * @var array
@@ -102,44 +101,71 @@ class Application
     ];
 
     /**
-     * Create a new Benchmark instance.
-     *
-     * @param array $arguments
-     * @param ArgumentsHandlerInterface $handler
-     * @param ReporterInterface $reporter
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
-    public function __construct(array $arguments, ArgumentsHandlerInterface $handler, ReporterInterface $reporter)
+    public function __construct(InputInterface $input, OutputInterface $output)
     {
-        $this->informer = new Informer();
-        $this->benchmark = new Benchmarks();
-        $this->reporter = $reporter;
+        $this->presenter = $this->createPresenter($output);
 
-        $this->options = $this->parseArguments($arguments, $handler, $reporter);
+        $this->parseArguments($input);
+        $this->buildInternals();
+
         $this->benchmarks = $this->initBenchmarks($this->options); // todo move to action
-        //var_dump($this->options);die(); // todo remove
 
-        //$this->run(); // todo remove
+        // $this->run();
     }
 
     /**
-     * @param array $arguments
-     * @param ArgumentsHandlerInterface $handler
-     * @param ReporterInterface $reporter
-     * @return mixed
+     * @param OutputInterface $output
+     * @return PresenterInterface
      */
-    private function parseArguments(array $arguments, ArgumentsHandlerInterface $handler, ReporterInterface $reporter)
+    private function createPresenter(OutputInterface $output)
     {
         try {
-            $options = $handler->parse($arguments);
+            $presenter = (new PresenterFactory())->create($output);
         } catch (\Exception $e) {
-            $this->output->writeln($this->getFullVersion());
-            $this->output->writeln('');
-            $this->output->write($e->getMessage());
+            $output->write($e->getMessage());
 
-            $this->output->terminateOnError(1); // todo error code from exception
+            $output->terminateOnError(2);
         }
 
-        return $options;
+        return $presenter;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @return void
+     */
+    private function parseArguments(InputInterface $input)
+    {
+        $arguments = $input->arguments();
+
+        try {
+            $handler = (new ArgumentsHandlerFactory())->create($input);
+            /**
+             * Here we expect to get parsed arguments in form of a associative array.
+             * The format should be ['action' => 'some_action', 'options' => [options]].
+             */
+            $initial = $handler->parse($arguments);
+        } catch (\Exception $e) {
+            $this->presenter->version($this->getFullVersion()); // todo separate method
+            $this->presenter->block($e->getMessage());
+
+            $this->presenter->onError(3); // todo error code from exception
+        }
+
+        $this->action = empty($initial['action']) ? $this->action : $initial['action'];
+        $this->options = empty($initial['options']) ? $this->options : $initial['options'];
+    }
+
+    /**
+     * @return void
+     */
+    private function buildInternals()
+    {
+        $this->informer = new Informer();
+        $this->repository = new Benchmarks();
     }
 
     /**
@@ -166,7 +192,7 @@ class Application
      */
     protected function initBenchmarks(array $options = [])
     {
-        return $this->benchmark->getInstantiated($options);
+        return $this->repository->getInstantiated($options);
     }
 
     /**
@@ -270,10 +296,10 @@ class Application
             $data = array_merge($data, $debug);
         }
 
-        $this->formatter->block($data);
+        $this->presenter->block($data);
 
         if (!$this->isSilentMode()) {
-            $this->formatter->separator();
+            $this->presenter->separator();
         }
     }
 
@@ -308,10 +334,10 @@ class Application
             $data = array_replace($data, $statistics);
         }
 
-        $this->formatter->block($data);
+        $this->presenter->block($data);
 
         if (!$this->isSilentMode()) {
-            $this->formatter->separator();
+            $this->presenter->separator();
         }
     }
 

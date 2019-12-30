@@ -12,9 +12,10 @@ namespace BenchmarkPHP\Tests\Unit;
 
 use BenchmarkPHP\Application;
 use PHPUnit\Framework\TestCase;
-use BenchmarkPHP\Arguments\CliHandler;
+use BenchmarkPHP\Input\InputInterface;
+use BenchmarkPHP\Benchmarks\Benchmarks;
+use BenchmarkPHP\Output\OutputInterface;
 use BenchmarkPHP\Tests\TestHelpersTrait;
-use BenchmarkPHP\Reporters\ReporterInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
 use BenchmarkPHP\Arguments\ArgumentsHandlerInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
@@ -31,12 +32,19 @@ class ApplicationTest extends TestCase
         $_SERVER['argc'] = 1;
         $_SERVER['argv'] = ['-a'];
 
-        /** @var ArgumentsHandlerInterface|\PHPUnit_Framework_MockObject_MockObject $handler */
-        $handler = new CliHandler([]); // todo remove
-        /** @var ReporterInterface|\PHPUnit_Framework_MockObject_MockObject $reporter */
-        $reporter = $this->getMockBuilder(ReporterInterface::class)
+        /** @var InputInterface|\PHPUnit_Framework_MockObject_MockObject $handler */
+        $input = $this->getMockBuilder(InputInterface::class)
+            ->setMockClassName('CliInput')
             ->getMock();
-        $this->bench = new Application($_SERVER['argv'], $handler, $reporter);
+        $input
+            ->method('arguments')
+            ->willReturn($_SERVER['argv']);
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $output */
+        $output = $this->getMockBuilder(OutputInterface::class)
+            ->setMockClassName('CliOutput')
+            ->getMock();
+
+        $this->bench = new Application($input, $output);
     }
 
     /**
