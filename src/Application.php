@@ -154,21 +154,96 @@ class Application
     }
 
     /**
-     * Aggregate and print data.
+     * Analyze action and invoke action.
      *
      * @return void
      */
-    public function run()
+    public function run() // refactor
     {
-        $this->formatter->header($this->getFullVersion());
+        switch ($this->action) {
+            case 'default':
+            case 'help':
+                $this->runHelp();
 
-        $this->formatter->block($this->informer->getSystemInformation());
-        $this->formatter->separator();
+                break;
 
-        $this->handleBenchmarks();
+            case 'handle':
+                $this->runHandle();
 
-        $this->formatter->block($this->getBenchmarksSummary());
-        $this->formatter->footer($this->getExecutionSummary(['total_time']));
+                break;
+
+            case 'list':
+                $this->runList();
+
+                break;
+
+            case 'version':
+                $this->runVersion();
+
+                break;
+
+            default:
+                // should never happen
+                $this->presenter->block('Action ' . $this->action . ' was not found. Please report it on github.');
+
+                $this->presenter->onError(1);
+
+                break;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function runHelp()
+    {
+        $this->presenter->version($this->getFullVersion());
+        $this->presenter->block($this->getHelp());
+
+        $this->presenter->onSuccess();
+    }
+
+    /**
+     * @return void
+     */
+    private function runList()
+    {
+        $list = $this->repository->getBenchmarksNames();
+
+        $this->presenter->version($this->getFullVersion());
+        $this->presenter->block('Available ' . $this->generatePluralized(count($list), 'benchmark'));
+        $this->presenter->listing($list);
+
+        $this->presenter->onSuccess();
+    }
+
+    /**
+     * @return void
+     */
+    private function runVersion()
+    {
+        $this->presenter->block($this->getFullVersion());
+
+        $this->presenter->onSuccess();
+    }
+
+    /**
+     * @return void
+     */
+    private function runHandle()
+    {
+        $benchmarks = $this->repository->getInstantiated($this->options);
+
+        $this->presenter->header($this->getFullVersion());
+        $this->presenter->block($this->informer->getSystemInformation());
+        $this->presenter->separator();
+
+        $this->handleBenchmarks($benchmarks);
+
+        $this->presenter->block($this->getBenchmarksSummary());
+        $this->presenter->footer($this->getExecutionSummary(['total_time']));
+
+        $this->presenter->onSuccess();
     }
 
     /**
