@@ -212,7 +212,11 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
             }
         }
 
-        if (isset($options['benchmarks'], $options['excluded'])) { // todo refactor initialize first
+        /*
+         * Excludes found excluded benchmarks from the found benchmarks list.
+         * We do it after all checks because of the different sequence of arguments.
+         */
+        if (isset($options['benchmarks'], $options['excluded'])) {
             $options['benchmarks'] = array_diff_key($options['benchmarks'], $options['excluded']);
         }
 
