@@ -67,7 +67,6 @@ class CliPresenter implements PresenterInterface
 
     /**
      * @param string|array $data
-     * @param string $style
      * @return void
      */
     public function header($data)
@@ -83,7 +82,6 @@ class CliPresenter implements PresenterInterface
 
     /**
      * @param string|array $data
-     * @param string $style
      * @return void
      */
     public function footer($data)
@@ -102,6 +100,15 @@ class CliPresenter implements PresenterInterface
     public function block($data)
     {
         $this->output->write($this->formatInput($data));
+    }
+
+    /**
+     * @param string|array $data
+     * @return void
+     */
+    public function listing($data)
+    {
+        $this->output->write($this->formatInput($data, 'list'));
     }
 
     /**

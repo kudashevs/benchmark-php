@@ -20,24 +20,27 @@ interface PresenterInterface
 
     /**
      * @param string|array $data
-     * @param string $style
      * @return mixed
      */
     public function header($data);
 
     /**
      * @param string|array $data
-     * @param string $style
      * @return mixed
      */
     public function footer($data);
 
     /**
      * @param string|array $data
-     * @param string $style
      * @return mixed
      */
     public function block($data);
+
+    /**
+     * @param string|array $data
+     * @return mixed
+     */
+    public function listing($data);
 
     /**
      * @return mixed

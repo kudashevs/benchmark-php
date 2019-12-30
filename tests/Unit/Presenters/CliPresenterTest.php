@@ -87,6 +87,9 @@ class CliPresenterTest extends TestCase
             'block with string' => ['block', 'test block', 'test block'],
             'block with indexed array' => ['block', ['1.1.0'], '1.1.0'],
             'block with assoc array' => ['block', ['version' => '1.2.0'], '1.2.0'],
+            'listing with string' => ['listing', 'test list', 'test list'],
+            'listing with indexed array' => ['listing', ['1.1.0'], '1.1.0'],
+            'listing with assoc array' => ['listing', ['version' => '1.2.0'], '1.2.0'],
             'separator contains' => ['separator', null, CliPresenter::REPORT_ROW],
         ];
     }
