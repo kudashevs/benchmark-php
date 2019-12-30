@@ -56,33 +56,22 @@ class ApplicationTest extends TestCase
     /**
      * Functionality.
      */
-    public function testInitBenchmarksReturnsExpected()
-    {
-        $benchmarks = (new Benchmarks())->getBenchmarks();
-        $count = count($benchmarks);
-
-        $benchmarks = $this->runPrivateMethod($this->bench, 'initBenchmarks');
-
-        $this->assertInternalType('array', $benchmarks);
-        $this->assertCount($count, $benchmarks);
-    }
-
     public function testHandleBenchmarksExecutesBeforeHandle()
     {
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
+        $app = $this->getInstanceWithSkippedConstructor();
 
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
+        $this->runPrivateMethod($app, 'handleBenchmarks', [[]]);
 
-        $this->assertContains(date(Application::DATE_FORMAT), $this->bench->getStatistics(['started_at']));
+        $this->assertContains(date(Application::DATE_FORMAT), $app->getStatistics(['started_at']));
     }
 
     public function testHandleBenchmarksExecutesAfterHandle()
     {
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', []);
+        $app = $this->getInstanceWithSkippedConstructor();
 
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
+        $this->runPrivateMethod($app, 'handleBenchmarks', [[]]);
 
-        $this->assertContains(date(Application::DATE_FORMAT), $this->bench->getStatistics(['stopped_at']));
+        $this->assertContains(date(Application::DATE_FORMAT), $app->getStatistics(['stopped_at']));
     }
 
     public function testHandleBenchmarksExecutesContractMethodsOnBenchmark()
@@ -99,28 +88,25 @@ class ApplicationTest extends TestCase
             ->method('result')
             ->willReturn([]);
 
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $mock]);
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
+        $this->runPrivateMethod($this->app, 'handleBenchmarks', [['test' => $mock]]);
     }
 
     public function testBenchmarkCompletedUpdatesTotalTime()
     {
         $stub = $this->getMockBuilder(Integers::class)
-            ->disableOriginalConstructor()
             ->getMock();
         $stub->expects($this->once())
             ->method('result')
             ->willReturn(['exec_time' => 42]);
 
-        $this->setPrivateVariableValue($this->bench, 'benchmarks', ['test' => $stub]);
-        $this->runPrivateMethod($this->bench, 'handleBenchmarks');
+        $this->runPrivateMethod($this->app, 'handleBenchmarks', [['test' => $stub]]);
 
-        $this->assertContains('42', $this->bench->getStatistics(['total_time']));
+        $this->assertContains('42', $this->app->getStatistics(['total_time']));
     }
 
     public function testGenerateDefaultReportReturnsExpectedWhenWithoutAdditionalInformation()
     {
-        $result = $this->runPrivateMethod($this->bench, 'generateDefaultReport', ['test', ['exec_time' => 42]]);
+        $result = $this->runPrivateMethod($this->app, 'generateDefaultReport', ['test', ['exec_time' => 42]]);
 
         $this->assertArrayHasKey('test', $result);
         $this->assertStringStartsWith('42', $result['test']);
@@ -516,5 +502,20 @@ class ApplicationTest extends TestCase
         }
 
         return $require;
+    }
+
+    /**
+     * Helpers.
+     */
+
+    /**
+     * @throws \ReflectionException
+     * @return Application|object
+     */
+    protected function getInstanceWithSkippedConstructor()
+    {
+        $reflection = new \ReflectionClass(Application::class);
+
+        return $reflection->newInstanceWithoutConstructor();
     }
 }

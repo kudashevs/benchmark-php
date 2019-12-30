@@ -72,11 +72,6 @@ class Application
     /**
      * @var array
      */
-    private $benchmarks = [];
-
-    /**
-     * @var array
-     */
     private $statistics = [
         'started_at' => 'Not handled yet',
         'stopped_at' => 'Not handled yet',
@@ -95,8 +90,6 @@ class Application
 
         $this->parseArguments($input);
         $this->buildInternals();
-
-        $this->benchmarks = $this->initBenchmarks($this->options); // todo move to action
 
         // $this->run();
     }
@@ -247,25 +240,17 @@ class Application
     }
 
     /**
-     * @param array $options
-     * @return array
-     */
-    protected function initBenchmarks(array $options = [])
-    {
-        return $this->repository->getInstantiated($options);
-    }
-
-    /**
      * Handle benchmarks collection and collect results.
      *
+     * @param array $benchmarks
      * @return void
      */
-    protected function handleBenchmarks()
+    protected function handleBenchmarks(array $benchmarks)
     {
         $this->beforeHandle(); // turn off cache, gc, etc.
 
         // @var AbstractBenchmark|string $benchmark
-        foreach ($this->benchmarks as $name => $benchmark) {
+        foreach ($benchmarks as $name => $benchmark) {
             if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) { // todo: move logic inside
                 $this->benchmarkSkipped($name, $benchmark);
 
