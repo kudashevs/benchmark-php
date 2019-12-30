@@ -87,11 +87,10 @@ class Application
     public function __construct(InputInterface $input, OutputInterface $output)
     {
         $this->presenter = $this->createPresenter($output);
-
         $this->parseArguments($input);
-        $this->buildInternals();
 
-        // $this->run();
+        $this->repository = new Benchmarks();
+        $this->informer = new Informer();
     }
 
     /**
@@ -135,15 +134,6 @@ class Application
 
         $this->action = empty($initial['action']) ? $this->action : $initial['action'];
         $this->options = empty($initial['options']) ? $this->options : $initial['options'];
-    }
-
-    /**
-     * @return void
-     */
-    private function buildInternals()
-    {
-        $this->informer = new Informer();
-        $this->repository = new Benchmarks();
     }
 
     /**
