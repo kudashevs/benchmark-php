@@ -364,7 +364,7 @@ class Application
     }
 
     /**
-     * @param $benchmark
+     * @param mixed $benchmark
      * @return bool
      */
     protected function hasSkipInformation($benchmark)
