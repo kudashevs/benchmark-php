@@ -515,14 +515,6 @@ class Application
     /**
      * @return array
      */
-    public function getOptions() // todo remove
-    {
-        return $this->options;
-    }
-
-    /**
-     * @return array
-     */
     private function getBenchmarksSummary()
     {
         if (!$this->hasBenchmarks()) {
