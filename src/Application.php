@@ -191,7 +191,7 @@ class Application
      */
     private function runList()
     {
-        $list = $this->repository->getBenchmarksNames();
+        $list = $this->repository->getNames();
 
         $this->presenter->version($this->getFullVersion());
         $this->presenter->block('Available ' . $this->generatePluralized(count($list), 'benchmark'));
@@ -215,7 +215,7 @@ class Application
      */
     private function runHandle()
     {
-        $benchmarks = $this->repository->getInstantiated($this->options);
+        $benchmarks = $this->repository->getInstances($this->options);
 
         $this->presenter->header($this->getFullVersion());
         $this->presenter->block($this->informer->getSystemInformation());

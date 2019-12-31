@@ -128,7 +128,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
                     $action = 'handle';
-                    $options['benchmarks'] = $this->repository->getBenchmarks();
+                    $options['benchmarks'] = $this->repository->get();
 
                     break;
 
@@ -291,7 +291,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
         $benchmarks = explode(',', $value);
 
-        if (!empty($unknown = array_diff($benchmarks, $this->repository->getBenchmarksNames()))) {
+        if (!empty($unknown = array_diff($benchmarks, $this->repository->getNames()))) {
             throw new WrongArgumentException('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
                 $unknown

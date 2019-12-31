@@ -32,10 +32,26 @@ class Benchmarks
     ];
 
     /**
+     * @return array
+     */
+    public function get()
+    {
+        return self::BENCHMARKS;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNames()
+    {
+        return array_keys(self::BENCHMARKS);
+    }
+
+    /**
      * @param array $options
      * @return array
      */
-    public function getInstantiated(array $options = [])
+    public function getInstances(array $options = [])
     {
         $requested = !empty($options['benchmarks']) ? array_intersect_key(self::BENCHMARKS, $options['benchmarks']) : self::BENCHMARKS;
         $benchmarks = [];
@@ -53,21 +69,5 @@ class Benchmarks
         }
 
         return $benchmarks;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBenchmarks()
-    {
-        return self::BENCHMARKS;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBenchmarksNames()
-    {
-        return array_keys(self::BENCHMARKS);
     }
 }
