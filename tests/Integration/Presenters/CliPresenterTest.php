@@ -23,7 +23,7 @@ class CliPresenterTest extends TestCase
 
     protected function setUp()
     {
-        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $stub */
+        /** @var OutputInterface $dummy */
         $dummy = new DummyOutput();
         $this->presenter = new CliPresenter($dummy);
     }
