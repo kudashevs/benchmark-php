@@ -10,6 +10,8 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
+use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
+
 trait HandlesFunctionsTrait
 {
     /**
@@ -69,7 +71,7 @@ trait HandlesFunctionsTrait
 
     /**
      * @param array $functions
-     * @throws \LogicException
+     * @throws BenchmarkRuntimeException
      * @return array
      */
     protected function initFunctions(array $functions)
@@ -81,7 +83,7 @@ trait HandlesFunctionsTrait
         }
 
         if (empty($functions)) {
-            throw new \LogicException('There are no functions to proceed.');
+            throw new BenchmarkRuntimeException('There are no functions to proceed.');
         }
 
         return $functions;

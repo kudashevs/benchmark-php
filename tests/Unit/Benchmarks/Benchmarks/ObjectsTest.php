@@ -13,6 +13,7 @@ namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\Benchmarks\Objects;
+use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
 
 class ObjectsTest extends TestCase
 {
@@ -31,7 +32,7 @@ class ObjectsTest extends TestCase
      */
     public function testConstructorThrowsExceptionWhenEmptyFunctions()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(BenchmarkRuntimeException::class);
         $this->runPrivateMethod($this->bench, 'initFunctions', [[]]);
     }
 
