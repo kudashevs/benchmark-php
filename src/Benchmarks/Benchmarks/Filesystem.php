@@ -11,6 +11,7 @@
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 use BenchmarkPHP\Exceptions\WrongArgumentException;
+use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
 
 class Filesystem extends AbstractBenchmark
 {
@@ -91,7 +92,7 @@ class Filesystem extends AbstractBenchmark
     {
         if (isset($options['file'])) {
             if (file_exists($options['file'])) {
-                throw new \InvalidArgumentException('Unable to create ' . $options['file'] . ' because file already exists.');
+                throw new BenchmarkRuntimeException('Unable to create ' . $options['file'] . ' because file already exists.');
             }
 
             $file = $options['file'];
@@ -110,7 +111,7 @@ class Filesystem extends AbstractBenchmark
         $handler = fopen($this->file, 'w+b');
 
         if (!is_resource($handler)) {
-            throw new \InvalidArgumentException('Unable to open temporary file handler.');
+            throw new BenchmarkRuntimeException('Unable to open temporary file handler.');
         }
 
         return $handler;
@@ -231,7 +232,7 @@ class Filesystem extends AbstractBenchmark
     protected function checkWriteOperation($length)
     {
         if (filesize($this->file) !== $length) {
-            throw new \RuntimeException('The amount of data written doesn\'t match the file size.');
+            throw new BenchmarkRuntimeException('The amount of data written doesn\'t match the file size.');
         }
     }
 
@@ -242,7 +243,7 @@ class Filesystem extends AbstractBenchmark
     protected function checkReadOperation($length)
     {
         if ($length !== self::FILE_SIZE) {
-            throw new \RuntimeException('The amount of data read doesn\'t match the file size.');
+            throw new BenchmarkRuntimeException('The amount of data read doesn\'t match the file size.');
         }
     }
 
@@ -282,7 +283,7 @@ class Filesystem extends AbstractBenchmark
     protected function calculateSpeed($size, $time, $precision = self::DATA_PRECISION)
     {
         if ($time == 0) {
-            throw new \RuntimeException('The ' . __FUNCTION__ . ' time argument cannot be zero. Check argument value.');
+            throw new BenchmarkRuntimeException('The ' . __FUNCTION__ . ' time argument cannot be zero. Check argument value.');
         }
 
         return $this->generateSizeForHumans($size / $time, $precision) . '/s';

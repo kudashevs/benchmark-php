@@ -13,6 +13,8 @@ namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\Benchmarks\Filesystem;
+use BenchmarkPHP\Exceptions\WrongArgumentException;
+use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
 
 class FilesystemTest extends TestCase
 {
@@ -35,7 +37,7 @@ class FilesystemTest extends TestCase
 
         $partialMock = $this->getPartialMockWithSkippedConstructor();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(BenchmarkRuntimeException::class);
         $this->expectExceptionMessage('file already exists');
         $this->runPrivateMethod($partialMock, 'initFile', [$options]);
     }
@@ -44,7 +46,7 @@ class FilesystemTest extends TestCase
     {
         $partialMock = $this->getPartialMockWithSkippedConstructor();
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(BenchmarkRuntimeException::class);
         $this->expectExceptionMessage('cannot be zero');
         $this->runPrivateMethod($partialMock, 'calculateSpeed', [42, 0]);
     }
@@ -125,7 +127,7 @@ class FilesystemTest extends TestCase
      * @dataProvider provideGenerateSizeForHumansWithRounding
      * @param array $arguments
      * @param string $expected
-     * @throws \ReflectionException
+     * @throws \ReflectionException|WrongArgumentException
      */
     public function testGenerateSizeForHumansReturnExpectedWithRounding($arguments, $expected)
     {
@@ -193,7 +195,7 @@ class FilesystemTest extends TestCase
      * @dataProvider provideGenerateSizeForHumansWithoutRounding
      * @param array $arguments
      * @param string $expected
-     * @throws \ReflectionException
+     * @throws \ReflectionException|WrongArgumentException
      */
     public function testGenerateSizeForHumansReturnExpectedWithoutRounding($arguments, $expected)
     {
@@ -261,7 +263,7 @@ class FilesystemTest extends TestCase
      * @dataProvider provideGenerateSizeForHumansBase1024
      * @param array $arguments
      * @param string $expected
-     * @throws \ReflectionException
+     * @throws \ReflectionException|WrongArgumentException
      */
     public function testGenerateSizeForHumansReturnsExpectedWhenBaseBinary($arguments, $expected)
     {
@@ -300,7 +302,7 @@ class FilesystemTest extends TestCase
      * @dataProvider provideGenerateSizeForHumansBase1000
      * @param array $arguments
      * @param string $expected
-     * @throws \ReflectionException
+     * @throws \ReflectionException|WrongArgumentException
      */
     public function testGenerateSizeForHumansReturnsExpectedWhenBaseDecimal($arguments, $expected)
     {
@@ -370,7 +372,7 @@ class FilesystemTest extends TestCase
      * @dataProvider provideGenerateSizePrefixBaseBinary
      * @param array $arguments
      * @param string $expected
-     * @throws \ReflectionException
+     * @throws \ReflectionException|WrongArgumentException
      */
     public function testGenerateSizePrefixReturnsExpectedWhenBaseBinary($arguments, $expected)
     {
@@ -397,7 +399,7 @@ class FilesystemTest extends TestCase
      * @dataProvider provideGenerateSizePrefixBaseDecimal
      * @param array $arguments
      * @param string $expected
-     * @throws \ReflectionException
+     * @throws \ReflectionException|WrongArgumentException
      */
     public function testGenerateSizePrefixReturnsExpectedWhenBaseDecimal($arguments, $expected)
     {
