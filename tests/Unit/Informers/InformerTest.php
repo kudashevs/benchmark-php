@@ -47,14 +47,33 @@ class InformerTest extends TestCase
      */
     public function testGetSystemInformationReturnsExpected()
     {
+        $information = $this->informer->getSystemInformation();
+
+        $this->assertInternalType('array', $information);
+    }
+
+    public function testGetSystemInformationContainsHost()
+    {
         $host = gethostname();
+
+        $information = $this->informer->getSystemInformation();
+        $this->assertContains($host, $information['Server']);
+    }
+
+    public function testGetSystemInformationContainsPHPVersion()
+    {
         $version = PHP_VERSION;
+
+        $information = $this->informer->getSystemInformation();
+        $this->assertContains($version, $information);
+    }
+
+    public function testGetSystemInformationContainsPlatform()
+    {
         $os = PHP_OS;
         $platform = php_uname('m');
 
         $information = $this->informer->getSystemInformation();
-        $this->assertContains($host, $information['Server']);
-        $this->assertContains($version, $information);
         $this->assertContains($os, $information['Platform']);
         $this->assertContains($platform, $information['Platform']);
     }
