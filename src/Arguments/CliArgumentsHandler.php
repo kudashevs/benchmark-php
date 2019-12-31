@@ -289,16 +289,16 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
         $this->checkRequiredArgumentIsCorrect($argument, $value);
 
-        $benchmarks = explode(',', $value);
+        $benchmarks = array_flip(explode(',', $value));
 
-        if (!empty($unknown = array_diff($benchmarks, $this->repository->getNames()))) {
+        if (!empty($unknown = array_diff_key($benchmarks, $this->repository->get()))) {
             throw new WrongArgumentException('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
                 $unknown
                 )) . 'or use -l for more information.');
         }
 
-        return array_flip($benchmarks);
+        return $benchmarks;
     }
 
     /**
