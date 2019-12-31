@@ -25,10 +25,14 @@ class HandlesFunctionsTraitTest extends TestCase
     protected function setUp()
     {
         $this->bench = new Integers();
+    }
 
-        if (!array_key_exists(HandlesFunctionsTrait::class, class_uses($this->bench))) {
-            throw new \LogicException(get_class($this->bench) . ' doesn\'t use HandlesFunctionsTrait. Check setUp() method.');
-        }
+    /**
+     * Mandatory tests.
+     */
+    public function testInstanceUsesCertainTrait()
+    {
+        $this->assertContains(HandlesFunctionsTrait::class, class_uses($this->bench));
     }
 
     /**
