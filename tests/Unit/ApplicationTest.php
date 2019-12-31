@@ -266,8 +266,7 @@ class ApplicationTest extends TestCase
         ];
 
         $this->setPrivateVariableValue($this->app, 'statistics', $fake_statistics);
-
-        $result = $this->app->getBenchmarksSummary();
+        $result = $this->runPrivateMethod($this->app, 'getBenchmarksSummary');
 
         $this->assertArrayHasKey('skip', $result);
     }

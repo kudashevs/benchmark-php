@@ -235,7 +235,7 @@ class Application
      * @param array $benchmarks
      * @return void
      */
-    protected function handleBenchmarks(array $benchmarks)
+    private function handleBenchmarks(array $benchmarks)
     {
         $this->beforeHandle(); // turn off cache, gc, etc.
 
@@ -273,7 +273,7 @@ class Application
     /**
      * @return void
      */
-    protected function beforeHandle()
+    private function beforeHandle()
     {
         $this->statistics['started_at'] = date(self::DATE_FORMAT);
     }
@@ -281,7 +281,7 @@ class Application
     /**
      * @return void
      */
-    protected function afterHandle()
+    private function afterHandle()
     {
         $this->statistics['stopped_at'] = date(self::DATE_FORMAT);
     }
@@ -291,7 +291,7 @@ class Application
      * @param mixed $benchmark
      * @return void
      */
-    protected function benchmarkSkipped($name, $benchmark)
+    private function benchmarkSkipped($name, $benchmark)
     {
         ++$this->statistics['skipped'];
 
@@ -342,7 +342,7 @@ class Application
      * @param mixed $benchmark
      * @return bool
      */
-    protected function hasSkipInformation($benchmark)
+    private function hasSkipInformation($benchmark)
     {
         return is_array($benchmark) && array_key_exists('fail', $benchmark) && array_key_exists('message', $benchmark);
     }
@@ -352,7 +352,7 @@ class Application
      * @param array $statistics
      * @return void
      */
-    protected function benchmarkCompleted($name, array $statistics)
+    private function benchmarkCompleted($name, array $statistics)
     {
         ++$this->statistics['completed'];
 
@@ -380,7 +380,7 @@ class Application
      * @param array $information
      * @return bool
      */
-    protected function hasValidExecutionTime(array $information)
+    private function hasValidExecutionTime(array $information)
     {
         return isset($information['exec_time']) && is_numeric($information['exec_time']);
     }
@@ -390,7 +390,7 @@ class Application
      * @param array $statistics
      * @return array
      */
-    protected function generateDefaultReport($name, array $statistics)
+    private function generateDefaultReport($name, array $statistics)
     {
         $statistics = $this->formatExecutionTimeBatch($statistics);
 
@@ -410,7 +410,7 @@ class Application
      * @param array $data
      * @return array
      */
-    protected function formatExecutionTimeBatch(array $data)
+    private function formatExecutionTimeBatch(array $data)
     {
         foreach ($data as $k => $v) {
             if (substr($k, -5) === '_time') {
@@ -426,7 +426,7 @@ class Application
      * @param int $precision
      * @return string
      */
-    protected function formatExecutionTime($time, $precision = null)
+    private function formatExecutionTime($time, $precision = null)
     {
         if (!is_numeric($time)) {
             return $time;
@@ -455,7 +455,7 @@ class Application
      * @param mixed $precision
      * @return bool
      */
-    protected function isValidPrecision($precision)
+    private function isValidPrecision($precision)
     {
         if (!is_int($precision)) {
             return false;
@@ -467,7 +467,7 @@ class Application
     /**
      * @return bool
      */
-    protected function isSilentMode()
+    private function isSilentMode()
     {
         return !$this->isDebugMode() && !$this->isVerboseMode();
     }
@@ -475,7 +475,7 @@ class Application
     /**
      * @return bool
      */
-    protected function isDebugMode()
+    private function isDebugMode()
     {
         return isset($this->options['debug']) && $this->options['debug'] === true;
     }
@@ -483,7 +483,7 @@ class Application
     /**
      * @return bool
      */
-    protected function isVerboseMode()
+    private function isVerboseMode()
     {
         return isset($this->options['verbose']) && $this->options['verbose'] === true;
     }
@@ -491,7 +491,7 @@ class Application
     /**
      * @return bool
      */
-    protected function hasBenchmarks()
+    private function hasBenchmarks()
     {
         return $this->hasCompletedBenchmarks() || $this->hasSkippedBenchmarks();
     }
@@ -499,7 +499,7 @@ class Application
     /**
      * @return bool
      */
-    protected function hasCompletedBenchmarks()
+    private function hasCompletedBenchmarks()
     {
         return $this->statistics['completed'] > 0;
     }
@@ -507,7 +507,7 @@ class Application
     /**
      * @return bool
      */
-    protected function hasSkippedBenchmarks()
+    private function hasSkippedBenchmarks()
     {
         return $this->statistics['skipped'] > 0;
     }
@@ -515,7 +515,7 @@ class Application
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions() // todo remove
     {
         return $this->options;
     }
@@ -523,7 +523,7 @@ class Application
     /**
      * @return array
      */
-    public function getBenchmarksSummary()
+    private function getBenchmarksSummary()
     {
         if (!$this->hasBenchmarks()) {
             return ['skip' => 'no benchmarks were executed'];
@@ -548,7 +548,7 @@ class Application
      * @param array $keys
      * @return array
      */
-    public function getExecutionSummary(array $keys = [])
+    private function getExecutionSummary(array $keys = [])
     {
         if (!$this->isSilentMode()) {
             $keys = array_merge(['started_at', 'stopped_at'], $keys);
@@ -609,7 +609,7 @@ class Application
      * @param string $text
      * @return string
      */
-    protected function generatePluralized($count, $text)
+    private function generatePluralized($count, $text)
     {
         $text = trim($text);
 
@@ -635,7 +635,7 @@ class Application
     /**
      * @return string
      */
-    public function getHelp()
+    private function getHelp()
     {
         $message = '';
         $message .= <<<EOT
