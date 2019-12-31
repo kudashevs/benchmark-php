@@ -13,6 +13,7 @@ namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
+use BenchmarkPHP\Exceptions\WrongArgumentException;
 use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class AbstractBenchmarkTest extends TestCase
@@ -38,6 +39,17 @@ class AbstractBenchmarkTest extends TestCase
     /**
      * Exceptions.
      */
+    public function testConstructorThrowsExceptionWhenWrongIterationNumber()
+    {
+        $options = [
+            'iterations' => -1,
+        ];
+
+        $this->expectException(WrongArgumentException::class);
+        $this->expectExceptionMessage('The number of iterations');
+
+        new Integers($options);
+    }
 
     /**
      * Corner cases.

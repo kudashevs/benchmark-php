@@ -10,6 +10,8 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
+use BenchmarkPHP\Exceptions\WrongArgumentException;
+
 class Arrays extends AbstractBenchmark
 {
     use HandlesFunctionsTrait;
@@ -54,9 +56,8 @@ class Arrays extends AbstractBenchmark
     private $functions = [];
 
     /**
-     * Create a new Arrays instance.
-     *
      * @param array $options
+     * @throws WrongArgumentException
      */
     public function __construct(array $options = [])
     {

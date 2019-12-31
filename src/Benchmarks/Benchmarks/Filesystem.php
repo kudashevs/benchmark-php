@@ -10,6 +10,8 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
+use BenchmarkPHP\Exceptions\WrongArgumentException;
+
 class Filesystem extends AbstractBenchmark
 {
     /**
@@ -63,9 +65,8 @@ class Filesystem extends AbstractBenchmark
     private $base;
 
     /**
-     * Create a new FileSystem instance.
-     *
      * @param array $options
+     * @throws WrongArgumentException
      */
     public function __construct(array $options = [])
     {

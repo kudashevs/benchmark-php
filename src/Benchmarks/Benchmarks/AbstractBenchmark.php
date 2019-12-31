@@ -10,6 +10,8 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
+use BenchmarkPHP\Exceptions\WrongArgumentException;
+
 abstract class AbstractBenchmark
 {
     /**
@@ -40,6 +42,7 @@ abstract class AbstractBenchmark
      * AbstractBenchmark constructor, better to use it.
      *
      * @param array $options
+     * @throws WrongArgumentException
      */
     public function __construct(array $options = [])
     {
@@ -48,7 +51,7 @@ abstract class AbstractBenchmark
 
     /**
      * @param array $options
-     * @throws \LogicException
+     * @throws WrongArgumentException
      * @return void
      */
     protected function initBenchmark(array $options)
@@ -56,7 +59,7 @@ abstract class AbstractBenchmark
         $this->iterations = !empty($options['iterations']) ? $options['iterations'] : $this->iterations;
 
         if ($this->iterations < 1) {
-            throw new \LogicException('Number of iterations cannot be less than 1.');
+            throw new WrongArgumentException('The number of iterations cannot be less than 1.');
         }
 
         if (isset($options['testing']) && $options['testing'] === true) {
