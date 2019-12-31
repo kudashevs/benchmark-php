@@ -12,14 +12,12 @@ namespace BenchmarkPHP\Tests\Integration\Presenters;
 
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Output\OutputInterface;
-use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Presenters\CliPresenter;
 use BenchmarkPHP\Presenters\PresenterInterface;
+use BenchmarkPHP\Tests\Integration\Dummies\DummyOutput;
 
 class CliPresenterTest extends TestCase
 {
-    use TestHelpersTrait;
-
     /** @var CliPresenter */
     private $presenter;
 
