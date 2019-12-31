@@ -230,7 +230,7 @@ class Application
     }
 
     /**
-     * Handle benchmarks collection and collect results.
+     * Handles benchmarks collection and reports results.
      *
      * @param array $benchmarks
      * @return void
@@ -296,6 +296,8 @@ class Application
     }
 
     /**
+     * Accumulates data about skipped benchmark and reports it.
+     *
      * @param mixed $name
      * @param mixed $benchmark
      * @return void
@@ -357,6 +359,8 @@ class Application
     }
 
     /**
+     * Accumulates data about completed benchmark and reports it.
+     *
      * @param string $name
      * @param array $statistics
      * @return void
