@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace BenchmarkPHP\Tests\Integration\Presenters;
+namespace BenchmarkPHP\Tests\Integration\Dummies;
 
 use BenchmarkPHP\Output\OutputInterface;
 
