@@ -13,13 +13,6 @@ namespace BenchmarkPHP\Informers;
 class Informer implements InformerInterface
 {
     /**
-     * Informer constructor.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * @return array
      */
     public function getSystemInformation()
@@ -37,7 +30,7 @@ class Informer implements InformerInterface
     /**
      * @return string
      */
-    protected function getHostInformation()
+    private function getHostInformation()
     {
         $hostName = (($host = gethostname()) !== false) ? $host : '?';
         $ipAddress = ($ip = gethostbyname($hostName)) ? $ip : '?';
@@ -48,7 +41,7 @@ class Informer implements InformerInterface
     /**
      * @return string
      */
-    protected function getPlatformInformation()
+    private function getPlatformInformation()
     {
         return PHP_OS . ' (' . php_uname('m') . ')';
     }
