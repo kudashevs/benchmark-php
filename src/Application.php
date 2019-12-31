@@ -316,7 +316,7 @@ class Application
             if ($this->hasSkipInformation($benchmark)) {
                 $verbose['message'] = $benchmark['message'];
             } else {
-                $verbose['message'] = 'Why it wasn\'t a benchmark object?';
+                $verbose['message'] = 'Incorrectly processed data. Check data source.';
             }
 
             $data = array_merge($data, $verbose);
@@ -326,15 +326,15 @@ class Application
             $debug = [];
 
             if ($this->hasSkipInformation($benchmark)) {
-                $debug['status'] = $benchmark['fail'];
+                $debug['stage'] = $benchmark['fail'];
                 $debug['type'] = 'object';
                 $debug['class'] = $name;
                 $debug['message'] = $benchmark['message'];
             } else {
-                $debug['status'] = 'unknown';
+                $debug['stage'] = 'unknown';
                 $debug['type'] = gettype($benchmark);
                 $debug['class'] = is_object($benchmark) ? get_class($benchmark) : 'not an object';
-                $debug['message'] = 'Why it wasn\'t a benchmark object?';
+                $debug['message'] = 'Incorrectly processed data. Check data source.';
             }
 
             $data = array_merge($data, $debug);
