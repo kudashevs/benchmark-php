@@ -241,7 +241,7 @@ class Application
 
         // @var AbstractBenchmark|string $benchmark
         foreach ($benchmarks as $name => $benchmark) {
-            if (!is_object($benchmark) || !$benchmark instanceof AbstractBenchmark) { // todo: move logic inside
+            if (!$this->isValidBenchmark($benchmark)) {
                 $this->benchmarkSkipped($name, $benchmark);
 
                 continue;
@@ -284,6 +284,15 @@ class Application
     private function afterHandle()
     {
         $this->statistics['stopped_at'] = date(self::DATE_FORMAT);
+    }
+
+    /**
+     * @param object $benchmark
+     * @return bool
+     */
+    private function isValidBenchmark($benchmark)
+    {
+        return is_object($benchmark) && $benchmark instanceof AbstractBenchmark;
     }
 
     /**

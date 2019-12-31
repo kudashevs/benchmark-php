@@ -90,6 +90,25 @@ class ApplicationTest extends TestCase
         $this->runPrivateMethod($this->app, 'handleBenchmarks', [['test' => $mock]]);
     }
 
+    public function testIsValidBenchmarkReturnsExpectedWhenInvalid()
+    {
+        $object = new \stdClass();
+
+        $result = $this->runPrivateMethod($this->app, 'isValidBenchmark', [$object]);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidBenchmarReturnsExpectedWhenValid()
+    {
+        $mock = $this->getMockBuilder(Integers::class)
+            ->getMock();
+
+        $result = $this->runPrivateMethod($this->app, 'isValidBenchmark', [$mock]);
+
+        $this->assertTrue($result);
+    }
+
     public function testBenchmarkCompletedUpdatesTotalTime()
     {
         $stub = $this->getMockBuilder(Integers::class)
