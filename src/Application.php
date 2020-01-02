@@ -339,28 +339,24 @@ class Application
      */
     private function generateSkippedVerboseReport($name, $benchmark)
     {
-        $information = [];
+        $information[$name] = 'skipped';
 
-        if ($this->isVerboseMode()) {
-            if ($this->hasSkipInformation($benchmark)) {
-                $information['message'] = $benchmark['message'];
-            } else {
-                $information['message'] = 'Incorrectly processed data. Check data source.';
-            }
-        }
-
-        if ($this->isDebugMode()) {
-            if ($this->hasSkipInformation($benchmark)) {
+        if ($this->hasSkipInformation($benchmark)) {
+            if ($this->isDebugMode()) {
                 $information['stage'] = $benchmark['fail'];
                 $information['type'] = 'object';
                 $information['class'] = $name;
-                $information['message'] = $benchmark['message'];
-            } else {
+            }
+
+            $information['message'] = $benchmark['message'];
+        } else {
+            if ($this->isDebugMode()) {
                 $information['stage'] = 'unknown';
                 $information['type'] = gettype($benchmark);
                 $information['class'] = is_object($benchmark) ? get_class($benchmark) : 'not an object';
-                $information['message'] = 'Incorrectly processed data. Check data source.';
             }
+
+            $information['message'] = 'Incorrectly processed data. Check data source.';
         }
 
         return $information;
