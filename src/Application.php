@@ -375,11 +375,10 @@ class Application
             $statistics['exec_time'] = 'malformed time';
         }
 
-        $data = $this->generateDefaultReport($name, $statistics);
-
-        if (!$this->isSilentMode()) {
-            $data[$name] = 'completed';
-            $data = array_replace($data, $statistics);
+        if ($this->isSilentMode()) {
+            $data = $this->generateShortReport($name, $statistics);
+        } else {
+            $data = $this->generateVerboseReport($name, $statistics);
         }
 
         $this->presenter->block($data);
@@ -403,20 +402,33 @@ class Application
      * @param array $statistics
      * @return array
      */
-    private function generateDefaultReport($name, array $statistics)
+    private function generateShortReport($name, array $statistics)
     {
         $statistics = $this->formatExecutionTimeBatch($statistics);
 
-        $additionalKeys = ['read_time', 'read_speed', 'write_time', 'write_speed'];
-        $additionalInformation = array_intersect_key($statistics, array_flip($additionalKeys));
+        $allowedKeys = ['read_time', 'read_speed', 'write_time', 'write_speed'];
+        $allowedInfo = array_intersect_key($statistics, array_flip($allowedKeys));
 
         $report = [
-            $name => $this->formatExecutionTime($statistics['exec_time']),
+            $name => $statistics['exec_time'],
         ];
 
-        $report = array_merge($report, $additionalInformation);
+        $report = array_merge($report, $allowedInfo);
 
         return $report;
+    }
+
+    /**
+     * @param $name
+     * @param array $statistics
+     * @return array
+     */
+    private function generateVerboseReport($name, array $statistics)
+    {
+        $data[$name] = 'completed';
+        $data = array_replace($data, $statistics);
+
+        return $data;
     }
 
     /**

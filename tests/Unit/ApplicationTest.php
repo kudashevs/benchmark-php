@@ -122,19 +122,19 @@ class ApplicationTest extends TestCase
         $this->assertContains('42', $this->app->getStatistics(['total_time']));
     }
 
-    public function testGenerateDefaultReportReturnsExpectedWhenWithoutAdditionalInformation()
+    public function testGenerateShortReportReturnsExpectedWhenWithoutAdditionalInformation()
     {
         $withoutAdditionalInformation = ['exec_time' => 42];
-        $result = $this->runPrivateMethod($this->app, 'generateDefaultReport', ['test', $withoutAdditionalInformation]);
+        $result = $this->runPrivateMethod($this->app, 'generateShortReport', ['test', $withoutAdditionalInformation]);
 
         $this->assertArrayHasKey('test', $result);
         $this->assertStringStartsWith('42', $result['test']);
     }
 
-    public function testGenerateDefaultReportReturnsExpectedWhenWithAdditionalInformation()
+    public function testGenerateShortReportReturnsExpectedWhenWithAdditionalInformation()
     {
         $withAdditionalInformation = ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8];
-        $result = $this->runPrivateMethod($this->app, 'generateDefaultReport', ['test', $withAdditionalInformation]);
+        $result = $this->runPrivateMethod($this->app, 'generateShortReport', ['test', $withAdditionalInformation]);
 
         $this->assertCount(3, $result);
         $this->assertArrayHasKey('test', $result);
@@ -142,6 +142,15 @@ class ApplicationTest extends TestCase
         $this->assertArrayHasKey('write_speed', $result);
         $this->assertEquals(32, $result['write_speed']);
         $this->assertArrayNotHasKey('some_time', $result);
+    }
+
+    public function testGenerateVerboseReportReturnsExpectedWhenWithoutAdditionalInformation()
+    {
+        $withoutAdditionalInformation = ['exec_time' => 42];
+        $result = $this->runPrivateMethod($this->app, 'generateVerboseReport', ['test', $withoutAdditionalInformation]);
+
+        $this->assertArrayHasKey('test', $result);
+        $this->assertEquals('42', $result['exec_time']);
     }
 
     /**
