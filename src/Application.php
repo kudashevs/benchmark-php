@@ -376,9 +376,9 @@ class Application
         }
 
         if ($this->isSilentMode()) {
-            $data = $this->generateShortReport($name, $statistics);
+            $data = $this->generateCompletedShortReport($name, $statistics);
         } else {
-            $data = $this->generateVerboseReport($name, $statistics);
+            $data = $this->generateCompletedVerboseReport($name, $statistics);
         }
 
         $this->presenter->block($data);
@@ -398,7 +398,7 @@ class Application
      * @param array $statistics
      * @return array
      */
-    private function generateShortReport($name, array $statistics)
+    private function generateCompletedShortReport($name, array $statistics)
     {
         $statistics = $this->formatExecutionTimeBatch($statistics);
 
@@ -419,7 +419,7 @@ class Application
      * @param array $statistics
      * @return array
      */
-    private function generateVerboseReport($name, array $statistics)
+    private function generateCompletedVerboseReport($name, array $statistics)
     {
         $data[$name] = 'completed';
         $data = array_replace($data, $statistics);

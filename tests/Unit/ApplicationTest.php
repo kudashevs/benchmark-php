@@ -122,19 +122,19 @@ class ApplicationTest extends TestCase
         $this->assertContains('42', $this->app->getStatistics(['total_time']));
     }
 
-    public function testGenerateShortReportReturnsExpectedWhenWithoutAdditionalInformation()
+    public function testGenerateCompletedShortReportReturnsExpectedWhenWithoutAdditionalInformation()
     {
         $withoutAdditionalInformation = ['exec_time' => 42];
-        $result = $this->runPrivateMethod($this->app, 'generateShortReport', ['test', $withoutAdditionalInformation]);
+        $result = $this->runPrivateMethod($this->app, 'generateCompletedShortReport', ['test', $withoutAdditionalInformation]);
 
         $this->assertArrayHasKey('test', $result);
         $this->assertStringStartsWith('42', $result['test']);
     }
 
-    public function testGenerateShortReportReturnsExpectedWhenWithAdditionalInformation()
+    public function testGenerateCompletedShortReportReturnsExpectedWhenWithAdditionalInformation()
     {
         $withAdditionalInformation = ['exec_time' => 42, 'write_speed' => 32, 'read_speed' => 16, 'some_time' => 8];
-        $result = $this->runPrivateMethod($this->app, 'generateShortReport', ['test', $withAdditionalInformation]);
+        $result = $this->runPrivateMethod($this->app, 'generateCompletedShortReport', ['test', $withAdditionalInformation]);
 
         $this->assertCount(3, $result);
         $this->assertArrayHasKey('test', $result);
@@ -144,10 +144,10 @@ class ApplicationTest extends TestCase
         $this->assertArrayNotHasKey('some_time', $result);
     }
 
-    public function testGenerateVerboseReportReturnsExpectedWhenWithoutAdditionalInformation()
+    public function testGenerateCompletedVerboseReportReturnsExpectedWhenWithoutAdditionalInformation()
     {
         $withoutAdditionalInformation = ['exec_time' => 42];
-        $result = $this->runPrivateMethod($this->app, 'generateVerboseReport', ['test', $withoutAdditionalInformation]);
+        $result = $this->runPrivateMethod($this->app, 'generateCompletedVerboseReport', ['test', $withoutAdditionalInformation]);
 
         $this->assertArrayHasKey('test', $result);
         $this->assertEquals('42', $result['exec_time']);
@@ -218,7 +218,6 @@ class ApplicationTest extends TestCase
             'When max valid precision' => [[12], true],
             'When more than valid' => [[13], false],
             'When not an integer' => [[null], false],
-
         ];
     }
 
