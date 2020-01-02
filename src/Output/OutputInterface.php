@@ -13,13 +13,13 @@ namespace BenchmarkPHP\Output;
 interface OutputInterface
 {
     /**
-     * @param string $data
+     * @param mixed $data
      * @return mixed
      */
     public function write($data);
 
     /**
-     * @param string $data
+     * @param mixed $data
      * @return mixed
      */
     public function error($data);
