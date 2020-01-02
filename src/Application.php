@@ -89,8 +89,8 @@ class Application
         $this->presenter = $this->createPresenter($output);
         $this->parseArguments($input);
 
-        $this->repository = new Benchmarks();
         $this->informer = new Informer();
+        $this->repository = new Benchmarks();
     }
 
     /**
@@ -593,24 +593,24 @@ class Application
      */
     public function getStatisticsForHumans(array $keys = [])
     {
+        if (empty($keys)) {
+            return $keys;
+        }
+
         $result = $this->getStatistics($keys);
 
-        if (empty($result)) {
-            return $result;
+        if ($this->isSilentMode()) {
+            $result = $this->formatExecutionTimeBatch($result);
         }
 
-        if ($this->isSilentMode() && array_key_exists('total_time', $result)) {
-            $result['total_time'] = $this->formatExecutionTime($result['total_time']);
-        }
-
-        $updated = [];
+        $formatted = [];
 
         foreach ($result as $k => $v) {
             $newKey = ucfirst(str_replace('_', ' ', $k));
-            $updated[$newKey] = $v;
+            $formatted[$newKey] = $v;
         }
 
-        return $updated;
+        return $formatted;
     }
 
     /**
