@@ -118,12 +118,6 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
         foreach ($arguments as $argument => $value) {
             switch ($argument) {
-                case '-h':
-                case '--help':
-                    $action = 'help';
-
-                    break;
-
                 case '-a':
                 case '--all':
                     $this->checkMutuallyExclusive($argument, $arguments);
@@ -159,11 +153,6 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
                     break;
 
-                case '--time-precision':
-                    $options['time_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
-
-                    break;
-
                 case '-v':
                 case '--verbose':
                     $options['verbose'] = true;
@@ -175,8 +164,24 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
                     break;
 
+                case '--time-precision':
+                    $options['time_precise'] = $this->parseRequiredArgumentIsPositiveInteger($argument, $value);
+
+                    break;
+
+                case '-h':
+                case '--help':
+                    $action = 'help';
+
+                    break;
+
                 case '--version':
                     $action = 'version';
+
+                    break;
+
+                case '--temporary-file':
+                    $options['file'] = $this->parseRequiredArgumentIsFilename($argument, $value);
 
                     break;
 
@@ -197,11 +202,6 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
 
                 case '--disable-rounding':
                     $options['rounding'] = false;
-
-                    break;
-
-                case '--temporary-file':
-                    $options['file'] = $this->parseRequiredArgumentIsFilename($argument, $value);
 
                     break;
 
