@@ -223,7 +223,11 @@ class Application
 
         $this->handleBenchmarks($benchmarks);
 
-        $this->presenter->block($this->getBenchmarksSummary());
+        if (!$this->isSilentMode()) {
+            $this->presenter->separator();
+            $this->presenter->block($this->getBenchmarksSummary());
+        }
+
         $this->presenter->footer($this->getExecutionSummary(['total_time']));
 
         $this->presenter->onSuccess();
@@ -343,10 +347,6 @@ class Application
         }
 
         $this->presenter->block($data);
-
-        if (!$this->isSilentMode()) {
-            $this->presenter->separator();
-        }
     }
 
     /**
@@ -382,10 +382,6 @@ class Application
         }
 
         $this->presenter->block($data);
-
-        if (!$this->isSilentMode()) {
-            $this->presenter->separator();
-        }
     }
 
     /**
@@ -544,10 +540,6 @@ class Application
     {
         if (!$this->hasBenchmarks()) {
             return ['skip' => 'no benchmarks were executed'];
-        }
-
-        if ($this->isSilentMode()) {
-            return [];
         }
 
         list($completed, $skipped) = array_values($this->getStatistics(['completed', 'skipped']));
