@@ -312,41 +312,58 @@ class Application
 
         $name = (string)$name;
 
-        $data = [
-            $name => 'skipped',
-        ];
-
-        if ($this->isVerboseMode()) {
-            $verbose = [];
-
-            if ($this->hasSkipInformation($benchmark)) {
-                $verbose['message'] = $benchmark['message'];
-            } else {
-                $verbose['message'] = 'Incorrectly processed data. Check data source.';
-            }
-
-            $data = array_merge($data, $verbose);
-        }
-
-        if ($this->isDebugMode()) {
-            $debug = [];
-
-            if ($this->hasSkipInformation($benchmark)) {
-                $debug['stage'] = $benchmark['fail'];
-                $debug['type'] = 'object';
-                $debug['class'] = $name;
-                $debug['message'] = $benchmark['message'];
-            } else {
-                $debug['stage'] = 'unknown';
-                $debug['type'] = gettype($benchmark);
-                $debug['class'] = is_object($benchmark) ? get_class($benchmark) : 'not an object';
-                $debug['message'] = 'Incorrectly processed data. Check data source.';
-            }
-
-            $data = array_merge($data, $debug);
+        if ($this->isSilentMode()) {
+            $data = $this->generateSkippedShortReport($name);
+        } else {
+            $data = $this->generateSkippedVerboseReport($name, $benchmark);
         }
 
         $this->presenter->block($data);
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    private function generateSkippedShortReport($name)
+    {
+        return [
+            $name => 'skipped',
+        ];
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $benchmark
+     * @return array
+     */
+    private function generateSkippedVerboseReport($name, $benchmark)
+    {
+        $information = [];
+
+        if ($this->isVerboseMode()) {
+            if ($this->hasSkipInformation($benchmark)) {
+                $information['message'] = $benchmark['message'];
+            } else {
+                $information['message'] = 'Incorrectly processed data. Check data source.';
+            }
+        }
+
+        if ($this->isDebugMode()) {
+            if ($this->hasSkipInformation($benchmark)) {
+                $information['stage'] = $benchmark['fail'];
+                $information['type'] = 'object';
+                $information['class'] = $name;
+                $information['message'] = $benchmark['message'];
+            } else {
+                $information['stage'] = 'unknown';
+                $information['type'] = gettype($benchmark);
+                $information['class'] = is_object($benchmark) ? get_class($benchmark) : 'not an object';
+                $information['message'] = 'Incorrectly processed data. Check data source.';
+            }
+        }
+
+        return $information;
     }
 
     /**

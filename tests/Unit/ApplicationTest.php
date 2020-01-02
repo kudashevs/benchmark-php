@@ -109,6 +109,52 @@ class ApplicationTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testGenerateSkippedShortReportReturnsExpected()
+    {
+        $name = 'test';
+
+        $result = $this->runPrivateMethod($this->app, 'generateSkippedShortReport', [$name]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('test', $result);
+    }
+
+    public function testGenerateSkippedVerboseReportReturnsExpectedWhenVerboseMode()
+    {
+        $this->setPrivateVariableValue($this->app, 'options', ['verbose' => true]);
+
+        $name = 'test';
+        $benchmark = '';
+
+        $result = $this->runPrivateMethod($this->app, 'generateSkippedVerboseReport', [$name, $benchmark]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertArrayNotHasKey('type', $result);
+    }
+
+    public function testGenerateSkippedVerboseReportReturnsExpectedWhenDebugMode()
+    {
+        $this->setPrivateVariableValue($this->app, 'options', ['debug' => true]);
+
+        $name = 'test';
+        $benchmark = '';
+
+        $result = $this->runPrivateMethod($this->app, 'generateSkippedVerboseReport', [$name, $benchmark]);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertArrayHasKey('type', $result);
+        $this->assertEquals('string', $result['type']);
+    }
+
+    public function testHasSkipInformationReturnsExpectedWhenValid()
+    {
+        $array = ['fail' => '', 'message' => 'some'];
+
+        $this->assertTrue($this->runPrivateMethod($this->app, 'hasSkipInformation', [$array]));
+    }
+
     public function testBenchmarkCompletedUpdatesTotalTime()
     {
         $stub = $this->getMockBuilder(Integers::class)
