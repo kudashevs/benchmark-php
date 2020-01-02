@@ -99,7 +99,7 @@ class ApplicationTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testIsValidBenchmarReturnsExpectedWhenValid()
+    public function testIsValidBenchmarkReturnsExpectedWhenValid()
     {
         $mock = $this->getMockBuilder(Integers::class)
             ->getMock();
