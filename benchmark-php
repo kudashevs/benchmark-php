@@ -9,9 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-use BenchmarkPHP\Benchmark;
-use BenchmarkPHP\Reporters\CliReporter;
-
 if (version_compare('5.6.0', PHP_VERSION, '>')) {
     fwrite(STDERR,'This version of Benchmark PHP requires PHP 5.6.0 or higher' . PHP_EOL);
     exit(1);
@@ -32,5 +29,4 @@ if (!$autoload) {
 }
 unset($autoload);
 
-$benchmark = new Benchmark(new CliReporter());
-$benchmark->run();
+BenchmarkPHP\Entries\CommandLine::run();
