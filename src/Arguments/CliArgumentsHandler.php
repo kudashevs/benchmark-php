@@ -294,7 +294,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
         if (!empty($unknown = array_diff_key($benchmarks, $this->repository->get()))) {
             throw new WrongArgumentException('Option ' . $argument . ' requires a valid benchmark name or list of names. Check ' . $this->generatePrintableWithSpace(implode(
                 ',',
-                $unknown
+                array_flip($unknown)
                 )) . 'or use -l for more information.');
         }
 
