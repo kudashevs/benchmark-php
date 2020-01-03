@@ -1,5 +1,22 @@
 # Change Log
 
+## [2.0.0] - 2020-01-03
+### Added
+- Add Input interface and CLI realization.
+- Add Output interface and CLI realization.
+- Add ArgumentsHandler interface and CLI realization.
+- Add new CLI entry point.
+- Add own exceptions.
+
+### Changed
+- Totally reorganized application structure.
+- Extract Informer from Benchmarks.
+- Extract Benchmarks from Benchmarks.
+- Move Benchmarks to Application class.
+- Move Reporters to Presenters.
+- Reorganize and update tests.
+- Update README.md.
+
 ## [1.1.0] - 2019-11-23
 ### Added
 - Add exclude benchmark list option.
