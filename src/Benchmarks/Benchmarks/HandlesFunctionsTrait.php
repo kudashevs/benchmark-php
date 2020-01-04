@@ -58,9 +58,8 @@ trait HandlesFunctionsTrait
      */
     public function result()
     {
-        $initKeys = ['exec_time'];
-        $result = array_intersect_key($this->statistics, array_flip($initKeys));
-
+        $allowedKeys = ['exec_time'];
+        $result = array_intersect_key($this->statistics, array_flip($allowedKeys));
         $result = array_merge($this->getFunctionsSummary(), $result);
 
         return $result;
@@ -89,7 +88,7 @@ trait HandlesFunctionsTrait
     /**
      * @return array
      */
-    protected function getFunctionsSummary()
+    private function getFunctionsSummary()
     {
         $summary = [];
 
@@ -115,7 +114,7 @@ trait HandlesFunctionsTrait
     /**
      * @return array
      */
-    protected function getFunctionsList()
+    private function getFunctionsList()
     {
         $list = [];
 
@@ -134,7 +133,7 @@ trait HandlesFunctionsTrait
      * @param array $functions
      * @return array
      */
-    protected function getShortFunctionsNames(array $functions)
+    private function getShortFunctionsNames(array $functions)
     {
         return array_map(function ($v) {
             return str_replace('BenchmarkPHP\\Benchmarks\\', '', $v);
