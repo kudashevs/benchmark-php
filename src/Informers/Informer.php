@@ -10,7 +10,7 @@
 
 namespace BenchmarkPHP\Informers;
 
-class Informer implements InformerInterface
+class Informer
 {
     /**
      * @return array

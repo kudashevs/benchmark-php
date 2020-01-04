@@ -27,14 +27,6 @@ class InformerTest extends TestCase
     }
 
     /**
-     * Mandatory tests.
-     */
-    public function testInstanceImplementsCertainInterface()
-    {
-        $this->assertInstanceOf(InformerInterface::class, $this->informer);
-    }
-
-    /**
      * Exceptions.
      */
 
