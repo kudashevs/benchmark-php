@@ -17,12 +17,18 @@ class Informer implements InformerInterface
      */
     public function getSystemInformation()
     {
-        $result = [
-            'Server' => $this->getHost(),
-            'PHP version' => $this->getPHPVersion(),
-            'Zend version' => $this->getZendVersion(),
-            'Platform' => $this->getPlatform(),
-        ];
+        $result = [];
+
+        $result['Server'] = $this->getHost();
+        $result['Platform'] = $this->getPlatform();
+        $result['PHP version'] = $this->getPHPVersion();
+        $result['Zend version'] = $this->getZendVersion();
+
+        if ($this->isXDebugInstalled()) {
+            $result['Xdebug version'] = $this->getXDebugVersion();
+        } else {
+            $result['Xdebug'] = 'not installed';
+        }
 
         return $result;
     }
@@ -60,5 +66,21 @@ class Informer implements InformerInterface
     private function getZendVersion()
     {
         return zend_version();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isXDebugInstalled()
+    {
+        return in_array('xdebug', get_loaded_extensions(), true);
+    }
+
+    /**
+     * @return string
+     */
+    private function getXDebugVersion()
+    {
+        return phpversion('xdebug');
     }
 }

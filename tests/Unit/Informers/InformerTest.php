@@ -77,4 +77,21 @@ class InformerTest extends TestCase
         $this->assertContains($os, $information['Platform']);
         $this->assertContains($platform, $information['Platform']);
     }
+
+    public function testGetSystemInformationXDebugWhenAvailable()
+    {
+        $version = phpversion('xdebug');
+        $information = $this->informer->getSystemInformation();
+
+        if ($this->isXDebugAvailable()) {
+            $this->assertEquals($version, $information['Xdebug version']);
+        } else {
+            $this->assertEquals('not installed', $information['Xdebug']);
+        }
+    }
+
+    private function isXDebugAvailable()
+    {
+        return in_array('xdebug', get_loaded_extensions());
+    }
 }
