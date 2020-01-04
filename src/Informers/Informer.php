@@ -18,10 +18,10 @@ class Informer implements InformerInterface
     public function getSystemInformation()
     {
         $result = [
-            'Server' => $this->getHostInformation(),
-            'PHP version' => phpversion(),
-            'Zend version' => zend_version(),
-            'Platform' => $this->getPlatformInformation(),
+            'Server' => $this->getHost(),
+            'PHP version' => $this->getPHPVersion(),
+            'Zend version' => $this->getZendVersion(),
+            'Platform' => $this->getPlatform(),
         ];
 
         return $result;
@@ -30,7 +30,7 @@ class Informer implements InformerInterface
     /**
      * @return string
      */
-    private function getHostInformation()
+    private function getHost()
     {
         $hostName = (($host = gethostname()) !== false) ? $host : '?';
         $ipAddress = ($ip = gethostbyname($hostName)) ? $ip : '?';
@@ -41,8 +41,24 @@ class Informer implements InformerInterface
     /**
      * @return string
      */
-    private function getPlatformInformation()
+    private function getPlatform()
     {
         return PHP_OS . ' (' . php_uname('m') . ')';
+    }
+
+    /**
+     * @return string
+     */
+    private function getPHPVersion()
+    {
+        return phpversion();
+    }
+
+    /**
+     * @return string
+     */
+    private function getZendVersion()
+    {
+        return zend_version();
     }
 }
