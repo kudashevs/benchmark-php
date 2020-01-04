@@ -19,7 +19,6 @@ trait HandlesFunctionsTrait
      */
     public function handle()
     {
-        $initTime = microtime(true);
         $diffTime = 0;
 
         foreach ($this->functions as $function) {
@@ -34,8 +33,6 @@ trait HandlesFunctionsTrait
         }
 
         $this->statistics = [
-            'start_time' => $initTime,
-            'stop_time' => $initTime - $diffTime,
             'exec_time' => $diffTime,
         ];
     }

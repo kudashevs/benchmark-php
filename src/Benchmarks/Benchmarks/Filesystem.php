@@ -137,7 +137,6 @@ class Filesystem extends AbstractBenchmark
      */
     public function handle()
     {
-        $initTime = microtime(true);
         $diffTime = 0;
         $writeTime = 0;
         $readTime = 0;
@@ -174,8 +173,6 @@ class Filesystem extends AbstractBenchmark
         $this->statistics = [
             'write_time' => $writeTime,
             'read_time' => $readTime,
-            'start_time' => $initTime,
-            'stop_time' => $initTime - $diffTime,
             'exec_time' => $diffTime,
         ];
     }

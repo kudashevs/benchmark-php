@@ -33,8 +33,6 @@ abstract class AbstractBenchmark
      * @var array
      */
     protected $statistics = [
-        'start_time' => 'Not handled yet',
-        'stop_time' => 'Not handled yet',
         'exec_time' => 'Not handled yet',
     ];
 
