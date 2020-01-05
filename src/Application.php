@@ -243,7 +243,7 @@ class Application
     {
         $this->beforeHandle(); // turn off cache, gc, etc.
 
-        // @var AbstractBenchmark|string $benchmark
+        /** @var AbstractBenchmark|array $benchmark */
         foreach ($benchmarks as $name => $benchmark) {
             if (!$this->isValidBenchmark($benchmark)) {
                 $this->benchmarkSkipped($name, $benchmark);
