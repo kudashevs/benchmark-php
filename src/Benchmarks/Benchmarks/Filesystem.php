@@ -123,7 +123,7 @@ class Filesystem extends AbstractBenchmark
      * @param array $options
      * @return int
      */
-    protected function initBase(array $options)
+    private function initBase(array $options)
     {
         if (isset($options['prefix']) && $options['prefix'] === 'binary') {
             return 1024;
@@ -217,7 +217,7 @@ class Filesystem extends AbstractBenchmark
     /**
      * @return void
      */
-    protected function resetFilePointer()
+    private function resetFilePointer()
     {
         fseek($this->handler, 0);
     }
@@ -226,7 +226,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $length
      * @return void
      */
-    protected function checkWriteOperation($length)
+    private function checkWriteOperation($length)
     {
         if (filesize($this->file) !== $length) {
             throw new BenchmarkRuntimeException('The amount of data written doesn\'t match the file size.');
@@ -237,7 +237,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $length
      * @return void
      */
-    protected function checkReadOperation($length)
+    private function checkReadOperation($length)
     {
         if ($length !== self::FILE_SIZE) {
             throw new BenchmarkRuntimeException('The amount of data read doesn\'t match the file size.');
@@ -247,7 +247,7 @@ class Filesystem extends AbstractBenchmark
     /**
      * @return array
      */
-    protected function getOperationsSummary()
+    private function getOperationsSummary()
     {
         $size = self::FILE_SIZE * $this->iterations;
 
@@ -277,7 +277,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function calculateSpeed($size, $time, $precision = self::DATA_PRECISION)
+    private function calculateSpeed($size, $time, $precision = self::DATA_PRECISION)
     {
         if ($time == 0) {
             throw new BenchmarkRuntimeException('The ' . __FUNCTION__ . ' time argument cannot be zero. Check argument value.');
@@ -291,11 +291,10 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function generateSizeForHumans($size, $precision = null)
+    private function generateSizeForHumans($size, $precision = null)
     {
         $precision = $this->isValidPrecision($precision) ? $precision : self::DATA_PRECISION;
 
-        // We don't want precision more than 3 because with thousandths it is meaningless
         if (isset($this->options['data_precise']) && $this->isValidPrecision($this->options['data_precise'])) {
             $precision = $this->options['data_precise'];
         }
@@ -303,7 +302,6 @@ class Filesystem extends AbstractBenchmark
         $ration = log($size, $this->base);
         $measure = (int)round($ration);
 
-        // we want to start with thousandth
         if ($size < $this->base) {
             $measure = 1;
         }
@@ -317,12 +315,15 @@ class Filesystem extends AbstractBenchmark
      * @param mixed $precision
      * @return bool
      */
-    protected function isValidPrecision($precision)
+    private function isValidPrecision($precision)
     {
         if (!is_int($precision)) {
             return false;
         }
 
+        /**
+         * We don't want precision more than 3 because with thousandths it is meaningless.
+         */
         return $precision >= 0 && $precision <= 3;
     }
 
@@ -331,7 +332,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $precision
      * @return string
      */
-    protected function formatSize($size, $precision = self::DATA_PRECISION)
+    private function formatSize($size, $precision = self::DATA_PRECISION)
     {
         if (!is_numeric($size)) {
             return $size;
@@ -366,7 +367,7 @@ class Filesystem extends AbstractBenchmark
      * @param int $measure
      * @return string
      */
-    protected function generateSizePrefix($measure)
+    private function generateSizePrefix($measure)
     {
         if ($this->base === 1000) {
             $units = ['B', 'KB', 'MB', 'GB', 'TB'];
