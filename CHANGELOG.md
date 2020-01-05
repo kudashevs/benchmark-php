@@ -1,5 +1,15 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- Add PluralizeTrait.
+- Add VerbosityTrait.
+
+### Changed
+- Refactor HandlesFunctionTrait to AbstractFunctionsBasedBenchmark.
+- Update Informer with Xdebug information.
+- Update .travis.yml 7.4 alias.
+
 ## [2.0.0] - 2020-01-03
 ### Added
 - Add Input interface and CLI realization.
