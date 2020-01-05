@@ -260,7 +260,7 @@ class Filesystem extends AbstractBenchmark
 
         if ($this->isVerboseMode() || $this->isDebugMode()) {
             $summary = [
-                'iterate' => $this->generatePluralizedCount($this->iterations, 'time'),
+                'iterate' => $this->generatePluralized($this->iterations, 'time'),
                 'read_time' => $this->statistics['read_time'],
                 'read_speed' => $this->calculateSpeed($size, $this->statistics['read_time']),
                 'write_time' => $this->statistics['write_time'],

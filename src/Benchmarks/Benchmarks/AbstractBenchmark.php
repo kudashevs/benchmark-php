@@ -10,10 +10,15 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
+use BenchmarkPHP\Traits\PluralizeTrait;
 use BenchmarkPHP\Exceptions\WrongArgumentException;
 
 abstract class AbstractBenchmark
 {
+    use PluralizeTrait {
+        generatePluralized as protected;
+    }
+
     /**
      * @var int
      */
@@ -109,18 +114,6 @@ abstract class AbstractBenchmark
     protected function isVerboseMode()
     {
         return isset($this->options['verbose']) && $this->options['verbose'] === true;
-    }
-
-    /**
-     * @param int $count
-     * @param string $text
-     * @return string
-     */
-    protected function generatePluralizedCount($count, $text = 'function')
-    {
-        $text = trim($text);
-
-        return ($count > 1) ? $count . ' ' . rtrim($text, 's') . 's' : $count . ' ' . $text;
     }
 
     /**

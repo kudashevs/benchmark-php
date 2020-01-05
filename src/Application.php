@@ -13,6 +13,7 @@ namespace BenchmarkPHP;
 use BenchmarkPHP\Informers\Informer;
 use BenchmarkPHP\Input\InputInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks;
+use BenchmarkPHP\Traits\PluralizeTrait;
 use BenchmarkPHP\Output\OutputInterface;
 use BenchmarkPHP\Presenters\PresenterFactory;
 use BenchmarkPHP\Presenters\PresenterInterface;
@@ -21,6 +22,8 @@ use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class Application
 {
+    use PluralizeTrait;
+
     /**
      * @var string
      */
@@ -624,18 +627,6 @@ class Application
         }
 
         return $formatted;
-    }
-
-    /**
-     * @param int $count
-     * @param string $text
-     * @return string
-     */
-    private function generatePluralized($count, $text)
-    {
-        $text = trim($text);
-
-        return ($count === 1) ? $count . ' ' . $text : $count . ' ' . $text . 's';  // todo add -es for -s ending words
     }
 
     /**

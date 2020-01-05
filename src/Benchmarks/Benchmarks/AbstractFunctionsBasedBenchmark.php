@@ -123,9 +123,9 @@ abstract class AbstractFunctionsBasedBenchmark extends AbstractBenchmark
             $skipped = count(static::FUNCTIONS) - $executed;
 
             $summary = [
-                'execute' => $this->generatePluralizedCount($executed),
-                'skipped' => $this->generatePluralizedCount($skipped),
-                'iterate' => $this->generatePluralizedCount($this->iterations, 'time'),
+                'execute' => $this->generatePluralized($executed, 'function'),
+                'skipped' => $this->generatePluralized($skipped, 'function'),
+                'iterate' => $this->generatePluralized($this->iterations, 'time'),
             ];
         }
 
