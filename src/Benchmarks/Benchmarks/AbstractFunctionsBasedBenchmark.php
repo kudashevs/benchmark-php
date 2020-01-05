@@ -10,10 +10,36 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
+use BenchmarkPHP\Exceptions\WrongArgumentException;
 use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
 
-trait HandlesFunctionsTrait
+abstract class AbstractFunctionsBasedBenchmark extends AbstractBenchmark
 {
+    /**
+     * Default empty constant prevents Fatal error to be thrown
+     * if there is no constant named FUNCTIONS in child class.
+     * So we can catch a certain exception and handle it.
+     *
+     * @var array
+     */
+    const FUNCTIONS = [];
+
+    /**
+     * @var array
+     */
+    private $functions = [];
+
+    /**
+     * @param array $options
+     * @throws WrongArgumentException|BenchmarkRuntimeException
+     */
+    final public function __construct(array $options = [])
+    {
+        parent::__construct($options);
+
+        $this->functions = $this->initFunctions(static::FUNCTIONS);
+    }
+
     /**
      * @return void
      */
@@ -70,7 +96,7 @@ trait HandlesFunctionsTrait
      * @throws BenchmarkRuntimeException
      * @return array
      */
-    protected function initFunctions(array $functions)
+    private function initFunctions(array $functions)
     {
         foreach ($functions as $key => $function) {
             if (!function_exists($function)) {
@@ -94,7 +120,7 @@ trait HandlesFunctionsTrait
 
         if ($this->isVerboseMode() || $this->isDebugMode()) {
             $executed = count($this->functions);
-            $skipped = count(self::FUNCTIONS) - $executed;
+            $skipped = count(static::FUNCTIONS) - $executed;
 
             $summary = [
                 'execute' => $this->generatePluralizedCount($executed),
@@ -122,7 +148,7 @@ trait HandlesFunctionsTrait
             $list['executed functions'] = PHP_EOL . implode(PHP_EOL, $this->getShortFunctionsNames($this->functions));
         }
 
-        if (!empty($diff = array_diff(self::FUNCTIONS, $this->functions))) {
+        if (!empty($diff = array_diff(static::FUNCTIONS, $this->functions))) {
             $list['skipped functions'] = PHP_EOL . implode(PHP_EOL, $this->getShortFunctionsNames($diff));
         }
 
@@ -139,4 +165,9 @@ trait HandlesFunctionsTrait
             return str_replace('BenchmarkPHP\\Benchmarks\\', '', $v);
         }, $functions);
     }
+
+    /**
+     * @return array
+     */
+    abstract protected function generateTestData();
 }

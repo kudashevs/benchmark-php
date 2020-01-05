@@ -13,13 +13,14 @@ namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\Benchmarks\Integers;
-use BenchmarkPHP\Benchmarks\Benchmarks\HandlesFunctionsTrait;
+use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
+use BenchmarkPHP\Benchmarks\Benchmarks\AbstractFunctionsBasedBenchmark;
 
-class HandlesFunctionsTraitTest extends TestCase
+class AbstractFunctionsBasedBenchmarkTest extends TestCase
 {
     use TestHelpersTrait;
 
-    /** @var Integers $bench The class must use HandlesFunctionsTrait */
+    /** @var AbstractFunctionsBasedBenchmark $bench */
     protected $bench;
 
     protected function setUp()
@@ -32,12 +33,17 @@ class HandlesFunctionsTraitTest extends TestCase
      */
     public function testInstanceUsesCertainTrait()
     {
-        $this->assertContains(HandlesFunctionsTrait::class, class_uses($this->bench));
+        $this->assertInstanceOf(AbstractFunctionsBasedBenchmark::class, $this->bench);
     }
 
     /**
      * Exceptions.
      */
+    public function testInitFunctionsThrowsExceptionWhenEmptyFunctions()
+    {
+        $this->expectException(BenchmarkRuntimeException::class);
+        $this->runPrivateMethod($this->bench, 'initFunctions', [[]]);
+    }
 
     /**
      * Corner cases.

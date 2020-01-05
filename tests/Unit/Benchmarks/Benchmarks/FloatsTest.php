@@ -13,7 +13,6 @@ namespace BenchmarkPHP\Tests\Unit\Benchmarks\Benchmarks;
 use PHPUnit\Framework\TestCase;
 use BenchmarkPHP\Tests\TestHelpersTrait;
 use BenchmarkPHP\Benchmarks\Benchmarks\Floats;
-use BenchmarkPHP\Exceptions\BenchmarkRuntimeException;
 
 class FloatsTest extends TestCase
 {
@@ -30,11 +29,6 @@ class FloatsTest extends TestCase
     /**
      * Exceptions.
      */
-    public function testConstructorThrowsExceptionWhenEmptyFunctions()
-    {
-        $this->expectException(BenchmarkRuntimeException::class);
-        $this->runPrivateMethod($this->bench, 'initFunctions', [[]]);
-    }
 
     /**
      * Corner cases.

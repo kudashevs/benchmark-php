@@ -10,12 +10,8 @@
 
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
-use BenchmarkPHP\Exceptions\WrongArgumentException;
-
-class Objects extends AbstractBenchmark
+class Objects extends AbstractFunctionsBasedBenchmark
 {
-    use HandlesFunctionsTrait;
-
     /**
      * @var array
      */
@@ -33,22 +29,6 @@ class Objects extends AbstractBenchmark
         'BenchmarkPHP\Benchmarks\Benchmarks\Objects\setPrivate',
         'BenchmarkPHP\Benchmarks\Benchmarks\Objects\castToArray',
     ];
-
-    /**
-     * @var array
-     */
-    private $functions = [];
-
-    /**
-     * @param array $options
-     * @throws WrongArgumentException
-     */
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
-
-        $this->functions = $this->initFunctions(self::FUNCTIONS);
-    }
 
     /**
      * @return array
