@@ -67,6 +67,24 @@ class AbstractBenchmarkTest extends TestCase
         $this->assertSame(5, $bench->getIterations());
     }
 
+    public function testHasValidIterationsReturnsExpectedWhenValid()
+    {
+        $options = [
+            'iterations' => 1,
+        ];
+
+        $this->assertTrue($this->runPrivateMethod($this->bench, 'hasValidIterations', [$options]));
+    }
+
+    public function testHasValidIterationsReturnsExpectedWhenInvalid()
+    {
+        $options = [
+            'iterations' => null,
+        ];
+
+        $this->assertFalse($this->runPrivateMethod($this->bench, 'hasValidIterations', [$options]));
+    }
+
     public function testIsDebugModeReturnsExpectedWhenTrue()
     {
         $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);

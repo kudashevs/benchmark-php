@@ -54,8 +54,11 @@ abstract class AbstractBenchmark
      */
     protected function initBenchmark(array $options)
     {
-        $this->iterations = !empty($options['iterations']) ? $options['iterations'] : $this->iterations;
+        $this->iterations = $this->hasValidIterations($options) ? $options['iterations'] : $this->iterations;
 
+        /**
+         * This additional check allows us to prevent wrong value assignment in passed options and in child classes.
+         */
         if ($this->iterations < 1) {
             throw new WrongArgumentException('The number of iterations cannot be less than 1.');
         }
@@ -65,6 +68,15 @@ abstract class AbstractBenchmark
         }
 
         $this->options = $options;
+    }
+
+    /**
+     * @param mixed $options
+     * @return bool
+     */
+    private function hasValidIterations(array $options)
+    {
+        return array_key_exists('iterations', $options) && !empty($options['iterations']) && is_int($options['iterations']);
     }
 
     /**
