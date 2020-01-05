@@ -14,6 +14,7 @@ use BenchmarkPHP\Informers\Informer;
 use BenchmarkPHP\Input\InputInterface;
 use BenchmarkPHP\Benchmarks\Benchmarks;
 use BenchmarkPHP\Traits\PluralizeTrait;
+use BenchmarkPHP\Traits\VerbosityTrait;
 use BenchmarkPHP\Output\OutputInterface;
 use BenchmarkPHP\Presenters\PresenterFactory;
 use BenchmarkPHP\Presenters\PresenterInterface;
@@ -22,7 +23,7 @@ use BenchmarkPHP\Benchmarks\Benchmarks\AbstractBenchmark;
 
 class Application
 {
-    use PluralizeTrait;
+    use VerbosityTrait, PluralizeTrait;
 
     /**
      * @var string
@@ -499,30 +500,6 @@ class Application
         }
 
         return $precision >= 0 && $precision <= 12;
-    }
-
-    /**
-     * @return bool
-     */
-    private function isSilentMode()
-    {
-        return !$this->isDebugMode() && !$this->isVerboseMode();
-    }
-
-    /**
-     * @return bool
-     */
-    private function isDebugMode()
-    {
-        return isset($this->options['debug']) && $this->options['debug'] === true;
-    }
-
-    /**
-     * @return bool
-     */
-    private function isVerboseMode()
-    {
-        return isset($this->options['verbose']) && $this->options['verbose'] === true;
     }
 
     /**

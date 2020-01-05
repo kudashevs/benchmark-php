@@ -11,11 +11,14 @@
 namespace BenchmarkPHP\Benchmarks\Benchmarks;
 
 use BenchmarkPHP\Traits\PluralizeTrait;
+use BenchmarkPHP\Traits\VerbosityTrait;
 use BenchmarkPHP\Exceptions\WrongArgumentException;
 
 abstract class AbstractBenchmark
 {
-    use PluralizeTrait {
+    use VerbosityTrait, PluralizeTrait {
+        isVerboseMode as protected;
+        isDebugMode as protected;
         generatePluralized as protected;
     }
 
@@ -98,22 +101,6 @@ abstract class AbstractBenchmark
     public function getOptions()
     {
         return $this->options;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isDebugMode()
-    {
-        return isset($this->options['debug']) && $this->options['debug'] === true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isVerboseMode()
-    {
-        return isset($this->options['verbose']) && $this->options['verbose'] === true;
     }
 
     /**

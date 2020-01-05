@@ -344,60 +344,6 @@ class ApplicationTest extends TestCase
         $this->assertArrayHasKey('skip', $result);
     }
 
-    public function testIsSilentModeReturnsExpectedWhenTrue()
-    {
-        $this->setPrivateVariableValue($this->app, 'options', ['debug' => false, 'verbose' => false]);
-
-        $result = $this->runPrivateMethod($this->app, 'isSilentMode');
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsSilentModeReturnsExpectedWhenFalse()
-    {
-        $this->setPrivateVariableValue($this->app, 'options', ['debug' => true, 'verbose' => false]);
-
-        $result = $this->runPrivateMethod($this->app, 'isSilentMode');
-
-        $this->assertFalse($result);
-    }
-
-    public function testIsDebugModeReturnsExpectedWhenTrue()
-    {
-        $this->setPrivateVariableValue($this->app, 'options', ['debug' => true]);
-
-        $result = $this->runPrivateMethod($this->app, 'isDebugMode');
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsDebugModeReturnsExpectedWhenFalse()
-    {
-        $this->setPrivateVariableValue($this->app, 'options', ['debug' => false]);
-
-        $result = $this->runPrivateMethod($this->app, 'isDebugMode');
-
-        $this->assertFalse($result);
-    }
-
-    public function testIsVerboseModeReturnsExpectedWhenTrue()
-    {
-        $this->setPrivateVariableValue($this->app, 'options', ['verbose' => true]);
-
-        $result = $this->runPrivateMethod($this->app, 'isVerboseMode');
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsVerboseModeReturnsExpectedWhenFalse()
-    {
-        $this->setPrivateVariableValue($this->app, 'options', ['verbose' => false]);
-
-        $result = $this->runPrivateMethod($this->app, 'isVerboseMode');
-
-        $this->assertFalse($result);
-    }
-
     /**
      * Helpers.
      */

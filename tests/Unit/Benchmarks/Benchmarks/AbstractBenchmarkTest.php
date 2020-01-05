@@ -84,40 +84,4 @@ class AbstractBenchmarkTest extends TestCase
 
         $this->assertFalse($this->runPrivateMethod($this->bench, 'hasValidIterations', [$options]));
     }
-
-    public function testIsDebugModeReturnsExpectedWhenTrue()
-    {
-        $this->setPrivateVariableValue($this->bench, 'options', ['debug' => true]);
-
-        $result = $this->runPrivateMethod($this->bench, 'isDebugMode');
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsDebugModeReturnsExpectedWhenFalse()
-    {
-        $this->setPrivateVariableValue($this->bench, 'options', ['debug' => false]);
-
-        $result = $this->runPrivateMethod($this->bench, 'isDebugMode');
-
-        $this->assertFalse($result);
-    }
-
-    public function testIsVerboseModeReturnsExpectedWhenTrue()
-    {
-        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => true]);
-
-        $result = $this->runPrivateMethod($this->bench, 'isVerboseMode');
-
-        $this->assertTrue($result);
-    }
-
-    public function testIsVerboseModeReturnsExpectedWhenFalse()
-    {
-        $this->setPrivateVariableValue($this->bench, 'options', ['verbose' => false]);
-
-        $result = $this->runPrivateMethod($this->bench, 'isVerboseMode');
-
-        $this->assertFalse($result);
-    }
 }
