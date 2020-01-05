@@ -259,13 +259,11 @@ class Filesystem extends AbstractBenchmark
         ];
 
         if ($this->isVerboseMode() || $this->isDebugMode()) {
-            $summary = [
+            $addition = [
                 'iterate' => $this->generatePluralized($this->iterations, 'time'),
-                'read_time' => $this->statistics['read_time'],
-                'read_speed' => $this->calculateSpeed($size, $this->statistics['read_time']),
-                'write_time' => $this->statistics['write_time'],
-                'write_speed' => $this->calculateSpeed($size, $this->statistics['write_time']),
             ];
+
+            $summary = array_merge($addition, $summary);
         }
 
         return $summary;
