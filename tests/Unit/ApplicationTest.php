@@ -129,6 +129,7 @@ class ApplicationTest extends TestCase
         $result = $this->runPrivateMethod($this->app, 'generateSkippedVerboseReport', [$name, $benchmark]);
 
         $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey($name, $result);
         $this->assertArrayHasKey('message', $result);
         $this->assertArrayNotHasKey('type', $result);
     }
@@ -143,6 +144,7 @@ class ApplicationTest extends TestCase
         $result = $this->runPrivateMethod($this->app, 'generateSkippedVerboseReport', [$name, $benchmark]);
 
         $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey($name, $result);
         $this->assertArrayHasKey('message', $result);
         $this->assertArrayHasKey('type', $result);
         $this->assertEquals('string', $result['type']);
