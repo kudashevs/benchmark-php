@@ -592,7 +592,7 @@ class Application
 
         $summary = ['done' => $this->generatePluralized($completed, 'benchmark') . ' completed'];
 
-        if ($this->isVerboseMode() || $this->isDebugMode() || $this->hasSkippedBenchmarks()) {
+        if ($this->hasSkippedBenchmarks() || !$this->isSilentMode()) {
             $summary = array_merge($summary, ['skip' => $this->generatePluralized($skipped, 'benchmark') . ' skipped']);
         }
 
