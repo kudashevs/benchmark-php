@@ -198,7 +198,7 @@ class ApplicationTest extends TestCase
         $result = $this->runPrivateMethod($this->app, 'generateCompletedVerboseReport', ['test', $withoutAdditionalInformation]);
 
         $this->assertArrayHasKey('test', $result);
-        $this->assertEquals('42', $result['exec_time']);
+        $this->assertStringStartsWith('42', $result['exec_time']);
     }
 
     /**
@@ -216,20 +216,21 @@ class ApplicationTest extends TestCase
 
     public function provideFormatExecution()
     {
-        return [
+        return [ // todo update to respect MIN and MAX constant
             'When input is string' => [['test'], 'test'],
-            'When is int and precision 0' => [[1, 0], '1s'],
-            'When is int and precision 2' => [[1, 2], '1.00s'],
-            'When is float and precision 2' => [[2.729513, 2], '2.72s'],
-            'When is float and precision 3 with rounding' => [[2.729513, 3], '2.729s'],
-            'When is float and precision 3 with trailing zero' => [[2.720513, 3, 3], '2.720s'],
-            'When is float and precision 11' => [[2.7684543132782, 11], '2.76845431327s'],
-            'When is float and precision 12' => [[2.7684543132782, 12], '2.768454313278s'],
-            'When is float and precision 13 to default length' => [[2.7684543132782, 13], '2.768s'],
+            'When int and precision 0' => [[1, 0], '1s'],
+            'When int and precision 2' => [[1, 2], '1.00s'],
+            'When float and precision 2' => [[2.729513, 2], '2.72s'],
+            'When float and precision 3 with rounding' => [[2.729513, 3], '2.729s'],
+            'When float and precision 3 with trailing zero' => [[2.720513, 3, 3], '2.720s'],
+            'When float and precision 11' => [[2.7684543132782, 11], '2.76845431327s'],
+            'When float and precision 12' => [[2.7684543132782, 12], '2.768454313278s'],
+            'When float and precision 13' => [[2.7684543132782, 13], '2.7684543132782s'],
+            'When float and precision 14 to default length' => [[2.76845431327821, 14], '2.768s'],
         ];
     }
 
-    public function testFormatExecutionTimeBatchReturns()
+    public function testFormatExecutionTimeBatchReturnsExpected()
     {
         $statistics = [
             'read_time' => 2.7684543132782,
@@ -263,8 +264,9 @@ class ApplicationTest extends TestCase
         return [
             'When less than valid' => [[-1], false],
             'When min valid precision' => [[0], true],
-            'When max valid precision' => [[12], true],
-            'When more than valid' => [[13], false],
+            'When max pre valid precision' => [[12], true],
+            'When max valid precision' => [[13], true],
+            'When more than valid' => [[14], false],
             'When not an integer' => [[null], false],
         ];
     }

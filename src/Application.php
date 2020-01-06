@@ -41,7 +41,7 @@ class Application
     const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
-     * @var int Execution time output precision (possible values are from 1 to 12).
+     * @var int Default precision of execution time (possible values are from 1 to 13).
      */
     const TIME_PRECISION = 3;
 
@@ -461,6 +461,8 @@ class Application
      */
     private function generateCompletedVerboseReport($name, array $statistics)
     {
+        $statistics = $this->formatExecutionTimeBatch($statistics);
+
         $data[$name] = 'completed';
         $data = array_replace($data, $statistics);
 
@@ -494,6 +496,10 @@ class Application
      */
     private function formatExecutionTimeBatch(array $data)
     {
+        if ($this->isDebugMode()) {
+            return $data;
+        }
+
         foreach ($data as $k => $v) {
             if (substr($k, -5) === '_time') {
                 $data[$k] = $this->formatExecutionTime($v);
@@ -543,7 +549,10 @@ class Application
             return false;
         }
 
-        return $precision >= 0 && $precision <= 12;
+        $minPrecision = 0;
+        $maxPrecision = 13;
+
+        return $precision >= $minPrecision && $precision <= $maxPrecision;
     }
 
     /**
@@ -635,10 +644,7 @@ class Application
         }
 
         $result = $this->getStatistics($keys);
-
-        if ($this->isSilentMode()) {
-            $result = $this->formatExecutionTimeBatch($result);
-        }
+        $result = $this->formatExecutionTimeBatch($result);
 
         $formatted = [];
 
