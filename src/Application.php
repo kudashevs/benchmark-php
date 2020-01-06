@@ -416,13 +416,9 @@ class Application
             $statistics['exec_time'] = 'malformed time';
         }
 
-        if ($this->isSilentMode()) {
-            $data = $this->generateCompletedShortReport($name, $statistics);
-        } else {
-            $data = $this->generateCompletedVerboseReport($name, $statistics);
-        }
+        $report = $this->generateCompletedReport($name, $statistics);
 
-        $this->presenter->block($data);
+        $this->presenter->block($report);
     }
 
     /**
@@ -432,6 +428,33 @@ class Application
     private function hasValidExecutionTime(array $information)
     {
         return isset($information['exec_time']) && is_numeric($information['exec_time']);
+    }
+
+    /**
+     * @param string $name
+     * @param array $statistics
+     * @return array
+     */
+    private function generateCompletedReport($name, $statistics)
+    {
+        if (!$this->isSilentMode()) {
+            return $this->generateCompletedVerboseReport($name, $statistics);
+        }
+
+        return $this->generateCompletedShortReport($name, $statistics);
+    }
+
+    /**
+     * @param $name
+     * @param array $statistics
+     * @return array
+     */
+    private function generateCompletedVerboseReport($name, array $statistics)
+    {
+        $data[$name] = 'completed';
+        $data = array_replace($data, $statistics);
+
+        return $data;
     }
 
     /**
@@ -453,19 +476,6 @@ class Application
         $report = array_merge($report, $allowedInfo);
 
         return $report;
-    }
-
-    /**
-     * @param $name
-     * @param array $statistics
-     * @return array
-     */
-    private function generateCompletedVerboseReport($name, array $statistics)
-    {
-        $data[$name] = 'completed';
-        $data = array_replace($data, $statistics);
-
-        return $data;
     }
 
     /**
