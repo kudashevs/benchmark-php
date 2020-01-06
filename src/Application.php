@@ -316,24 +316,23 @@ class Application
 
         $name = (string)$name;
 
-        if ($this->isSilentMode()) {
-            $data = $this->generateSkippedShortReport($name);
-        } else {
-            $data = $this->generateSkippedVerboseReport($name, $benchmark);
-        }
+        $report = $this->generateSkippedReport($name, $benchmark);
 
-        $this->presenter->block($data);
+        $this->presenter->block($report);
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param mixed $benchmark
      * @return array
      */
-    private function generateSkippedShortReport($name)
+    private function generateSkippedReport($name, $benchmark)
     {
-        return [
-            $name => 'skipped',
-        ];
+        if (!$this->isSilentMode()) {
+            return $this->generateSkippedVerboseReport($name, $benchmark);
+        }
+
+        return $this->generateSkippedShortReport($name);
     }
 
     /**
@@ -397,6 +396,17 @@ class Application
         $information['message'] = 'Incorrectly processed data. Check data source.';
 
         return $information;
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    private function generateSkippedShortReport($name)
+    {
+        return [
+            $name => 'skipped',
+        ];
     }
 
     /**
