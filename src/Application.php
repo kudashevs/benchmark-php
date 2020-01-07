@@ -332,7 +332,7 @@ class Application
             return $this->generateSkippedVerboseReport($name, $benchmark);
         }
 
-        return $this->generateSkippedShortReport($name);
+        return $this->generateSkippedShortReport($name, $benchmark);
     }
 
     /**
@@ -399,14 +399,19 @@ class Application
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param mixed $benchmark
      * @return array
      */
-    private function generateSkippedShortReport($name)
+    private function generateSkippedShortReport($name, $benchmark)
     {
-        return [
-            $name => 'skipped',
-        ];
+        $report[$name] = 'skipped';
+
+        if ($this->hasSkipInformation($benchmark)) {
+            $report['message'] = $benchmark['message'];
+        }
+
+        return $report;
     }
 
     /**

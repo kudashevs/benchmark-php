@@ -112,8 +112,9 @@ class ApplicationTest extends TestCase
     public function testGenerateSkippedShortReportReturnsExpected()
     {
         $name = 'test';
+        $benchmark = '';
 
-        $result = $this->runPrivateMethod($this->app, 'generateSkippedShortReport', [$name]);
+        $result = $this->runPrivateMethod($this->app, 'generateSkippedShortReport', [$name, $benchmark]);
 
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('test', $result);
