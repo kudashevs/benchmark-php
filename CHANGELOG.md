@@ -1,12 +1,15 @@
 # Change Log
 
-## [Unreleased]
+## [2.1.0] - 2020-01-07
 ### Added
 - Add PluralizeTrait.
 - Add VerbosityTrait.
 
 ### Changed
 - Refactor HandlesFunctionTrait to AbstractFunctionsBasedBenchmark.
+- Refactor Application completed/skipped benchmarks report methods.
+- Update benchmarks methods visibility (clarify interface).
+- Update Application max execution time precision.
 - Update Informer with Xdebug information.
 - Update .travis.yml 7.4 alias.
 
