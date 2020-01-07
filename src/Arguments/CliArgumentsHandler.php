@@ -340,7 +340,7 @@ class CliArgumentsHandler implements ArgumentsHandlerInterface
         $value = (int)$value;
 
         if ($value < 0) {
-            throw new WrongArgumentException('Option ' . $argument . ' requires a positive numeric. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
+            throw new WrongArgumentException('Option ' . $argument . ' requires a positive numeric value. Wrong value ' . $this->generatePrintableWithSpace($value) . 'is passed.');
         }
 
         return $value;
