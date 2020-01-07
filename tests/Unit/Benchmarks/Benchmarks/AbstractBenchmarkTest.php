@@ -39,7 +39,7 @@ class AbstractBenchmarkTest extends TestCase
     /**
      * Exceptions.
      */
-    public function testConstructorThrowsExceptionWhenWrongIterationNumber()
+    public function testConstructorThrowsExceptionWhenIterationsNumberIsNegative()
     {
         $options = [
             'iterations' => -1,
@@ -47,6 +47,30 @@ class AbstractBenchmarkTest extends TestCase
 
         $this->expectException(WrongArgumentException::class);
         $this->expectExceptionMessage('The number of iterations');
+
+        new Integers($options);
+    }
+
+    public function testConstructorThrowsExceptionWhenIterationsNumberIsLessThanRecommended()
+    {
+        $options = [
+            'iterations' => 0,
+        ];
+
+        $this->expectException(WrongArgumentException::class);
+        $this->expectExceptionMessage('The number of iterations');
+
+        new Integers($options);
+    }
+
+    public function testConstructorThrowsExceptionWhenIterationsNumberIsMoreThanRecommended()
+    {
+        $options = [
+            'iterations' => AbstractBenchmark::MAX_ITERATIONS + 1,
+        ];
+
+        $this->expectException(WrongArgumentException::class);
+        $this->expectExceptionMessage('It is not reasonable to make');
 
         new Integers($options);
     }

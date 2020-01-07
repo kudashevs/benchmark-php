@@ -25,6 +25,11 @@ abstract class AbstractBenchmark
     /**
      * @var int
      */
+    const MAX_ITERATIONS = 1000000000;
+
+    /**
+     * @var int
+     */
     protected $iterations = 100000;
 
     /**
@@ -71,6 +76,10 @@ abstract class AbstractBenchmark
             throw new WrongArgumentException('The number of iterations cannot be less than 1.');
         }
 
+        if ($this->iterations > self::MAX_ITERATIONS) {
+            throw new WrongArgumentException('It is not reasonable to make iterations more than ' . self::MAX_ITERATIONS . '.');
+        }
+
         if (isset($options['testing']) && $options['testing'] === true) {
             $this->iterations = 1;
         }
@@ -84,7 +93,7 @@ abstract class AbstractBenchmark
      */
     private function hasValidIterations(array $options)
     {
-        return array_key_exists('iterations', $options) && !empty($options['iterations']) && is_int($options['iterations']);
+        return array_key_exists('iterations', $options) && is_int($options['iterations']);
     }
 
     /**
