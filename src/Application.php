@@ -549,10 +549,11 @@ class Application
             return false;
         }
 
-        $minPrecision = 0;
-        $maxPrecision = 13;
-
-        return $precision >= $minPrecision && $precision <= $maxPrecision;
+        /**
+         * The min precision and max precision values are hardcoded because
+         * there is no reason to give a possibility to change their values.
+         */
+        return $precision >= 0 && $precision <= 13;
     }
 
     /**
