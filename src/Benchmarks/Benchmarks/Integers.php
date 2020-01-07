@@ -41,7 +41,7 @@ class Integers extends AbstractFunctionsBasedBenchmark
     {
         $data = [];
         $evenAddition = 10;
-        $oddAddition = 10;
+        $oddAddition = 5;
 
         for ($i = 1; $i <= $this->iterations; $i++) {
             if (($i % 2) === 0) {
